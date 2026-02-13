@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useScrambleText } from "@/hooks/useScrambleText";
 
 interface ScrambleTextProps {
@@ -8,7 +9,7 @@ interface ScrambleTextProps {
   speed?: number;
   stagger?: number;
   className?: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: React.ElementType;
 }
 
 /**
