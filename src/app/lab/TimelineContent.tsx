@@ -62,8 +62,8 @@ export default function TimelineContent() {
   const { navigateTo } = usePageTransition();
 
   const trackX = useMotionValue(0);
-  const cardWidth = 280;
-  const cardGap = 40;
+  const cardWidth = 360;
+  const cardGap = 48;
   const totalCardWidth = cardWidth + cardGap;
 
   const currentProject = projects[currentIndex];
@@ -153,7 +153,7 @@ export default function TimelineContent() {
               className="flex items-center"
               style={{
                 x: trackX,
-                paddingLeft: "calc(50% - 140px)",
+                paddingLeft: "calc(50% - 180px)",
               }}
             >
               {projects.map((project, index) => {
@@ -176,7 +176,7 @@ export default function TimelineContent() {
                   >
                     {/* Editorial Card */}
                     <motion.div
-                      className="w-full h-[420px] bg-white flex flex-col relative group overflow-hidden"
+                      className="w-full h-[500px] bg-white flex flex-col relative group overflow-hidden"
                       style={{
                         boxShadow: isCenter ? "0 20px 60px -20px rgba(0,0,0,0.3)" : "0 10px 40px -20px rgba(0,0,0,0.1)",
                       }}
@@ -184,7 +184,7 @@ export default function TimelineContent() {
                       transition={{ type: "spring", stiffness: 300, damping: 25 }}
                     >
                       {/* Image */}
-                      <div className="relative w-full h-[200px] bg-neutral-100">
+                      <div className="relative w-full h-[250px] bg-neutral-100">
                         <Image
                           src={project.image}
                           alt={project.title.replace("\n", " ")}
