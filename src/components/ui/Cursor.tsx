@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const TRAIL_COUNT = 6;
 
@@ -8,7 +8,7 @@ export function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const trailRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [hovering, setHovering] = useState(false);
+  const hovering = useRef(false);
   const pos = useRef({ x: 0, y: 0 });
   const ringPos = useRef({ x: 0, y: 0 });
   const trailPositions = useRef(Array.from({ length: TRAIL_COUNT }, () => ({ x: 0, y: 0 })));
@@ -17,12 +17,15 @@ export function Cursor() {
   useEffect(() => {
     // Hide on touch devices
     if ("ontouchstart" in window) return;
+    // Respect reduced motion preference
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     document.documentElement.style.cursor = "none";
 
-    // Force cursor:none on all elements
+    // Hide cursor on body only — interactive elements (links, buttons, drag handles)
+    // keep their native cursors for accessibility
     const style = document.createElement("style");
-    style.textContent = "*, *::before, *::after { cursor: none !important; }";
+    style.textContent = "body { cursor: none; }";
     document.head.appendChild(style);
 
     // Fade out trail after 4 seconds
@@ -40,12 +43,14 @@ export function Cursor() {
       }
     };
 
+    const rafId = { current: 0 };
+
     const animate = () => {
       // Ring
       ringPos.current.x += (pos.current.x - ringPos.current.x) * 0.15;
       ringPos.current.y += (pos.current.y - ringPos.current.y) * 0.15;
       if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${ringPos.current.x}px, ${ringPos.current.y}px) scale(${hovering ? 1.8 : 1})`;
+        ringRef.current.style.transform = `translate(${ringPos.current.x}px, ${ringPos.current.y}px) scale(${hovering.current ? 1.8 : 1})`;
       }
 
       // Trail particles
@@ -64,7 +69,7 @@ export function Cursor() {
         });
       }
 
-      requestAnimationFrame(animate);
+      rafId.current = requestAnimationFrame(animate);
     };
 
     const onOver = (e: MouseEvent) => {
@@ -76,16 +81,16 @@ export function Cursor() {
         target.tagName === "A" ||
         target.tagName === "BUTTON"
       ) {
-        setHovering(true);
+        hovering.current = true;
       }
     };
 
-    const onOut = () => setHovering(false);
+    const onOut = () => { hovering.current = false; };
 
     window.addEventListener("mousemove", move, { passive: true });
     document.addEventListener("mouseover", onOver, { passive: true });
     document.addEventListener("mouseout", onOut, { passive: true });
-    const raf = requestAnimationFrame(animate);
+    rafId.current = requestAnimationFrame(animate);
 
     return () => {
       clearTimeout(trailTimeout);
@@ -94,9 +99,9 @@ export function Cursor() {
       window.removeEventListener("mousemove", move);
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseout", onOut);
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(rafId.current);
     };
-  }, [hovering]);
+  }, []);
 
   return (
     <>

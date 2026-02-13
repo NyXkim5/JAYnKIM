@@ -1,14 +1,12 @@
-"use client";
+import type { Metadata } from "next";
+import HomeContent from "./HomeContent";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+export const metadata: Metadata = {
+  title: "Jay Kim — Software Engineer",
+  description:
+    "Software engineer specializing in AI/ML, full-stack development, and design. Based in Orange County, CA.",
+};
 
 export default function Home() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/about");
-  }, [router]);
-
-  return <div className="min-h-screen bg-[#fafafa]" />;
+  return <HomeContent />;
 }

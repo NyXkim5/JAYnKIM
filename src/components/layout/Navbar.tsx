@@ -1,27 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
+import { TransitionLink } from "@/components/transitions/TransitionLink";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { GlitchText } from "@/components/ui/GlitchText";
+import { PRIMARY_ROUTES, SECONDARY_ROUTES } from "@/data/routes";
 
-// Primary nav links - most important for employers
-const primaryLinks = [
-  { label: "About", href: "/about" },
-  { label: "Work", href: "/projects" },
-  { label: "Contact", href: "/contact" },
-];
-
-// Secondary links - in dropdown
-const moreLinks = [
-  { label: "Projects", href: "/timeline" },
-  { label: "Recs", href: "/matcha" },
-  { label: "Music", href: "/music" },
-];
-
-const allLinks = [...primaryLinks.slice(0, 2), ...moreLinks, primaryLinks[2]];
+const primaryLinks = PRIMARY_ROUTES.map((r) => ({ label: r.label, href: r.path }));
+const moreLinks = SECONDARY_ROUTES.map((r) => ({ label: r.label, href: r.path }));
+const allLinks = [...primaryLinks.slice(0, 3), ...moreLinks, primaryLinks[3]];
 
 interface NavbarProps {
   variant?: "light" | "dark";
@@ -32,6 +21,30 @@ export function Navbar({ variant = "light" }: NavbarProps) {
   const isDark = variant === "dark";
   const [menuOpen, setMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleDropdownKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setMoreOpen(false);
+      moreButtonRef.current?.focus();
+      return;
+    }
+    if (e.key === "Tab" && dropdownRef.current) {
+      const focusable = dropdownRef.current.querySelectorAll<HTMLElement>("a, button");
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        setMoreOpen(false);
+        moreButtonRef.current?.focus();
+      }
+    }
+  }, []);
 
   return (
     <header
@@ -43,7 +56,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
       )}
     >
       <nav className="flex items-center justify-between px-5 md:px-8 h-14">
-        <Link
+        <TransitionLink
           href="/"
           className={cn(
             "font-mono text-sm font-bold tracking-widest uppercase",
@@ -52,17 +65,18 @@ export function Navbar({ variant = "light" }: NavbarProps) {
           )}
         >
           <GlitchText text="Jay Kim" interval={6000} />
-        </Link>
+        </TransitionLink>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-6">
           {/* Primary links */}
-          {primaryLinks.slice(0, 2).map((link) => {
+          {primaryLinks.slice(0, 3).map((link) => {
             const isActive = pathname === link.href;
             return (
-              <Link
+              <TransitionLink
                 key={link.href}
                 href={link.href}
+                aria-current={isActive ? "page" : undefined}
                 className={cn(
                   "font-mono text-[11px] tracking-wider uppercase transition-colors",
                   isDark
@@ -71,19 +85,26 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                 )}
               >
                 {link.label}
-              </Link>
+              </TransitionLink>
             );
           })}
 
-          {/* More dropdown - hover triggered */}
+          {/* More dropdown - hover + keyboard accessible */}
           <div
             className="relative"
             onMouseEnter={() => setMoreOpen(true)}
             onMouseLeave={() => setMoreOpen(false)}
           >
-            <span
+            <button
+              ref={moreButtonRef}
+              onClick={() => setMoreOpen(!moreOpen)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setMoreOpen(false);
+              }}
+              aria-expanded={moreOpen}
+              aria-haspopup="true"
               className={cn(
-                "font-mono text-[11px] tracking-wider uppercase transition-colors flex items-center gap-1 cursor-default",
+                "font-mono text-[11px] tracking-wider uppercase transition-colors flex items-center gap-1 bg-transparent border-none p-0",
                 isDark
                   ? moreOpen ? "text-accent-cyan" : "text-white/60 hover:text-white"
                   : moreOpen ? "text-text-black" : "text-text-mid hover:text-text-black"
@@ -93,7 +114,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
               <svg width="10" height="10" viewBox="0 0 10 10" className={cn("transition-transform duration-200", moreOpen && "rotate-180")}>
                 <path d="M2 4L5 7L8 4" fill="none" stroke="currentColor" strokeWidth="1.5" />
               </svg>
-            </span>
+            </button>
 
             <AnimatePresence>
               {moreOpen && (
@@ -108,13 +129,16 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                       ? "bg-bg-dark-elevated border-border-dark"
                       : "bg-bg-white border-border-light shadow-lg"
                   )}
+                  ref={dropdownRef}
+                  onKeyDown={handleDropdownKeyDown}
                 >
                   {moreLinks.map((link) => {
                     const isActive = pathname === link.href;
                     return (
-                      <Link
+                      <TransitionLink
                         key={link.href}
                         href={link.href}
+                        aria-current={isActive ? "page" : undefined}
                         className={cn(
                           "block px-3 py-2 font-mono text-[11px] tracking-wider uppercase transition-colors rounded",
                           isDark
@@ -123,7 +147,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                         )}
                       >
                         {link.label}
-                      </Link>
+                      </TransitionLink>
                     );
                   })}
                 </motion.div>
@@ -132,8 +156,9 @@ export function Navbar({ variant = "light" }: NavbarProps) {
           </div>
 
           {/* Contact link */}
-          <Link
+          <TransitionLink
             href="/contact"
+            aria-current={pathname === "/contact" ? "page" : undefined}
             className={cn(
               "font-mono text-[11px] tracking-wider uppercase transition-colors",
               isDark
@@ -142,7 +167,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
             )}
           >
             Contact
-          </Link>
+          </TransitionLink>
 
           {/* Resume button - prominent */}
           <a
@@ -204,9 +229,10 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
                   >
-                    <Link
+                    <TransitionLink
                       href={link.href}
                       onClick={() => setMenuOpen(false)}
+                      aria-current={isActive ? "page" : undefined}
                       className={cn(
                         "block py-3 border-b font-mono text-sm tracking-wider uppercase transition-colors",
                         isDark
@@ -215,7 +241,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                       )}
                     >
                       {link.label}
-                    </Link>
+                    </TransitionLink>
                   </motion.div>
                 );
               })}

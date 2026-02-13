@@ -19,11 +19,11 @@ const quotes = [
   { text: "It does not matter what you bear, but how you bear it.", author: "Seneca" },
   { text: "Think of the life you have lived until now as over and done. Now see what's left and live it properly.", author: "Marcus Aurelius" },
   { text: "Every night before going to sleep, we must ask ourselves: what weakness did I overcome today?", author: "Seneca" },
-  { text: "You have power over your mind — not outside events. Realize this, and you will find strength.", author: "Marcus Aurelius" },
+  { text: "You have power over your mind, not outside events. Realize this, and you will find strength.", author: "Marcus Aurelius" },
   { text: "A gem cannot be polished without friction, nor a man perfected without trials.", author: "Seneca" },
   { text: "He who has a why to live can bear almost any how.", author: "Nietzsche" },
   { text: "The world breaks everyone, and afterward, some are strong at the broken places.", author: "Hemingway" },
-  { text: "Winning isn't everything — it's the only thing.", author: "Vince Lombardi" },
+  { text: "Winning isn't everything. It's the only thing.", author: "Vince Lombardi" },
   { text: "Hard times create strong men. Strong men create good times.", author: "G. Michael Hopf" },
   { text: "The only easy day was yesterday.", author: "Navy SEALs" },
   { text: "Suffer the pain of discipline or suffer the pain of regret.", author: "Jim Rohn" },
@@ -98,7 +98,7 @@ export function BallisticCalendar() {
       <div className="flex items-end justify-between mb-6">
         <div>
           <motion.div
-            className="text-[9px] tracking-[0.3em] uppercase text-text-light mb-1"
+            className="text-[10px] tracking-[0.3em] uppercase text-text-light mb-1"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -128,7 +128,7 @@ export function BallisticCalendar() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <div className="text-[9px] tracking-wider text-text-light uppercase mb-1">
+          <div className="text-[10px] tracking-wider text-text-light uppercase mb-1">
             Days Remaining
           </div>
           <div className="text-2xl md:text-3xl font-bold tracking-tight text-text-black leading-none">
@@ -145,10 +145,10 @@ export function BallisticCalendar() {
         transition={{ delay: 0.5 }}
       >
         <div className="flex justify-between mb-1.5">
-          <span className="text-[9px] tracking-wider text-text-light uppercase">
+          <span className="text-[10px] tracking-wider text-text-light uppercase">
             Year Progress
           </span>
-          <span className="text-[9px] tracking-wider text-text-light">
+          <span className="text-[10px] tracking-wider text-text-light">
             {percentElapsed.toFixed(1)}%
           </span>
         </div>
@@ -205,14 +205,14 @@ export function BallisticCalendar() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
       >
-        <div className="text-[9px] tracking-[0.2em] uppercase text-text-light mb-3">
+        <div className="text-[10px] tracking-[0.2em] uppercase text-text-light mb-3">
           Daily Transmission &middot; Day {dayOfYear}/{totalDays}
         </div>
         <p className="text-sm md:text-base leading-relaxed text-text-dark italic">
           &ldquo;{quote.text}&rdquo;
         </p>
         <p className="text-[10px] tracking-wider text-text-light mt-2 uppercase">
-          — {quote.author}
+          {quote.author}
         </p>
       </motion.div>
     </div>

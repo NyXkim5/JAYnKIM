@@ -1,20 +1,19 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePageTransition } from "@/components/transitions/TransitionProvider";
+import { SITE_ROUTES } from "@/data/routes";
 
+// Derive terminal pages from shared routes + add aliases
 const PAGES: Record<string, { path: string; desc: string }> = {
-  home: { path: "/", desc: "Landing page" },
-  about: { path: "/about", desc: "Bio & skills" },
-  projects: { path: "/projects", desc: "Case studies" },
-  works: { path: "/projects", desc: "Case studies (alias)" },
-  gallery: { path: "/gallery", desc: "Photography & art" },
-  timeline: { path: "/timeline", desc: "Career history" },
-  recs: { path: "/matcha", desc: "Food & drink recs" },
+  ...Object.fromEntries(
+    SITE_ROUTES.map((r) => [r.label.toLowerCase(), { path: r.path, desc: r.label }])
+  ),
+  // Aliases for terminal UX
+  home: { path: "/", desc: "About & bio" },
+  about: { path: "/", desc: "About & bio (alias)" },
   matcha: { path: "/matcha", desc: "Food & drink recs" },
-  music: { path: "/music", desc: "Playlist" },
-  contact: { path: "/contact", desc: "Get in touch" },
 };
 
 const HELP_TEXT = [
@@ -26,7 +25,7 @@ const HELP_TEXT = [
   "  help         Show this message",
   "  exit         Close terminal",
   "",
-  "Pages: home, about, projects, gallery, timeline,",
+  "Pages: home, work, writing, lab,",
   "       recs, music, contact",
 ];
 
@@ -38,7 +37,7 @@ export function Terminal() {
   const [histIdx, setHistIdx] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const { navigateTo } = usePageTransition();
 
   const addLines = useCallback((...newLines: string[]) => {
     setLines((prev) => [...prev, ...newLines, ""]);
@@ -66,7 +65,7 @@ export function Terminal() {
           addLines(`Navigating to /${arg}...`);
           setTimeout(() => {
             setOpen(false);
-            router.push(page.path);
+            navigateTo(page.path);
           }, 400);
         } else {
           addLines(`cd: ${arg}: page not found. Type 'ls' to see pages.`);
@@ -77,7 +76,8 @@ export function Terminal() {
         addLines(
           "Pages:",
           ...Object.entries(PAGES)
-            .filter(([k]) => !["works", "matcha"].includes(k))
+            .filter(([k]) => !["about", "matcha"].includes(k))
+
             .map(([name, { desc }]) => `  ${name.padEnd(12)} ${desc}`)
         );
         break;
@@ -101,7 +101,7 @@ export function Terminal() {
       default:
         addLines(`command not found: ${command}. Type 'help' for available commands.`);
     }
-  }, [addLines, router]);
+  }, [addLines, navigateTo]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -160,6 +160,9 @@ export function Terminal() {
       {open && (
         <motion.div
           className="fixed inset-0 z-[9991] bg-[#050505]/95 backdrop-blur-sm flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Terminal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -176,10 +179,10 @@ export function Terminal() {
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-green-500/60" />
                 <span className="font-mono text-[10px] text-white/40 tracking-wider uppercase">
-                  Terminal — jay@portfolio
+                  Terminal // jay@portfolio
                 </span>
               </div>
-              <button onClick={() => setOpen(false)} className="font-mono text-xs text-white/30 hover:text-white/60">
+              <button onClick={() => setOpen(false)} aria-label="Close terminal" className="font-mono text-xs text-white/30 hover:text-white/60">
                 [ESC]
               </button>
             </div>
@@ -198,7 +201,7 @@ export function Terminal() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="flex-1 bg-transparent text-green-400/90 outline-none caret-green-400"
+                  className="flex-1 bg-transparent text-green-400/90 outline-none focus-visible:ring-1 focus-visible:ring-green-400/50 caret-green-400"
                   spellCheck={false}
                   autoComplete="off"
                 />

@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { VisitorCounter } from "@/components/ui/VisitorCounter";
+import { TransitionLink } from "@/components/transitions/TransitionLink";
+import { SITE_ROUTES } from "@/data/routes";
 
 interface FooterProps {
   variant?: "light" | "dark";
@@ -25,25 +26,18 @@ export function Footer({ variant = "light" }: FooterProps) {
           <p className={`font-mono text-[11px] tracking-wider ${mutedCls}`}>
             &copy; {new Date().getFullYear()} JAY KIM
           </p>
-          <VisitorCounter className={`text-[9px] tracking-wider ${isDark ? "text-white/20" : "text-text-light/50"}`} />
+          <VisitorCounter className={`text-[10px] tracking-wider ${isDark ? "text-white/20" : "text-text-light/50"}`} />
         </div>
 
         <div className="flex flex-wrap gap-x-8 gap-y-2">
-          {[
-            { label: "About", href: "/about" },
-            { label: "Projects", href: "/projects" },
-            { label: "Gallery", href: "/gallery" },
-            { label: "Timeline", href: "/timeline" },
-            { label: "Recs", href: "/matcha" },
-            { label: "Music", href: "/music" },
-          ].map((link) => (
-            <Link
+          {SITE_ROUTES.filter((r) => r.path !== "/contact").map((r) => ({ label: r.label, href: r.path })).map((link) => (
+            <TransitionLink
               key={link.href}
               href={link.href}
               className={`font-mono text-[10px] tracking-wider uppercase transition-colors ${textCls}`}
             >
               {link.label}
-            </Link>
+            </TransitionLink>
           ))}
         </div>
 
@@ -72,7 +66,7 @@ export function Footer({ variant = "light" }: FooterProps) {
               Email
             </a>
           </div>
-          <p className={`font-mono text-[9px] tracking-wider ${isDark ? "text-white/15" : "text-text-light/30"}`}>
+          <p className={`font-mono text-[10px] tracking-wider ${isDark ? "text-white/15" : "text-text-light/30"}`}>
             &larr; &rarr; Navigate &middot; ⌘K Search &middot; / Terminal
           </p>
         </div>

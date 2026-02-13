@@ -81,7 +81,7 @@ export default function NotFound() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.5 }}
-          className="mt-16 font-mono text-[9px] text-white/15 space-y-1"
+          className="mt-16 font-mono text-[10px] text-white/15 space-y-1"
         >
           <p>ERR_NOT_FOUND: Resource unavailable</p>
           <p>TRACE: 0x0000404F → 0xDEADBEEF</p>

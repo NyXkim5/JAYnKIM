@@ -12,7 +12,7 @@ export function StatusIndicator({ label, status = "ACTIVE" }: { label: string; s
         animate={{ opacity: [1, 0.3, 1] }}
         transition={{ duration: 1.5, repeat: Infinity }}
       />
-      <span className="font-mono text-[9px] tracking-wider text-accent-green/70 uppercase">
+      <span className="font-mono text-[10px] tracking-wider text-accent-green/70 uppercase">
         {label}: {status}
       </span>
     </div>
@@ -32,7 +32,7 @@ export function HexCode({ className = "" }: { className?: string }) {
   }, []);
 
   return (
-    <span className={`font-mono text-[9px] text-accent-green/50 tracking-wider ${className}`}>
+    <span className={`font-mono text-[10px] text-accent-green/50 tracking-wider ${className}`}>
       {hex}
     </span>
   );
@@ -74,7 +74,7 @@ export function BinaryLine({ className = "" }: { className?: string }) {
 
   return (
     <div className={`overflow-hidden ${className}`}>
-      <span className="font-mono text-[8px] text-accent-green/20 tracking-[0.2em] whitespace-nowrap">
+      <span className="font-mono text-[10px] text-accent-green/20 tracking-[0.2em] whitespace-nowrap">
         {binary}
       </span>
     </div>
@@ -102,7 +102,7 @@ export function DataReadout({ label, value, delay = 0 }: { label: string; value:
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay, duration: 0.5 }}
-      className="flex items-center gap-2 font-mono text-[9px] tracking-wider"
+      className="flex items-center gap-2 font-mono text-[10px] tracking-wider"
     >
       <span className="text-accent-green/50 uppercase">{label}</span>
       <span className="text-accent-green/30">:</span>
@@ -138,7 +138,7 @@ export function SecurityBadge({ level = "SECURED" }: { level?: string }) {
         animate={{ opacity: [1, 0.4, 1] }}
         transition={{ duration: 1, repeat: Infinity }}
       />
-      <span className="font-mono text-[8px] tracking-[0.15em] text-accent-green/70 uppercase">
+      <span className="font-mono text-[10px] tracking-[0.15em] text-accent-green/70 uppercase">
         {level}
       </span>
     </div>
@@ -159,7 +159,7 @@ export function NodeIndicator({ id, active = true }: { id: string; active?: bool
         )}
         <div className={`absolute inset-[2px] rounded-full ${active ? "bg-accent-green" : "bg-text-light/50"}`} />
       </div>
-      <span className={`font-mono text-[9px] tracking-wider ${active ? "text-accent-green/60" : "text-text-light/40"}`}>
+      <span className={`font-mono text-[10px] tracking-wider ${active ? "text-accent-green/60" : "text-text-light/40"}`}>
         {id}
       </span>
     </div>
@@ -169,7 +169,7 @@ export function NodeIndicator({ id, active = true }: { id: string; active?: bool
 /** Encrypted data marker */
 export function EncryptedMarker() {
   return (
-    <span className="font-mono text-[8px] tracking-wider text-accent-green/40 uppercase">
+    <span className="font-mono text-[10px] tracking-wider text-accent-green/40 uppercase">
       [AES-256]
     </span>
   );

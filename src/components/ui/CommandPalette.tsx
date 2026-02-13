@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePageTransition } from "@/components/transitions/TransitionProvider";
+import { SITE_ROUTES } from "@/data/routes";
 
 interface Command {
   id: string;
@@ -16,17 +17,15 @@ export function CommandPalette() {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
+  const { navigateTo } = usePageTransition();
 
   const commands: Command[] = [
-    { id: "home", label: "Home", category: "page", action: () => router.push("/") },
-    { id: "about", label: "About", category: "page", action: () => router.push("/about") },
-    { id: "works", label: "Works", category: "page", action: () => router.push("/projects") },
-    { id: "gallery", label: "Gallery", category: "page", action: () => router.push("/gallery") },
-    { id: "timeline", label: "Timeline", category: "page", action: () => router.push("/timeline") },
-    { id: "recs", label: "Recs", category: "page", action: () => router.push("/matcha") },
-    { id: "music", label: "Music", category: "page", action: () => router.push("/music") },
-    { id: "contact", label: "Contact", category: "page", action: () => router.push("/contact") },
+    ...SITE_ROUTES.map((r) => ({
+      id: r.label.toLowerCase(),
+      label: r.label,
+      category: "page" as const,
+      action: () => navigateTo(r.path),
+    })),
     { id: "resume", label: "Download Resume", category: "action", action: () => { window.open("/resume.pdf", "_blank"); } },
     { id: "github", label: "GitHub", category: "action", action: () => { window.open("https://github.com/NyXkim5", "_blank"); } },
     { id: "linkedin", label: "LinkedIn", category: "action", action: () => { window.open("https://www.linkedin.com/in/joonhyuknkim/", "_blank"); } },
@@ -85,6 +84,9 @@ export function CommandPalette() {
       {open && (
         <motion.div
           className="fixed inset-0 z-[9990] flex items-start justify-center pt-[20vh]"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Command palette"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -110,9 +112,9 @@ export function CommandPalette() {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Type a command..."
-                className="flex-1 bg-transparent font-mono text-sm text-white/90 placeholder:text-white/30 outline-none"
+                className="flex-1 bg-transparent font-mono text-sm text-white/90 placeholder:text-white/30 outline-none focus-visible:ring-2 focus-visible:ring-accent-green/50 focus-visible:ring-offset-0"
               />
-              <kbd className="font-mono text-[9px] text-white/20 border border-white/10 rounded px-1.5 py-0.5">
+              <kbd className="font-mono text-[10px] text-white/20 border border-white/10 rounded px-1.5 py-0.5">
                 ESC
               </kbd>
             </div>
@@ -127,7 +129,7 @@ export function CommandPalette() {
               {/* Pages */}
               {filtered.some((c) => c.category === "page") && (
                 <div className="px-3 pt-2 pb-1">
-                  <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/20 px-1">
+                  <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/20 px-1">
                     Pages
                   </span>
                 </div>
@@ -153,7 +155,7 @@ export function CommandPalette() {
               {/* Actions */}
               {filtered.some((c) => c.category === "action") && (
                 <div className="px-3 pt-3 pb-1">
-                  <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/20 px-1">
+                  <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/20 px-1">
                     Actions
                   </span>
                 </div>
@@ -180,10 +182,10 @@ export function CommandPalette() {
 
             {/* Footer hint */}
             <div className="px-4 py-2 border-t border-white/10 flex gap-4">
-              <span className="font-mono text-[9px] text-white/20">
+              <span className="font-mono text-[10px] text-white/20">
                 <kbd className="border border-white/10 rounded px-1 mr-1">&uarr;&darr;</kbd> navigate
               </span>
-              <span className="font-mono text-[9px] text-white/20">
+              <span className="font-mono text-[10px] text-white/20">
                 <kbd className="border border-white/10 rounded px-1 mr-1">&crarr;</kbd> select
               </span>
             </div>
