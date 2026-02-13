@@ -13,7 +13,7 @@ export default function GPUBatchingArticle() {
       <Navbar />
       <PageTransition>
         <WritingGate>
-        <main className="pt-14">
+        <main className="pt-16">
           <section className="px-5 md:px-8 pt-16 pb-10">
             <article className="max-w-3xl">
               {/* Article header */}

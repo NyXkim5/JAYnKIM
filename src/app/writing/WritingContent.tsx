@@ -16,33 +16,33 @@ export default function WritingContent() {
     <>
       <Navbar />
       <PageTransition>
-        <main className="pt-14 relative overflow-hidden">
+        <main className="pt-16 relative overflow-hidden">
           {/* Side SVGs — decorative, clipped at page edges */}
-          <div className="hidden md:block pointer-events-none absolute inset-0" aria-hidden="true">
+          <div className="hidden lg:block pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
             <motion.div
               initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={{ opacity: 0.6, x: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              style={{ right: "-598px" }}
-              className="absolute top-[200px] w-[1320px] select-none"
+              className="absolute top-[200px] select-none"
+              style={{ right: "-45%", width: "80%", maxWidth: "1000px" }}
             >
               <Image src={sideImages[0]} alt="" width={1320} height={800} unoptimized />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={{ opacity: 0.6, x: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              style={{ left: "-542px" }}
-              className="absolute top-[500px] w-[1200px] select-none"
+              className="absolute top-[500px] select-none"
+              style={{ left: "-45%", width: "80%", maxWidth: "1000px" }}
             >
               <Image src={sideImages[1]} alt="" width={1200} height={800} unoptimized />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={{ opacity: 0.6, x: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}
-              style={{ right: "-510px" }}
-              className="absolute bottom-[-100px] w-[1140px] select-none"
+              className="absolute bottom-[-100px] select-none"
+              style={{ right: "-42%", width: "80%", maxWidth: "1000px" }}
             >
               <Image src={sideImages[2]} alt="" width={1140} height={800} unoptimized />
             </motion.div>

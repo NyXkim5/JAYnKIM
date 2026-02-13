@@ -304,7 +304,7 @@ export default function MusicContent() {
       <Navbar />
       <PageTransition>
 
-      <main className="pt-14 pb-32 h-screen flex flex-col">
+      <main className="pt-16 pb-32 h-screen flex flex-col">
         {/* Header */}
         <div className="px-6 md:px-10 pt-8 pb-6 flex-shrink-0">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">

@@ -238,7 +238,7 @@ export default function MatchaContent() {
     <>
       <Navbar />
       <PageTransition>
-      <main className="pt-14 min-h-screen bg-neutral-100 overflow-hidden">
+      <main className="pt-16 min-h-screen bg-neutral-100 overflow-hidden">
           {/* Whiteboard */}
           <div
             className="mx-4 md:mx-8 my-6 rounded-xl overflow-hidden"

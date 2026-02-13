@@ -95,7 +95,7 @@ export default function HomeContent() {
     <>
       <Navbar />
       <PageTransition>
-        <main className="pt-14">
+        <main className="pt-16">
           {/* Header */}
           <section className="px-5 md:px-8 pt-16 pb-12 border-b border-border-light relative overflow-hidden">
             <GridReveal />

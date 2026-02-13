@@ -56,7 +56,7 @@ export default function ProjectsContent() {
     <>
       <Navbar />
       <PageTransition>
-        <main className="pt-14">
+        <main className="pt-16">
           {/* Header */}
           <section className="px-5 md:px-8 pt-16 pb-12 border-b border-border-light relative overflow-hidden">
             <GridReveal />
@@ -108,7 +108,7 @@ export default function ProjectsContent() {
           <RevealLine delay={0.4} />
 
           {/* Table header */}
-          <div className="hidden md:grid grid-cols-[50px_1fr_1fr_100px_80px] gap-4 px-5 md:px-8 py-3 border-b border-border-light">
+          <div className="hidden md:grid grid-cols-[50px_1fr_1fr_100px_80px] gap-4 px-5 md:px-8 py-4 border-b border-border-light">
             <span className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase">No</span>
             <span className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase">Name</span>
             <span className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase">Description</span>
@@ -123,14 +123,14 @@ export default function ProjectsContent() {
                 initial={{ opacity: 0, y: 20, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.5 + i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="group grid grid-cols-1 md:grid-cols-[50px_1fr_1fr_100px_80px] gap-2 md:gap-4 px-5 md:px-8 py-6 border-b border-border-light hover:bg-bg-light transition-colors"
+                className="group grid grid-cols-1 md:grid-cols-[50px_1fr_1fr_100px_80px] gap-2 md:gap-4 px-5 md:px-8 py-8 border-b border-border-light hover:bg-bg-light transition-colors"
               >
                 <span className="font-mono text-xs text-text-light">
                   {project.id}
                 </span>
 
                 <div>
-                  <span className="text-base font-semibold text-text-black group-hover:text-text-dark transition-colors inline-flex items-center gap-2">
+                  <span className="text-lg font-semibold text-text-black group-hover:text-text-dark transition-colors inline-flex items-center gap-2">
                     {project.title}
                     <span className="text-text-light group-hover:text-text-black transition-colors text-xs">&#8599;</span>
                   </span>
@@ -144,7 +144,7 @@ export default function ProjectsContent() {
                 </div>
 
                 <div className="hidden md:block">
-                  <p className="text-sm text-text-mid leading-relaxed">
+                  <p className="text-base text-text-mid leading-relaxed">
                     {project.description}
                   </p>
                   <div className="flex flex-wrap gap-3 mt-2">

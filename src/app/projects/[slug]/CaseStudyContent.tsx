@@ -33,7 +33,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
     return (
       <>
         <Navbar />
-        <main className="pt-14 min-h-screen flex items-center justify-center">
+        <main className="pt-16 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <p className="font-mono text-xs text-text-light tracking-wider mb-4">404</p>
             <h1 className="text-3xl font-bold text-text-black mb-6">Case study not found</h1>
@@ -66,33 +66,33 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
     <>
       <Navbar />
       <PageTransition>
-        <main className="pt-14 relative overflow-hidden">
+        <main className="pt-16 relative overflow-hidden">
           {/* Side SVGs */}
-          <div className="hidden md:block pointer-events-none absolute inset-0" aria-hidden="true">
+          <div className="hidden lg:block pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
             <motion.div
               initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={{ opacity: 0.6, x: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              style={{ left: "-570px" }}
-              className="absolute top-[250px] w-[1200px] select-none"
+              className="absolute top-[250px] select-none"
+              style={{ left: "-45%", width: "80%", maxWidth: "1000px" }}
             >
               <Image src="/writing-2.svg" alt="" width={1200} height={800} unoptimized />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={{ opacity: 0.6, x: 0 }}
               transition={{ delay: 0.7, duration: 0.8 }}
-              style={{ right: "-550px" }}
-              className="absolute top-[1200px] w-[1140px] select-none"
+              className="absolute top-[1200px] select-none"
+              style={{ right: "-45%", width: "80%", maxWidth: "1000px" }}
             >
               <Image src="/writing-3.svg" alt="" width={1140} height={800} unoptimized />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={{ opacity: 0.6, x: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
-              style={{ left: "-530px" }}
-              className="absolute top-[2400px] w-[1320px] select-none"
+              className="absolute top-[2400px] select-none"
+              style={{ left: "-42%", width: "80%", maxWidth: "1000px" }}
             >
               <Image src="/writing-1.svg" alt="" width={1320} height={800} unoptimized />
             </motion.div>
@@ -189,7 +189,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
           <section className="grid md:grid-cols-[200px_1fr] lg:grid-cols-[240px_1fr] gap-0">
             {/* Left — sticky nav */}
             <div className="hidden md:block border-r border-border-light">
-              <nav className="sticky top-14 py-8 px-5">
+              <nav className="sticky top-16 py-8 px-5">
                 <p className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase mb-4">
                   Sections
                 </p>

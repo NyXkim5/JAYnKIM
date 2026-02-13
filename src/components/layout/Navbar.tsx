@@ -55,7 +55,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
           : "bg-bg-white/80 backdrop-blur-sm border-b border-border-light"
       )}
     >
-      <nav className="flex items-center justify-between px-5 md:px-8 h-14">
+      <nav className="flex items-center justify-between px-5 md:px-8 h-16">
         <TransitionLink
           href="/"
           className={cn(
@@ -68,7 +68,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
         </TransitionLink>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-8">
           {/* Primary links */}
           {primaryLinks.slice(0, 3).map((link) => {
             const isActive = pathname === link.href;
@@ -78,7 +78,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                 href={link.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "font-mono text-[11px] tracking-wider uppercase transition-colors",
+                  "font-mono text-[13px] tracking-wider uppercase transition-colors",
                   isDark
                     ? isActive ? "text-accent-cyan" : "text-white/60 hover:text-white"
                     : isActive ? "text-text-black" : "text-text-mid hover:text-text-black"
@@ -104,7 +104,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
               aria-expanded={moreOpen}
               aria-haspopup="true"
               className={cn(
-                "font-mono text-[11px] tracking-wider uppercase transition-colors flex items-center gap-1 bg-transparent border-none p-0",
+                "font-mono text-[13px] tracking-wider uppercase transition-colors flex items-center gap-1 bg-transparent border-none p-0",
                 isDark
                   ? moreOpen ? "text-accent-cyan" : "text-white/60 hover:text-white"
                   : moreOpen ? "text-text-black" : "text-text-mid hover:text-text-black"
@@ -140,7 +140,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                         href={link.href}
                         aria-current={isActive ? "page" : undefined}
                         className={cn(
-                          "block px-3 py-2 font-mono text-[11px] tracking-wider uppercase transition-colors rounded",
+                          "block px-4 py-2.5 font-mono text-[13px] tracking-wider uppercase transition-colors rounded",
                           isDark
                             ? isActive ? "text-accent-cyan bg-white/5" : "text-white/60 hover:text-white hover:bg-white/5"
                             : isActive ? "text-text-black bg-bg-light" : "text-text-mid hover:text-text-black hover:bg-bg-light"
@@ -160,7 +160,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
             href="/contact"
             aria-current={pathname === "/contact" ? "page" : undefined}
             className={cn(
-              "font-mono text-[11px] tracking-wider uppercase transition-colors",
+              "font-mono text-[13px] tracking-wider uppercase transition-colors",
               isDark
                 ? pathname === "/contact" ? "text-accent-cyan" : "text-white/60 hover:text-white"
                 : pathname === "/contact" ? "text-text-black" : "text-text-mid hover:text-text-black"
@@ -175,7 +175,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              "font-mono text-[10px] tracking-wider uppercase px-3 py-1.5 rounded transition-all",
+              "font-mono text-[12px] tracking-wider uppercase px-4 py-2 rounded transition-all",
               isDark
                 ? "bg-accent-green/20 text-accent-green border border-accent-green/30 hover:bg-accent-green/30"
                 : "bg-text-black text-white hover:bg-text-dark"

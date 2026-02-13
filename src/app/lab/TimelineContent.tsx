@@ -110,7 +110,7 @@ export default function TimelineContent() {
     <>
       <Navbar />
       <PageTransition>
-      <main className="pt-14 min-h-screen relative overflow-hidden">
+      <main className="pt-16 min-h-screen relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <Image src="/prjbackground.webp" alt="" fill className="object-cover" priority />
