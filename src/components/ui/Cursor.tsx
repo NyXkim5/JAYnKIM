@@ -36,10 +36,18 @@ export function Cursor() {
       });
     }, 4000);
 
+    const getZoom = () => {
+      const z = parseFloat(getComputedStyle(document.documentElement).zoom || "1");
+      return z || 1;
+    };
+
     const move = (e: MouseEvent) => {
-      pos.current = { x: e.clientX, y: e.clientY };
+      const zoom = getZoom();
+      const x = e.clientX / zoom;
+      const y = e.clientY / zoom;
+      pos.current = { x, y };
       if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+        dotRef.current.style.transform = `translate(${x}px, ${y}px)`;
       }
     };
 
