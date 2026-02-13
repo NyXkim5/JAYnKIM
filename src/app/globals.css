@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  zoom: 80%;
+}
+
 @theme inline {
   /* Light editorial palette */
   --color-bg-white: #ffffff;

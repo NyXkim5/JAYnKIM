@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import dynamic from "next/dynamic";
 import "./globals.css";
-import { CommandPalette } from "@/components/ui/CommandPalette";
-import { KeyboardNav } from "@/components/ui/KeyboardNav";
 import { TransitionProvider } from "@/components/transitions/TransitionProvider";
 import { ReducedMotionWrapper } from "@/components/ui/ReducedMotionWrapper";
 import { BASE_URL } from "@/data/config";
@@ -13,6 +11,8 @@ const ClickSoundProvider = dynamic(() => import("@/components/ui/ClickSound").th
 const BootSequence = dynamic(() => import("@/components/ui/BootSequence").then((m) => m.BootSequence));
 const Terminal = dynamic(() => import("@/components/ui/Terminal").then((m) => m.Terminal));
 const KonamiCode = dynamic(() => import("@/components/ui/KonamiCode").then((m) => m.KonamiCode));
+const CommandPalette = dynamic(() => import("@/components/ui/CommandPalette").then((m) => m.CommandPalette));
+const KeyboardNav = dynamic(() => import("@/components/ui/KeyboardNav").then((m) => m.KeyboardNav));
 
 const inter = Inter({
   variable: "--font-inter",
