@@ -153,7 +153,7 @@ export default function TimelineContent() {
               className="flex items-center"
               style={{
                 x: trackX,
-                paddingLeft: "calc(50vw - 140px)",
+                paddingLeft: "calc(50% - 140px)",
               }}
             >
               {projects.map((project, index) => {
