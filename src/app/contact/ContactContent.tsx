@@ -336,8 +336,9 @@ export default function ContactContent() {
                           <span className="text-[10px] w-14 shrink-0 tracking-[0.2em] font-bold uppercase" style={{ color: "#bbb", fontFamily: MONO }}>
                             Email
                           </span>
-                          <span className="text-[13px] group-hover:text-black transition-colors" style={{ color: "#333", fontFamily: SERIF }}>
-                            joonhyuknkim@gmail.com
+                          <span className="text-[13px] group-hover:text-black transition-colors truncate" style={{ color: "#333", fontFamily: SERIF }}>
+                            <span className="sm:hidden">Email me</span>
+                            <span className="hidden sm:inline">joonhyuknkim@gmail.com</span>
                           </span>
                           <span className="ml-auto text-[10px] opacity-0 group-hover:opacity-50 transition-opacity" style={{ color: "#333" }}>↗</span>
                         </a>
@@ -351,8 +352,9 @@ export default function ContactContent() {
                           <span className="text-[10px] w-14 shrink-0 tracking-[0.2em] font-bold uppercase" style={{ color: "#bbb", fontFamily: MONO }}>
                             GitHub
                           </span>
-                          <span className="text-[13px] group-hover:text-black transition-colors" style={{ color: "#333", fontFamily: SERIF }}>
-                            github.com/NyXkim5
+                          <span className="text-[13px] group-hover:text-black transition-colors truncate" style={{ color: "#333", fontFamily: SERIF }}>
+                            <span className="sm:hidden">NyXkim5</span>
+                            <span className="hidden sm:inline">github.com/NyXkim5</span>
                           </span>
                           <span className="ml-auto text-[10px] opacity-0 group-hover:opacity-50 transition-opacity" style={{ color: "#333" }}>↗</span>
                         </a>
@@ -366,8 +368,9 @@ export default function ContactContent() {
                           <span className="text-[10px] w-14 shrink-0 tracking-[0.2em] font-bold uppercase" style={{ color: "#bbb", fontFamily: MONO }}>
                             LinkedIn
                           </span>
-                          <span className="text-[13px] group-hover:text-black transition-colors" style={{ color: "#333", fontFamily: SERIF }}>
-                            linkedin.com/in/joonhyuknkim
+                          <span className="text-[13px] group-hover:text-black transition-colors truncate" style={{ color: "#333", fontFamily: SERIF }}>
+                            <span className="sm:hidden">joonhyuknkim</span>
+                            <span className="hidden sm:inline">linkedin.com/in/joonhyuknkim</span>
                           </span>
                           <span className="ml-auto text-[10px] opacity-0 group-hover:opacity-50 transition-opacity" style={{ color: "#333" }}>↗</span>
                         </a>

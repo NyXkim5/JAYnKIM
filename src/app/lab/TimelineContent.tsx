@@ -129,20 +129,20 @@ export default function TimelineContent() {
           {/* Arrows */}
           <button
             onClick={prevProject}
-            className="absolute left-4 md:left-10 z-20 w-12 h-12 flex items-center justify-center text-neutral-400 hover:text-black transition-colors"
+            className="absolute left-2 sm:left-4 md:left-10 z-20 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/60 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none rounded-full sm:rounded-none text-neutral-500 hover:text-black transition-colors"
             aria-label="Previous project"
           >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
 
           <button
             onClick={nextProject}
-            className="absolute right-4 md:right-10 z-20 w-12 h-12 flex items-center justify-center text-neutral-400 hover:text-black transition-colors"
+            className="absolute right-2 sm:right-4 md:right-10 z-20 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/60 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none rounded-full sm:rounded-none text-neutral-500 hover:text-black transition-colors"
             aria-label="Next project"
           >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M9 18l6-6-6-6" />
             </svg>
           </button>
@@ -242,7 +242,7 @@ export default function TimelineContent() {
         </div>
 
         {/* Bottom */}
-        <div className="relative z-10 flex justify-center items-center gap-8 pb-8">
+        <div className="relative z-10 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 pb-8">
           <div className="flex gap-2">
             {projects.map((_, i) => (
               <button
@@ -263,7 +263,7 @@ export default function TimelineContent() {
               </button>
             ))}
           </div>
-          <span className="font-mono text-[10px] tracking-wider uppercase text-neutral-400">
+          <span className="font-mono text-[10px] tracking-wider uppercase text-neutral-400 hidden sm:inline">
             ← → Navigate
           </span>
         </div>
