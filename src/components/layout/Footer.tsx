@@ -21,15 +21,15 @@ export function Footer({ variant = "light" }: FooterProps) {
           : "border-t border-border-light bg-bg-white px-5 md:px-8"
       }
     >
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-8 gap-6">
-        <div className="flex flex-col gap-1">
+      <div className="flex flex-col items-center md:flex-row md:items-center md:justify-between py-8 gap-6">
+        <div className="flex flex-col items-center md:items-start gap-1">
           <p className={`font-mono text-[11px] tracking-wider ${mutedCls}`}>
             &copy; {new Date().getFullYear()} JAY KIM
           </p>
           <VisitorCounter className={`text-[10px] tracking-wider ${isDark ? "text-white/20" : "text-text-light/50"}`} />
         </div>
 
-        <div className="flex flex-wrap gap-x-8 gap-y-2">
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
           {SITE_ROUTES.filter((r) => r.path !== "/contact").map((r) => ({ label: r.label, href: r.path })).map((link) => (
             <TransitionLink
               key={link.href}
@@ -41,7 +41,7 @@ export function Footer({ variant = "light" }: FooterProps) {
           ))}
         </div>
 
-        <div className="flex flex-col items-end gap-2">
+        <div className="flex flex-col items-center md:items-end gap-2">
           <div className="flex gap-6">
             <a
               href="https://github.com/NyXkim5"

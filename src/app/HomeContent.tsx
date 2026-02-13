@@ -221,7 +221,7 @@ export default function HomeContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.6, duration: 0.5 }}
-                className="-mt-[380px] sm:-mt-[400px] md:-mt-[420px] space-y-3 w-full max-w-[300px] relative z-10"
+                className="hidden md:block -mt-[420px] space-y-3 w-full max-w-[300px] relative z-10"
               >
                 <a
                   href="https://github.com/NyXkim5"
