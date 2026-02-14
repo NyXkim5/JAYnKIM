@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 html {
-  zoom: 80%;
+  zoom: 100%;
 }
 
 @theme inline {

@@ -13,7 +13,7 @@ import { playlist, type Song } from "@/data/playlist";
 function SingingCat({ currentLyric, isPlaying }: { currentLyric: string; isPlaying: boolean }) {
   return (
     <motion.div
-      className="fixed bottom-28 right-8 z-50 flex flex-col items-center"
+      className="fixed bottom-28 right-8 z-40 flex flex-col items-center"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -118,6 +118,10 @@ function TrackRow({
 
   return (
     <motion.div
+      role="button"
+      tabIndex={0}
+      aria-label={`Play ${song.title} by ${song.artist}`}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
       className={cn(
         "grid grid-cols-[24px_1fr_40px_50px] md:grid-cols-[24px_1fr_1fr_40px_60px] gap-3 md:gap-4 px-4 py-2.5 rounded-lg group cursor-pointer transition-colors",
         isActive ? "bg-[#fa2d48]/10" : "hover:bg-black/5"
@@ -144,7 +148,7 @@ function TrackRow({
               ))}
             </div>
           ) : (
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="#fa2d48">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="#fa2d48" aria-hidden="true">
               <path d="M2.5 1.5v9l7-4.5-7-4.5z" />
             </svg>
           )
@@ -300,11 +304,11 @@ export default function MusicContent() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="bg-[#fafafa] flex-1 flex flex-col">
       <Navbar />
       <PageTransition>
 
-      <main className="pt-16 pb-32 h-screen flex flex-col">
+      <main className="pt-16 pb-32 flex-1 flex flex-col">
         {/* Header */}
         <div className="px-6 md:px-10 pt-8 pb-6 flex-shrink-0">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
@@ -381,6 +385,7 @@ export default function MusicContent() {
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
+              aria-hidden="true"
             >
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.35-4.35" />
@@ -388,6 +393,7 @@ export default function MusicContent() {
             <input
               type="text"
               placeholder="Search songs"
+              aria-label="Search songs"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-gray-100 text-gray-900 placeholder-gray-400 text-sm pl-10 pr-4 py-2.5 rounded-lg outline-none focus:ring-2 focus:ring-[#fa2d48]/30 transition-shadow"
@@ -561,7 +567,7 @@ export default function MusicContent() {
       )}
 
       </PageTransition>
-      <Footer />
+      <Footer compact />
     </div>
   );
 }

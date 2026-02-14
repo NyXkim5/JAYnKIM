@@ -112,6 +112,7 @@ export function CommandPalette() {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Type a command..."
+                aria-label="Search commands"
                 className="flex-1 bg-transparent font-mono text-sm text-white/90 placeholder:text-white/30 outline-none focus-visible:ring-2 focus-visible:ring-accent-green/50 focus-visible:ring-offset-0"
               />
               <kbd className="font-mono text-[10px] text-white/20 border border-white/10 rounded px-1.5 py-0.5">

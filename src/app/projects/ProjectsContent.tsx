@@ -188,7 +188,7 @@ export default function ProjectsContent() {
           </motion.div>
         </main>
       </PageTransition>
-      <Footer />
+      <Footer compact />
     </>
   );
 }

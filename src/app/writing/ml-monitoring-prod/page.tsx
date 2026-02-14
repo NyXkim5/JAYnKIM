@@ -266,7 +266,7 @@ def check_drift(current: pd.DataFrame, reference: pd.DataFrame):
         </main>
         </WritingGate>
       </PageTransition>
-      <Footer />
+      <Footer compact />
     </>
   );
 }

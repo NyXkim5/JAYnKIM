@@ -42,16 +42,20 @@ export function NewspaperLayout({
                 <div
                   className={
                     study.slug === "archv" && i === 0
-                      ? "relative w-48 md:w-56 aspect-square"
+                      ? "relative w-64 md:w-72 aspect-square"
                       : "relative w-full aspect-[16/9] cursor-zoom-in"
                   }
+                  role={study.slug !== "archv" || i !== 0 ? "button" : undefined}
+                  tabIndex={study.slug !== "archv" || i !== 0 ? 0 : undefined}
+                  aria-label={study.slug !== "archv" || i !== 0 ? `Expand image: ${img.caption}` : undefined}
+                  onKeyDown={(e) => { if ((e.key === "Enter" || e.key === " ") && (study.slug !== "archv" || i !== 0)) { e.preventDefault(); onImageClick(img.src); } }}
                   onClick={() => study.slug !== "archv" || i !== 0 ? onImageClick(img.src) : undefined}
                 >
                   <Image
                     src={img.src}
                     alt={img.caption}
                     fill
-                    sizes={study.slug === "archv" && i === 0 ? "224px" : "(max-width: 768px) 100vw, 900px"}
+                    sizes={study.slug === "archv" && i === 0 ? "288px" : "(max-width: 768px) 100vw, 900px"}
                     className={study.slug === "archv" && i === 0 ? "object-contain" : "object-cover"}
                   />
                 </div>
@@ -77,7 +81,7 @@ export function NewspaperLayout({
               loop
               muted
               playsInline
-              className="max-w-xs md:max-w-sm rounded-sm"
+              className="max-w-sm md:max-w-lg rounded-sm"
             />
             <figcaption className="font-mono text-[10px] text-text-light tracking-wider mt-3">
               {study.video.caption}

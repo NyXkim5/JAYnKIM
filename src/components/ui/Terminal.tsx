@@ -201,6 +201,7 @@ export function Terminal() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
+                  aria-label="Terminal command input"
                   className="flex-1 bg-transparent text-green-400/90 outline-none focus-visible:ring-1 focus-visible:ring-green-400/50 caret-green-400"
                   spellCheck={false}
                   autoComplete="off"

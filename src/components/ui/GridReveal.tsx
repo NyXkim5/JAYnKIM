@@ -144,28 +144,3 @@ export function GridReveal({ className = "" }: { className?: string }) {
   );
 }
 
-/**
- * Animated grid lines that load/reveal on scroll —
- * horizontal lines that draw themselves in sequence.
- */
-export function GridLines({ count = 5 }: { count?: number }) {
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {Array.from({ length: count }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute left-0 right-0 h-[1px] bg-border-light"
-          style={{ top: `${((i + 1) / (count + 1)) * 100}%` }}
-          initial={{ scaleX: 0, transformOrigin: "left" }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{
-            duration: 1.2,
-            delay: i * 0.15,
-            ease: [0.25, 0.1, 0.25, 1] as const,
-          }}
-        />
-      ))}
-    </div>
-  );
-}

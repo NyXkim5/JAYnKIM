@@ -18,10 +18,11 @@ export function SynthWave({ className = "" }: { className?: string }) {
     if (!ctx) return;
 
     const handleMouseMove = (e: MouseEvent) => {
+      const zoom = parseFloat(getComputedStyle(document.documentElement).zoom || "1") || 1;
       const rect = canvas.getBoundingClientRect();
       mouseRef.current = {
-        x: (e.clientX - rect.left) / rect.width,
-        y: (e.clientY - rect.top) / rect.height,
+        x: (e.clientX / zoom - rect.left) / rect.width,
+        y: (e.clientY / zoom - rect.top) / rect.height,
       };
     };
 
@@ -42,6 +43,10 @@ export function SynthWave({ className = "" }: { className?: string }) {
     let time = 0;
 
     const draw = () => {
+      if (document.hidden) {
+        frameRef.current = requestAnimationFrame(draw);
+        return;
+      }
       const w = canvas.getBoundingClientRect().width;
       const h = canvas.getBoundingClientRect().height;
       const mx = mouseRef.current.x;
@@ -111,6 +116,7 @@ export function SynthWave({ className = "" }: { className?: string }) {
       ref={canvasRef}
       className={`w-full ${className}`}
       style={{ height: 180 }}
+      aria-hidden="true"
     />
   );
 }

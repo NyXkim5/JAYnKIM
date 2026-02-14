@@ -26,9 +26,10 @@ function AboutImage() {
 
   function handleMouseMove(e: React.MouseEvent) {
     if (!containerRef.current) return;
+    const zoom = parseFloat(getComputedStyle(document.documentElement).zoom || "1") || 1;
     const rect = containerRef.current.getBoundingClientRect();
-    mx.set((e.clientX - rect.left) / rect.width - 0.5);
-    my.set((e.clientY - rect.top) / rect.height - 0.5);
+    mx.set((e.clientX / zoom - rect.left) / rect.width - 0.5);
+    my.set((e.clientY / zoom - rect.top) / rect.height - 0.5);
   }
 
   function handleMouseLeave() {

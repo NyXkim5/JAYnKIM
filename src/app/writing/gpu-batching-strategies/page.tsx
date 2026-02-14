@@ -287,7 +287,7 @@ export default function GPUBatchingArticle() {
         </main>
         </WritingGate>
       </PageTransition>
-      <Footer />
+      <Footer compact />
     </>
   );
 }

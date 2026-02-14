@@ -31,5 +31,5 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     }
   }, [controls]);
 
-  return <motion.div animate={controls}>{children}</motion.div>;
+  return <motion.div className="flex-1" animate={controls}>{children}</motion.div>;
 }

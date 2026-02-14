@@ -14,19 +14,92 @@ import { PageTransition } from "@/components/layout/PageTransition";
 const SERIF = `"Times New Roman", Georgia, "Noto Serif", serif`;
 const MONO = `var(--font-mono), ui-monospace, monospace`;
 
-/* ── Breathing background grid ── */
-function BreathingGrid() {
+/* ── Spinning X marks ── */
+const X_COUNT = 18;
+
+function SpinningMarks() {
+  const [marks, setMarks] = useState<{ left: string; top: string; delay: number; repeatDelay: number }[]>([]);
+
+  useEffect(() => {
+    setMarks(
+      Array.from({ length: X_COUNT }, () => ({
+        left: `${Math.random() * 90 + 5}%`,
+        top: `${Math.random() * 90 + 5}%`,
+        delay: Math.random() * 6,
+        repeatDelay: Math.random() * 8 + 4,
+      }))
+    );
+  }, []);
+
+  if (marks.length === 0) return null;
+
   return (
-    <motion.div
-      className="absolute inset-0 pointer-events-none"
-      animate={{ opacity: [0.4, 0.65, 0.4] }}
-      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-      style={{
-        backgroundImage:
-          "linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px)",
-        backgroundSize: "48px 48px",
-      }}
-    />
+    <>
+      {marks.map((m, i) => (
+        <motion.span
+          key={i}
+          className="absolute font-mono text-[11px] select-none"
+          style={{ left: m.left, top: m.top, color: "rgba(0,0,0,0.2)" }}
+          initial={{ opacity: 0, scale: 0, rotate: 0 }}
+          animate={{
+            opacity: [0, 0.5, 0.5, 0],
+            scale: [0, 1, 1, 0],
+            rotate: [0, 180, 360, 540],
+          }}
+          transition={{
+            duration: 3,
+            delay: m.delay,
+            repeat: Infinity,
+            repeatDelay: m.repeatDelay,
+            ease: "easeInOut",
+          }}
+        >
+          ✕
+        </motion.span>
+      ))}
+    </>
+  );
+}
+
+/* ── Breathing background grid ── */
+function BreathingGrid({ cursorX, cursorY }: { cursorX: number; cursorY: number }) {
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0">
+      {/* Base grid — darker */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{ opacity: [0.4, 0.7, 0.4] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,0,0,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.12) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
+      />
+      {/* Finer subgrid — darker */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{ opacity: [0.15, 0.4, 0.15] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px)",
+          backgroundSize: "10px 10px",
+        }}
+      />
+      {/* Spinning X marks */}
+      <SpinningMarks />
+      {/* Mouse-following dark radial */}
+      <div
+        className="absolute inset-0 transition-opacity duration-500"
+        style={{
+          background: cursorX > 0
+            ? `radial-gradient(500px circle at ${cursorX}px ${cursorY}px, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 40%, transparent 70%)`
+            : "none",
+        }}
+      />
+    </div>
   );
 }
 
@@ -43,7 +116,7 @@ function Barcode({ width = 180, height = 28 }: { width?: number; height?: number
   const scale = width / totalW;
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
       {bars.map((b, i) => (
         <rect
           key={i}
@@ -63,6 +136,7 @@ export default function ContactContent() {
   const mainRef = useRef<HTMLElement>(null);
   const [isTouch, setIsTouch] = useState(false);
   const [cordSway, setCordSway] = useState(0);
+  const [gridCursor, setGridCursor] = useState({ x: 0, y: 0 });
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -81,18 +155,22 @@ export default function ContactContent() {
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
+      const zoom = parseFloat(getComputedStyle(document.documentElement).zoom || "1") || 1;
+      const cX = e.clientX / zoom;
+      const cY = e.clientY / zoom;
       if (mainRef.current) {
         const rect = mainRef.current.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
-        const norm = (e.clientX - centerX) / (rect.width / 2);
+        const norm = (cX - centerX) / (rect.width / 2);
         setCordSway(Math.max(-1, Math.min(1, norm)));
+        setGridCursor({ x: cX - rect.left, y: cY - rect.top });
       }
       if (isTouch || !tagRef.current) return;
       const rect = tagRef.current.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
-      mouseX.set((e.clientX - cx) / (rect.width / 2));
-      mouseY.set((e.clientY - cy) / (rect.height / 2));
+      mouseX.set((cX - cx) / (rect.width / 2));
+      mouseY.set((cY - cy) / (rect.height / 2));
     },
     [isTouch, mouseX, mouseY]
   );
@@ -101,22 +179,25 @@ export default function ContactContent() {
     mouseX.set(0);
     mouseY.set(0);
     setCordSway(0);
+    setGridCursor({ x: 0, y: 0 });
   }, [mouseX, mouseY]);
 
   // Cord sway for the SVG path (wind effect)
   const sway = cordSway * 30;
 
   return (
-    <>
+    <div
+      ref={mainRef}
+      className="relative flex-1 flex flex-col"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <BreathingGrid cursorX={gridCursor.x} cursorY={gridCursor.y} />
       <Navbar />
       <PageTransition>
         <main
-          ref={mainRef}
-          className="min-h-screen relative overflow-hidden flex items-center justify-center py-28 bg-white"
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
+          className="relative overflow-hidden flex items-center justify-center py-28 bg-transparent"
         >
-          <BreathingGrid />
 
           {/* Perspective wrapper */}
           <div
@@ -305,12 +386,12 @@ export default function ContactContent() {
                       </p>
 
                       {/* Name */}
-                      <h2
+                      <h1
                         className="text-[32px] font-bold tracking-[0.02em] leading-none mb-1"
                         style={{ color: "#111", fontFamily: SERIF }}
                       >
                         Jay Kim
-                      </h2>
+                      </h1>
 
                       {/* Title */}
                       <p
@@ -402,7 +483,7 @@ export default function ContactContent() {
                         <span className="text-[10px] tracking-[0.2em] font-bold" style={{ fontFamily: MONO }}>
                           DOWNLOAD RESUME
                         </span>
-                        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" className="opacity-50 group-hover:opacity-100 transition-opacity">
+                        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" className="opacity-50 group-hover:opacity-100 transition-opacity" aria-hidden="true">
                           <path d="M6 2v6m0 0L3.5 5.5M6 8l2.5-2.5M2 10h8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </a>
@@ -453,7 +534,7 @@ export default function ContactContent() {
           </div>
         </main>
       </PageTransition>
-      <Footer />
-    </>
+      <Footer compact />
+    </div>
   );
 }

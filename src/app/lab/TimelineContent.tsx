@@ -62,11 +62,19 @@ export default function TimelineContent() {
   const { navigateTo } = usePageTransition();
 
   const trackX = useMotionValue(0);
-  const cardWidth = 360;
-  const cardGap = 48;
-  const totalCardWidth = cardWidth + cardGap;
+  const [cardWidth, setCardWidth] = useState(560);
+  const cardGap = 32;
 
-  const currentProject = projects[currentIndex];
+  useEffect(() => {
+    const updateWidth = () => {
+      const w = window.innerWidth;
+      setCardWidth(w < 400 ? Math.min(w - 40, 320) : w < 640 ? 360 : w < 1024 ? 480 : 560);
+    };
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+  const totalCardWidth = cardWidth + cardGap;
 
   // Smooth animate to new position
   const animateTo = useCallback((newIndex: number) => {
@@ -107,32 +115,33 @@ export default function TimelineContent() {
   }, [nextProject, prevProject]);
 
   return (
-    <>
+    <div className="relative flex-1 flex flex-col">
+      {/* Background — covers entire page including footer */}
+      <div className="absolute inset-0 z-0">
+        <Image src="/prjbackground.webp" alt="" fill className="object-cover" priority />
+        <div className="absolute inset-0 bg-white/5" />
+      </div>
+
       <Navbar />
       <PageTransition>
-      <main className="pt-16 min-h-screen relative overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 z-0">
-          <Image src="/prjbackground.webp" alt="" fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-white/5" />
-        </div>
+      <main className="pt-16 relative overflow-hidden">
 
         {/* Header */}
-        <div className="relative z-10 text-center pt-12 pb-6">
-          <h1 className="font-mono text-[10px] tracking-[0.4em] uppercase text-neutral-500">
+        <div className="relative z-10 text-center pt-10 pb-4">
+          <h1 className="font-mono text-xs tracking-[0.4em] uppercase text-neutral-500">
             Lab
           </h1>
         </div>
 
         {/* Carousel */}
-        <div className="relative z-10 h-[72vh] flex items-center">
+        <div className="relative z-10 flex items-center py-6">
           {/* Arrows */}
           <button
             onClick={prevProject}
             className="absolute left-2 sm:left-4 md:left-10 z-20 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/60 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none rounded-full sm:rounded-none text-neutral-500 hover:text-black transition-colors"
             aria-label="Previous project"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
@@ -142,7 +151,7 @@ export default function TimelineContent() {
             className="absolute right-2 sm:right-4 md:right-10 z-20 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/60 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none rounded-full sm:rounded-none text-neutral-500 hover:text-black transition-colors"
             aria-label="Next project"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <path d="M9 18l6-6-6-6" />
             </svg>
           </button>
@@ -153,7 +162,7 @@ export default function TimelineContent() {
               className="flex items-center"
               style={{
                 x: trackX,
-                paddingLeft: "calc(50% - 180px)",
+                paddingLeft: `calc(50% - ${cardWidth / 2}px)`,
               }}
             >
               {projects.map((project, index) => {
@@ -162,11 +171,15 @@ export default function TimelineContent() {
                 return (
                   <motion.div
                     key={project.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={isCenter ? `View ${project.title.replace("\n", " ")} project` : `Select ${project.title.replace("\n", " ")}`}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (isCenter) navigateTo(`/projects/${project.slug}`); else animateTo(index); } }}
                     className="flex-shrink-0 cursor-pointer"
                     style={{ width: cardWidth, marginRight: cardGap }}
                     animate={{
-                      scale: isCenter ? 1 : 0.85,
-                      opacity: isCenter ? 1 : 0.4,
+                      scale: isCenter ? 1 : 0.9,
+                      opacity: isCenter ? 1 : 0.5,
                     }}
                     transition={{ type: "spring", stiffness: 100, damping: 20 }}
                     onClick={() => {
@@ -176,7 +189,7 @@ export default function TimelineContent() {
                   >
                     {/* Editorial Card */}
                     <motion.div
-                      className="w-full h-[500px] bg-white flex flex-col relative group overflow-hidden"
+                      className="w-full h-[660px] bg-white flex flex-col relative group overflow-hidden"
                       style={{
                         boxShadow: isCenter ? "0 20px 60px -20px rgba(0,0,0,0.3)" : "0 10px 40px -20px rgba(0,0,0,0.1)",
                       }}
@@ -184,7 +197,7 @@ export default function TimelineContent() {
                       transition={{ type: "spring", stiffness: 300, damping: 25 }}
                     >
                       {/* Image */}
-                      <div className="relative w-full h-[250px] bg-neutral-100">
+                      <div className="relative w-full h-[340px] bg-neutral-100">
                         <Image
                           src={project.image}
                           alt={project.title.replace("\n", " ")}
@@ -197,24 +210,24 @@ export default function TimelineContent() {
                         {/* Top row */}
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="text-lg font-light text-black leading-tight whitespace-pre-line">
+                            <h2 className="text-xl font-light text-black leading-tight whitespace-pre-line">
                               {project.title}
-                            </h3>
+                            </h2>
                           </div>
-                          <span className="text-lg font-light text-neutral-300">{project.id}.</span>
+                          <span className="text-xl font-light text-neutral-300">{project.id}.</span>
                         </div>
 
                         {/* Description */}
-                        <p className="text-[11px] text-neutral-500 leading-relaxed mt-3 flex-1">
+                        <p className="text-[13px] text-neutral-500 leading-relaxed mt-3 flex-1">
                           {project.description}
                         </p>
 
                         {/* Bottom row */}
                         <div className="flex justify-between items-end border-t border-neutral-100 pt-3 mt-3">
-                          <p className="font-mono text-[10px] text-neutral-400 uppercase tracking-wider">
+                          <p className="font-mono text-[11px] text-neutral-400 uppercase tracking-wider">
                             {project.subtitle}
                           </p>
-                          <p className="font-mono text-[10px] text-neutral-400 uppercase tracking-wider">
+                          <p className="font-mono text-[11px] text-neutral-400 uppercase tracking-wider">
                             {project.year}
                           </p>
                         </div>
@@ -234,6 +247,7 @@ export default function TimelineContent() {
                         </motion.div>
                       )}
                     </motion.div>
+
                   </motion.div>
                 );
               })}
@@ -242,7 +256,7 @@ export default function TimelineContent() {
         </div>
 
         {/* Bottom */}
-        <div className="relative z-10 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 pb-8">
+        <div className="relative z-10 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 pb-4">
           <div className="flex gap-2">
             {projects.map((_, i) => (
               <button
@@ -269,7 +283,7 @@ export default function TimelineContent() {
         </div>
       </main>
       </PageTransition>
-      <Footer />
-    </>
+      <Footer compact variant="dark" />
+    </div>
   );
 }

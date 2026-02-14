@@ -104,9 +104,9 @@ function StickyNote({
           <span className="absolute top-2 right-2 text-sm">★</span>
         )}
 
-        <h3 className={cn(size.titleSize, "font-bold text-neutral-800 leading-tight mb-2 pr-4")}>
+        <h2 className={cn(size.titleSize, "font-bold text-neutral-800 leading-tight mb-2 pr-4")}>
           {rec.name}
-        </h3>
+        </h2>
 
         <p className={cn(size.noteSize, "text-neutral-700 leading-relaxed mb-3")} style={{ fontFamily: "Georgia, serif", fontStyle: "italic" }}>
           {rec.note}
@@ -213,7 +213,8 @@ export default function MatchaContent() {
 
   // Default to list view on mobile
   useEffect(() => {
-    if (window.innerWidth < 768) setView("list");
+    const zoom = parseFloat(getComputedStyle(document.documentElement).zoom || "1") || 1;
+    if (window.innerWidth / zoom < 768) setView("list");
   }, []);
 
   // Generate initial positions when tab changes
@@ -238,7 +239,7 @@ export default function MatchaContent() {
     <>
       <Navbar />
       <PageTransition>
-      <main className="pt-16 min-h-screen bg-neutral-100 overflow-hidden">
+      <main className="pt-16 bg-neutral-100 overflow-hidden">
           {/* Whiteboard */}
           <div
             className="mx-4 md:mx-8 my-6 rounded-xl overflow-hidden"
@@ -406,7 +407,7 @@ export default function MatchaContent() {
           </div>
         </main>
       </PageTransition>
-      <Footer />
+      <Footer compact />
     </>
   );
 }

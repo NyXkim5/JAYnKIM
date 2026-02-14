@@ -18,7 +18,7 @@ export default function WritingContent() {
       <PageTransition>
         <main className="pt-16 relative overflow-hidden">
           {/* Side SVGs — decorative, clipped at page edges */}
-          <div className="hidden lg:block pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+          <div className="hidden lg:block pointer-events-none absolute inset-0 overflow-hidden z-0" aria-hidden="true">
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 0.6, x: 0 }}
@@ -123,7 +123,7 @@ export default function WritingContent() {
           </section>
         </main>
       </PageTransition>
-      <Footer />
+      <Footer compact />
     </>
   );
 }

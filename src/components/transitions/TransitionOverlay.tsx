@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useEffect, useMemo } from "react";
+import { useRef, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -346,7 +346,7 @@ export function TransitionOverlay({
   onCoverDone,
   onRevealDone,
 }: OverlayProps) {
-  const Effect = getEffect(target);
+  const Effect = useMemo(() => getEffect(target), [target]);
   return (
     <Effect
       phase={phase}

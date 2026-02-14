@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import dynamic from "next/dynamic";
 import "./globals.css";
 import { TransitionProvider } from "@/components/transitions/TransitionProvider";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { ReducedMotionWrapper } from "@/components/ui/ReducedMotionWrapper";
 import { BASE_URL } from "@/data/config";
 
@@ -91,7 +92,9 @@ export default function RootLayout({
             <Terminal />
             <KeyboardNav />
             <KonamiCode />
-            <div id="main-content">{children}</div>
+            <ErrorBoundary>
+              <div id="main-content" className="min-h-screen flex flex-col">{children}</div>
+            </ErrorBoundary>
           </TransitionProvider>
         </ReducedMotionWrapper>
       </body>

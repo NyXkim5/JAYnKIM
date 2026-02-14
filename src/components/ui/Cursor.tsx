@@ -54,6 +54,10 @@ export function Cursor() {
     const rafId = { current: 0 };
 
     const animate = () => {
+      if (document.hidden) {
+        rafId.current = requestAnimationFrame(animate);
+        return;
+      }
       // Ring
       ringPos.current.x += (pos.current.x - ringPos.current.x) * 0.15;
       ringPos.current.y += (pos.current.y - ringPos.current.y) * 0.15;

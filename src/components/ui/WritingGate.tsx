@@ -4,13 +4,13 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const STORAGE_KEY = "writing-access";
-const PASSWORD = "I love food";
 
 export function WritingGate({ children }: { children: React.ReactNode }) {
   const [authorized, setAuthorized] = useState(false);
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (sessionStorage.getItem(STORAGE_KEY) === "true") {
@@ -19,15 +19,28 @@ export function WritingGate({ children }: { children: React.ReactNode }) {
     setChecked(true);
   }, []);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (input === PASSWORD) {
-      sessionStorage.setItem(STORAGE_KEY, "true");
-      setAuthorized(true);
-      setError(false);
-    } else {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/writing-auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: input }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        sessionStorage.setItem(STORAGE_KEY, "true");
+        setAuthorized(true);
+        setError(false);
+      } else {
+        setError(true);
+        setInput("");
+      }
+    } catch {
       setError(true);
-      setInput("");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -62,6 +75,7 @@ export function WritingGate({ children }: { children: React.ReactNode }) {
               setError(false);
             }}
             placeholder="Enter password"
+            aria-label="Password"
             autoFocus
             className="w-full px-4 py-3 border border-border-light bg-white text-sm text-text-black font-mono tracking-wide focus:border-text-black focus-visible:ring-2 focus-visible:ring-accent-green/50 transition-colors"
           />
@@ -76,9 +90,10 @@ export function WritingGate({ children }: { children: React.ReactNode }) {
           )}
           <button
             type="submit"
-            className="w-full px-4 py-3 border border-text-black bg-text-black text-white text-sm font-mono tracking-wider uppercase hover:bg-white hover:text-text-black transition-colors"
+            disabled={loading}
+            className="w-full px-4 py-3 border border-text-black bg-text-black text-white text-sm font-mono tracking-wider uppercase hover:bg-white hover:text-text-black transition-colors disabled:opacity-50"
           >
-            Submit
+            {loading ? "Checking..." : "Submit"}
           </button>
         </form>
       </motion.div>

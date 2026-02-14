@@ -45,7 +45,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
             </TransitionLink>
           </div>
         </main>
-        <Footer />
+        <Footer compact />
       </>
     );
   }
@@ -68,38 +68,38 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
       <PageTransition>
         <main className="pt-16 relative overflow-hidden">
           {/* Side SVGs */}
-          <div className="hidden lg:block pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+          <div className="hidden lg:block pointer-events-none absolute inset-0 overflow-hidden z-0" aria-hidden="true">
             <motion.div
               initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 0.6, x: 0 }}
+              animate={{ opacity: 0.45, x: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
               className="absolute top-[250px] select-none"
-              style={{ left: "-45%", width: "80%", maxWidth: "1000px" }}
+              style={{ left: "-30%", width: "60%", maxWidth: "800px" }}
             >
               <Image src="/writing-2.svg" alt="" width={1200} height={800} unoptimized />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 0.6, x: 0 }}
+              animate={{ opacity: 0.45, x: 0 }}
               transition={{ delay: 0.7, duration: 0.8 }}
               className="absolute top-[1200px] select-none"
-              style={{ right: "-45%", width: "80%", maxWidth: "1000px" }}
+              style={{ right: "-30%", width: "60%", maxWidth: "800px" }}
             >
               <Image src="/writing-3.svg" alt="" width={1140} height={800} unoptimized />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 0.6, x: 0 }}
+              animate={{ opacity: 0.45, x: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
               className="absolute top-[2400px] select-none"
-              style={{ left: "-42%", width: "80%", maxWidth: "1000px" }}
+              style={{ left: "-28%", width: "60%", maxWidth: "800px" }}
             >
               <Image src="/writing-1.svg" alt="" width={1320} height={800} unoptimized />
             </motion.div>
           </div>
 
           {/* Hero header */}
-          <section className="px-5 md:px-8 pt-16 pb-10 border-b border-border-light">
+          <section className="px-5 md:px-8 pt-16 pb-10 border-b border-border-light relative z-10">
             <TransitionLink
               href="/projects"
               className="inline-flex items-center gap-2 font-mono text-[10px] tracking-wider text-text-light hover:text-text-black transition-colors uppercase mb-8"
@@ -183,13 +183,15 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
           </section>
 
           {study.layout === "newspaper" ? (
-            <NewspaperLayout study={study} openDecision={openDecision} setOpenDecision={setOpenDecision} onImageClick={setLightboxSrc} />
+            <div className="relative z-10">
+              <NewspaperLayout study={study} openDecision={openDecision} setOpenDecision={setOpenDecision} onImageClick={setLightboxSrc} />
+            </div>
           ) : (
           /* Default two-column layout */
-          <section className="grid md:grid-cols-[200px_1fr] lg:grid-cols-[240px_1fr] gap-0">
+          <section className="grid md:grid-cols-[200px_1fr] lg:grid-cols-[240px_1fr] gap-0 relative z-10">
             {/* Left — sticky nav */}
             <div className="hidden md:block border-r border-border-light">
-              <nav className="sticky top-16 py-8 px-5">
+              <nav className="sticky top-16 py-8 px-5" aria-label="Case study sections">
                 <p className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase mb-4">
                   Sections
                 </p>
@@ -704,7 +706,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
             role="dialog"
             aria-modal="true"
             aria-label="Image preview"
-            className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-8 cursor-zoom-out"
+            className="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-8 cursor-zoom-out"
             onClick={closeLightbox}
           >
             <button
@@ -733,7 +735,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
         )}
       </AnimatePresence>
 
-      <Footer />
+      <Footer compact />
     </>
   );
 }

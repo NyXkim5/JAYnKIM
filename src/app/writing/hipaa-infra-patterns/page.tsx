@@ -284,7 +284,7 @@ CREATE POLICY org_isolation ON documents
         </main>
         </WritingGate>
       </PageTransition>
-      <Footer />
+      <Footer compact />
     </>
   );
 }
