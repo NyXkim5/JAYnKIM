@@ -133,7 +133,7 @@ function Barcode({ width = 180, height = 28 }: { width?: number; height?: number
 
 export default function ContactContent() {
   const tagRef = useRef<HTMLDivElement>(null);
-  const mainRef = useRef<HTMLElement>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
   const [isTouch, setIsTouch] = useState(false);
   const [cordSway, setCordSway] = useState(0);
   const [gridCursor, setGridCursor] = useState({ x: 0, y: 0 });
