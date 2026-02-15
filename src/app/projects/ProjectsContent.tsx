@@ -184,7 +184,7 @@ export default function ProjectsContent() {
             transition={{ delay: 1.2, duration: 0.5 }}
             className="px-5 md:px-8 pt-24 pb-16 flex justify-center"
           >
-            <ScribbleButton href="/lab" text="VISIT LAB" />
+            <ScribbleButton href="/lab" text="VISIT PROJECTS" />
           </motion.div>
         </main>
       </PageTransition>

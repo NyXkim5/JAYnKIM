@@ -214,7 +214,7 @@ export default function HomeContent() {
 
             {/* Right: Illustration */}
             <div className="px-5 md:px-8 py-12 flex flex-col items-center overflow-hidden">
-              <div className="scale-[0.85] origin-top">
+              <div className="scale-100 sm:scale-[0.85] origin-top mt-[75px] sm:mt-0">
                 <AboutImage />
               </div>
 

@@ -7,7 +7,7 @@ export type SiteRoute = {
 export const SITE_ROUTES: SiteRoute[] = [
   { path: "/", label: "About", group: "primary" },
   { path: "/projects", label: "Work", group: "primary" },
-  { path: "/lab", label: "Lab", group: "primary" },
+  { path: "/lab", label: "Projects", group: "primary" },
   { path: "/writing", label: "Writing", group: "secondary" },
   { path: "/matcha", label: "Recs", group: "secondary" },
   { path: "/music", label: "Music", group: "secondary" },

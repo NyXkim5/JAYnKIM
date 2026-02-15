@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { usePageTransition } from "@/components/transitions/TransitionProvider";
 
@@ -63,16 +62,44 @@ export default function TimelineContent() {
 
   const trackX = useMotionValue(0);
   const [cardWidth, setCardWidth] = useState(560);
-  const cardGap = 32;
+  const [cardHeight, setCardHeight] = useState(660);
+  const [imageHeight, setImageHeight] = useState(340);
+  const [topOffset, setTopOffset] = useState(200);
+  const [cardGap, setCardGap] = useState(32);
 
   useEffect(() => {
-    const updateWidth = () => {
+    const updateSizes = () => {
       const w = window.innerWidth;
-      setCardWidth(w < 400 ? Math.min(w - 40, 320) : w < 640 ? 360 : w < 1024 ? 480 : 560);
+      const h = window.innerHeight;
+      if (w < 400) {
+        setCardWidth(w - 32);
+        setCardHeight(Math.min(h - 180, 480));
+        setImageHeight(180);
+        setTopOffset(40);
+        setCardGap(16);
+      } else if (w < 640) {
+        setCardWidth(w - 48);
+        setCardHeight(Math.min(h - 180, 520));
+        setImageHeight(200);
+        setTopOffset(60);
+        setCardGap(20);
+      } else if (w < 1024) {
+        setCardWidth(480);
+        setCardHeight(600);
+        setImageHeight(280);
+        setTopOffset(120);
+        setCardGap(28);
+      } else {
+        setCardWidth(560);
+        setCardHeight(660);
+        setImageHeight(340);
+        setTopOffset(200);
+        setCardGap(32);
+      }
     };
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
+    updateSizes();
+    window.addEventListener("resize", updateSizes);
+    return () => window.removeEventListener("resize", updateSizes);
   }, []);
   const totalCardWidth = cardWidth + cardGap;
 
@@ -115,7 +142,7 @@ export default function TimelineContent() {
   }, [nextProject, prevProject]);
 
   return (
-    <div className="relative flex-1 flex flex-col">
+    <div className="relative min-h-screen flex flex-col">
       {/* Background — covers entire page including footer */}
       <div className="absolute inset-0 z-0">
         <Image src="/prjbackground.webp" alt="" fill className="object-cover" priority />
@@ -124,17 +151,10 @@ export default function TimelineContent() {
 
       <Navbar />
       <PageTransition>
-      <main className="pt-16 relative overflow-hidden">
-
-        {/* Header */}
-        <div className="relative z-10 text-center pt-10 pb-4">
-          <h1 className="font-mono text-xs tracking-[0.4em] uppercase text-neutral-500">
-            Lab
-          </h1>
-        </div>
+      <main className="flex-1 flex items-center relative overflow-hidden" style={{ paddingTop: `calc(4rem + ${topOffset}px)`, paddingBottom: "60px" }}>
 
         {/* Carousel */}
-        <div className="relative z-10 flex items-center py-6">
+        <div className="relative z-10 flex items-center w-full">
           {/* Arrows */}
           <button
             onClick={prevProject}
@@ -189,7 +209,8 @@ export default function TimelineContent() {
                   >
                     {/* Editorial Card */}
                     <motion.div
-                      className="w-full h-[660px] bg-white flex flex-col relative group overflow-hidden"
+                      className="w-full bg-white flex flex-col relative group overflow-hidden"
+                      style={{ height: cardHeight }}
                       style={{
                         boxShadow: isCenter ? "0 20px 60px -20px rgba(0,0,0,0.3)" : "0 10px 40px -20px rgba(0,0,0,0.1)",
                       }}
@@ -197,7 +218,7 @@ export default function TimelineContent() {
                       transition={{ type: "spring", stiffness: 300, damping: 25 }}
                     >
                       {/* Image */}
-                      <div className="relative w-full h-[340px] bg-neutral-100">
+                      <div className="relative w-full bg-neutral-100" style={{ height: imageHeight }}>
                         <Image
                           src={project.image}
                           alt={project.title.replace("\n", " ")}
@@ -206,7 +227,7 @@ export default function TimelineContent() {
                         />
                       </div>
 
-                      <div className="flex-1 p-6 flex flex-col">
+                      <div className="flex-1 p-4 sm:p-6 flex flex-col">
                         {/* Top row */}
                         <div className="flex justify-between items-start">
                           <div>
@@ -255,35 +276,15 @@ export default function TimelineContent() {
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="relative z-10 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 pb-4">
-          <div className="flex gap-2">
-            {projects.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => animateTo(i)}
-                className="p-1"
-                aria-label={`Go to project ${i + 1}: ${projects[i].title.replace("\n", " ")}`}
-              >
-                <motion.div
-                  className="bg-neutral-300"
-                  animate={{
-                    width: i === currentIndex ? 20 : 6,
-                    height: 6,
-                    backgroundColor: i === currentIndex ? "#000" : "#d4d4d4",
-                  }}
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                />
-              </button>
-            ))}
-          </div>
-          <span className="font-mono text-[10px] tracking-wider uppercase text-neutral-400 hidden sm:inline">
-            ← → Navigate
-          </span>
-        </div>
       </main>
       </PageTransition>
-      <Footer compact variant="dark" />
+      <footer className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-neutral-200 px-5 md:px-8">
+        <div className="flex items-center justify-center py-3 gap-5">
+          <a href="https://github.com/NyXkim5" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] tracking-wider uppercase text-neutral-400 hover:text-black transition-colors">GitHub</a>
+          <a href="https://www.linkedin.com/in/joonhyuknkim/" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] tracking-wider uppercase text-neutral-400 hover:text-black transition-colors">LinkedIn</a>
+          <a href="mailto:joonhyuknkim@gmail.com" className="font-mono text-[10px] tracking-wider uppercase text-neutral-400 hover:text-black transition-colors">Email</a>
+        </div>
+      </footer>
     </div>
   );
 }
