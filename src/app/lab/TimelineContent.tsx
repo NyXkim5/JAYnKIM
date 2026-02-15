@@ -210,8 +210,8 @@ export default function TimelineContent() {
                     {/* Editorial Card */}
                     <motion.div
                       className="w-full bg-white flex flex-col relative group overflow-hidden"
-                      style={{ height: cardHeight }}
                       style={{
+                        height: cardHeight,
                         boxShadow: isCenter ? "0 20px 60px -20px rgba(0,0,0,0.3)" : "0 10px 40px -20px rgba(0,0,0,0.1)",
                       }}
                       whileHover={isCenter ? { y: -8 } : {}}
