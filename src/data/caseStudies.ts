@@ -459,12 +459,8 @@ export const caseStudies: CaseStudy[] = [
     ],
     images: [
       {
-        src: "/medvanta-app.webp",
+        src: "/medvanta-hero.png",
         caption: "VantaStat. Quick access to orthopaedic specialists for pain and injury.",
-      },
-      {
-        src: "/medvanta-intake.webp",
-        caption: "Patient intake flow. Describe symptoms, upload photos, connect to a specialist.",
       },
     ],
     link: { url: "#", label: "Private Repo" },
