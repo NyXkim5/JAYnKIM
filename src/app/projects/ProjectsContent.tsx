@@ -22,16 +22,7 @@ const projects = [
     status: "Active",
     year: "2025 – Present",
   },
-  {
-    id: "008",
-    slug: "va-gov-mvp",
-    title: "VA.gov MVP",
-    description: "Redesigned VA.gov for an RFI bid. Audited veteran workflows. Identified 4 key metrics driving the majority of return visits. Built a unified dashboard replacing a fragmented multi-page portal. Added AI-powered benefit discovery for unclaimed entitlements. WCAG 2.1 AA compliant.",
-    tags: ["Next.js", "TypeScript", "USWDS", "AI", "Accessibility"],
-    status: "Prototype",
-    year: "2025",
-  },
-  {
+{
     id: "002",
     slug: "optum",
     title: "Optum, UnitedHealth Group",
