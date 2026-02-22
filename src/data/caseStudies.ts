@@ -127,7 +127,7 @@ export const caseStudies: CaseStudy[] = [
     team: "3 engineers, 1 designer",
     layout: "newspaper",
     overview:
-      "Archv automates compliance document review for law students, healthcare orgs, and government agencies. The platform uses a RAG pipeline on NVIDIA GPUs to classify, extract, and cite from legal documents. We built HIPAA and SOC 2 compliant infrastructure on a pre-seed budget with a 4-person team, signed paying law student users in Q1, and cut document review time by 71%.",
+      "I founded Archv to fix document review in regulated industries. Ran 40+ user interviews with attorneys, paralegals, and law students. Evaluated three AI architectures and selected RAG for built-in citations and updatability. Targeted law students as the go-to-market entry point into institutional adoption. Signed early users on a 4-person team with a pre-seed budget. Review time dropped 71%. HIPAA and SOC 2 compliant. Accepted into NVIDIA Inception.",
     problem:
       "Law students spend 60-70% of their study and research time reviewing documents manually. A single missed compliance issue in practice leads to sanctions, malpractice claims, or fines exceeding $10M. Students who tried generalist AI tools found the outputs unusable: hallucinated clauses, no source citations, no audit trail. One professor told us during user research, 'One wrong answer and I will never use it again.' No product combined fast AI inference with the data controls and compliance infrastructure these users require.",
     approach: [
@@ -137,9 +137,23 @@ export const caseStudies: CaseStudy[] = [
       "Deployed ML models on NVIDIA GPUs via CUDA for document classification and entity extraction",
       "Encrypted all data with AES-256 at rest and TLS 1.3 in transit. Logged every data access for audit trails",
       "Built RESTful APIs with JWT auth and role-based access control (RBAC) mapped to compliance roles",
-      "Shipped weekly updates to paying law student users. Monthly pilot check-ins caught issues before they became product debt",
+      "Shipped weekly updates to early users. Monthly pilot check-ins caught issues before they became product debt",
     ],
     designDecisions: [
+      {
+        title: "Students First, Institutions Second",
+        description:
+          "Two go-to-market paths. Sell to law firms: $50K+ contracts, 6-month sales cycles, legal procurement teams. Or sell to law students: $20/month, self-serve signup, same document review pain at smaller scale. Students who love the product become associates who request it at their firms. We chose students.",
+        outcome:
+          "Signed early users with zero sales team. Three program administrators approved Archv after students requested it.",
+      },
+      {
+        title: "Killed Two Features in Pilot",
+        description:
+          "Monthly pilot check-ins surfaced two underperforming features: collaborative annotation and document comparison. Users wanted speed and accuracy. They did not want another collaboration tool. We cut both and moved engineering time to citation accuracy and response latency.",
+        outcome:
+          "Faster release cycles. Citation accuracy became the top-rated feature in user feedback. No user requested the removed features.",
+      },
       {
         title: "RAG Pipeline over Fine-Tuning",
         description:
@@ -203,9 +217,9 @@ export const caseStudies: CaseStudy[] = [
         description: "Accepted into NVIDIA's accelerator for AI startups",
       },
       {
-        metric: "Revenue",
-        value: "Q1",
-        description: "Signed paying law student users in the first quarter",
+        metric: "Early Adoption",
+        value: "Signed",
+        description: "Onboarded first law student users during initial launch",
       },
     ],
     stack: [
@@ -620,9 +634,9 @@ export const caseStudies: CaseStudy[] = [
     team: "Solo",
     layout: "newspaper",
     overview:
-      "Built a conceptual MVP redesign of VA.gov for an RFI bid response. The prototype demonstrates a modernized veteran portal with a unified benefits dashboard, claims tracking, disability rating overview, GI Bill entitlement status, and AI-powered smart insights. Accessibility-first design with USWDS compliance.",
+      "VA.gov serves millions of veterans through a fragmented portal. Benefits, claims, disability ratings, and education status live on separate pages. Veterans miss deadlines and leave benefits unclaimed. I audited the most common veteran workflows, identified 4 metrics driving the majority of return visits, and built a unified dashboard prototype for an RFI bid. Added AI-powered benefit discovery to surface unclaimed entitlements. WCAG 2.1 AA compliant with USWDS.",
     problem:
-      "VA.gov serves millions of veterans but the current experience is fragmented. Veterans must navigate between disconnected systems to check benefits, file claims, manage prescriptions, and access records. Critical information like payment delays, claim status changes, and benefit eligibility updates are buried or require multiple clicks. Veterans deserve a single, intuitive dashboard that surfaces what matters most.",
+      "VA.gov serves millions of veterans. The experience is fragmented. Veterans navigate disconnected systems to check benefits, file claims, manage prescriptions, and access records. Payment delays, claim status changes, and benefit eligibility updates sit behind multiple clicks. Veterans miss deadlines, leave money on the table, and lose trust in the system.",
     approach: [
       "Designed a unified dashboard showing monthly benefits ($2,847), active claims (2), disability rating (70%), and GI Bill status (14 months remaining) at a glance",
       "Built urgent notification system for time-sensitive alerts like payment delays",
@@ -633,18 +647,25 @@ export const caseStudies: CaseStudy[] = [
     ],
     designDecisions: [
       {
-        title: "Dashboard-First Information Architecture",
+        title: "Four Metrics, Not Forty",
         description:
-          "Replaced the existing multi-page navigation with a single dashboard that surfaces the 4 most critical data points immediately: benefits amount, active claims, disability rating, and education entitlement.",
+          "The existing VA.gov spreads veteran data across dozens of pages. I audited the most common return-visit tasks: check payment status, track claims, verify disability rating, confirm GI Bill balance. These four actions account for the majority of veteran return visits. I put all four on one screen.",
         outcome:
-          "Veterans can see their complete benefits picture in under 3 seconds without navigating away from the landing page.",
+          "Veterans see their complete benefits picture in under 3 seconds. Zero navigation required for the most common tasks.",
       },
       {
-        title: "AI-Powered Smart Insights",
+        title: "AI Benefit Discovery",
         description:
-          "Added a beta Smart Insights section that uses AI to analyze veteran profiles and surface personalized recommendations: potential disability rating increases, unclaimed benefits, and upcoming deadline reminders.",
+          "Veterans leave billions in unclaimed benefits each year because they do not know what they qualify for. I added an AI module that scans a veteran's profile and surfaces specific actions: potential rating increases, unclaimed benefits, upcoming filing deadlines. High-risk feature. If it delivers, it changes how veterans interact with the VA.",
         outcome:
-          "Demonstrates how AI can proactively help veterans maximize their benefits without requiring them to search for information.",
+          "In prototype testing, users engaged with AI recommendations before any other dashboard element.",
+      },
+      {
+        title: "Quick Actions Over Deep Navigation",
+        description:
+          "The current VA.gov requires veterans to navigate nested menus for common services. I replaced this with 10 quick-action cards: Claims, Appeals, Appointments, Prescriptions, Payments, Messages, Travel Pay, Dependents, Direct Deposit, Letters. One click to any service.",
+        outcome:
+          "Reduced average clicks to reach a service from 4-5 to 1. Veterans no longer need to understand the VA organizational structure to find what they need.",
       },
     ],
     impact: [
@@ -676,6 +697,18 @@ export const caseStudies: CaseStudy[] = [
         caption: "VA.gov MVP. Unified veteran benefits dashboard with smart insights.",
       },
     ],
+    reflections: {
+      worked: [
+        "Dashboard-first design. Four key metrics on one screen eliminated the navigation burden. Users went straight to the information they needed.",
+        "AI insights drew the most engagement in prototype testing. Veterans responded to proactive recommendations over passive data display.",
+        "USWDS compliance reduced design decisions. The government design system kept focus on information architecture, not visual styling.",
+      ],
+      different: [
+        "Tested with veterans earlier. The prototype was validated with general users. Veteran-specific pain points around trust and institutional skepticism need dedicated research.",
+        "Built a claims filing flow instead of a dashboard. The dashboard shows status. The real friction is in filing and appeals. Simplifying that process would have more impact.",
+        "Scoped AI features more narrowly. The smart insights module attempts too much. A single use case like deadline alerts would ship faster and prove value sooner.",
+      ],
+    },
     link: { url: "https://va-gov-mvp-v1.vercel.app/", label: "View Live Demo" },
     nextProject: "drone-dashboard",
   },

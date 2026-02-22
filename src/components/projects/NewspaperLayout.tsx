@@ -67,27 +67,6 @@ export function NewspaperLayout({
           </div>
         )}
 
-        {study.video && (
-          <motion.figure
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mt-8 flex flex-col items-center"
-          >
-            <video
-              src={study.video.src}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="max-w-sm md:max-w-lg rounded-sm"
-            />
-            <figcaption className="font-mono text-[10px] text-text-light tracking-wider mt-3">
-              {study.video.caption}
-            </figcaption>
-          </motion.figure>
-        )}
       </div>
 
       {/* Newspaper two-column grid */}
@@ -219,6 +198,29 @@ export function NewspaperLayout({
                 </div>
               </div>
             </div>
+          )}
+
+          {/* Video */}
+          {study.video && (
+            <motion.figure
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="mb-12"
+            >
+              <video
+                src={study.video.src}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full rounded-sm"
+              />
+              <figcaption className="font-mono text-[10px] text-text-light tracking-wider mt-3">
+                {study.video.caption}
+              </figcaption>
+            </motion.figure>
           )}
         </div>
 
