@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +18,7 @@ export function NewspaperLayout({
   setOpenDecision: (v: number | null) => void;
   onImageClick: (src: string) => void;
 }) {
+  const [activeVersion, setActiveVersion] = useState<"v1" | "v2">("v1");
   return (
     <section className="px-5 md:px-8 lg:px-12 py-10 max-w-6xl mx-auto">
       {/* Full-width: Overview + media */}
@@ -28,7 +30,86 @@ export function NewspaperLayout({
           {study.overview}
         </p>
 
-        {study.images.length > 0 && (
+        {/* Version toggle images */}
+        {study.versionImages ? (
+          <div className="mt-8">
+            {/* Toggle buttons */}
+            <div className="flex gap-2 mb-4">
+              {(["v1", "v2"] as const).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setActiveVersion(v)}
+                  className={`font-mono text-[11px] tracking-[0.15em] uppercase px-4 py-1.5 border transition-colors ${
+                    activeVersion === v
+                      ? "border-text-black bg-text-black text-white"
+                      : "border-border-light text-text-mid hover:border-text-mid"
+                  }`}
+                >
+                  {v.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            {/* Image with crossfade */}
+            <div className="relative w-full aspect-[16/9] overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeVersion}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 cursor-zoom-in"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Expand image: ${study.versionImages[activeVersion].caption}`}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onImageClick(study.versionImages![activeVersion].src); } }}
+                  onClick={() => onImageClick(study.versionImages![activeVersion].src)}
+                >
+                  <Image
+                    src={study.versionImages[activeVersion].src}
+                    alt={study.versionImages[activeVersion].caption}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 900px"
+                    className="object-cover"
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <figcaption className="font-mono text-[10px] text-text-light tracking-wider mt-3">
+              {study.versionImages[activeVersion].caption}
+            </figcaption>
+
+            {/* Changelog when V2 is selected */}
+            <AnimatePresence>
+              {activeVersion === "v2" && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-5 border-l-2 border-border-light pl-5">
+                    <p className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase mb-3">
+                      V1 &rarr; V2 Changelog
+                    </p>
+                    <ul className="space-y-2">
+                      {study.versionImages.changelog.map((item, i) => (
+                        <li key={i} className="flex gap-3 text-[13px] text-text-dark leading-relaxed">
+                          <span className="font-mono text-[10px] text-text-light mt-0.5 shrink-0">
+                            {(i + 1).toString().padStart(2, "0")}
+                          </span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        ) : study.images.length > 0 ? (
           <div className="mt-8 space-y-6">
             {study.images.map((img, i) => (
               <motion.figure
@@ -65,7 +146,7 @@ export function NewspaperLayout({
               </motion.figure>
             ))}
           </div>
-        )}
+        ) : null}
 
       </div>
 

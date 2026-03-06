@@ -76,7 +76,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
               className="absolute top-[250px] select-none"
               style={{ left: "-30%", width: "60%", maxWidth: "800px" }}
             >
-              <Image src="/writing-2.svg" alt="" width={1200} height={800} unoptimized />
+              <Image src="/writing-2.svg" alt="" width={1200} height={800} loading="lazy" unoptimized />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 40 }}
@@ -85,7 +85,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
               className="absolute top-[1200px] select-none"
               style={{ right: "-30%", width: "60%", maxWidth: "800px" }}
             >
-              <Image src="/writing-3.svg" alt="" width={1140} height={800} unoptimized />
+              <Image src="/writing-3.svg" alt="" width={1140} height={800} loading="lazy" unoptimized />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: -40 }}
@@ -94,7 +94,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
               className="absolute top-[2400px] select-none"
               style={{ left: "-28%", width: "60%", maxWidth: "800px" }}
             >
-              <Image src="/writing-1.svg" alt="" width={1320} height={800} unoptimized />
+              <Image src="/writing-1.svg" alt="" width={1320} height={800} loading="lazy" unoptimized />
             </motion.div>
           </div>
 

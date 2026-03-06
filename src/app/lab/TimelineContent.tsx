@@ -75,25 +75,25 @@ export default function TimelineContent() {
         setCardWidth(w - 32);
         setCardHeight(Math.min(h - 180, 480));
         setImageHeight(180);
-        setTopOffset(40);
+        setTopOffset(16);
         setCardGap(16);
       } else if (w < 640) {
         setCardWidth(w - 48);
         setCardHeight(Math.min(h - 180, 520));
         setImageHeight(200);
-        setTopOffset(60);
+        setTopOffset(24);
         setCardGap(20);
       } else if (w < 1024) {
         setCardWidth(480);
         setCardHeight(600);
         setImageHeight(280);
-        setTopOffset(120);
+        setTopOffset(40);
         setCardGap(28);
       } else {
         setCardWidth(560);
         setCardHeight(660);
         setImageHeight(340);
-        setTopOffset(200);
+        setTopOffset(60);
         setCardGap(32);
       }
     };
