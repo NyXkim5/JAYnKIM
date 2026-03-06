@@ -152,7 +152,7 @@ export default function HomeContent() {
 
               <RevealLeft delay={0.3}>
                 <p className="text-text-dark text-base leading-relaxed mb-6">
-                  I&apos;m Jay Kim. I love drawing, working out, and trying new food. I have always loved designing and coding since high school, making websites for others and wanting to be an architecture major at one point.
+                  I&apos;m Jay Kim. I design and build software for domains where the interface is the bottleneck — healthcare, defense, compliance. The kind of tools where a bad layout costs someone time, money, or worse. I have always loved designing and coding since high school, making websites for others and wanting to be an architecture major at one point.
                 </p>
               </RevealLeft>
               <RevealBlur delay={0.7}>

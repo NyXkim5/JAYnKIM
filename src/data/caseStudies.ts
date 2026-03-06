@@ -24,6 +24,11 @@ export interface CaseStudy {
   stack: { category: string; tools: string[] }[];
   images: { src: string; caption: string }[];
   video?: { src: string; caption: string };
+  versionImages?: {
+    v1: { src: string; caption: string };
+    v2: { src: string; caption: string };
+    changelog: string[];
+  };
   link?: { url: string; label: string };
   nextProject?: string;
   architecture?: {
@@ -60,48 +65,48 @@ export const caseStudies: CaseStudy[] = [
     team: "Enterprise AI/ML Team",
     layout: "newspaper",
     overview:
-      "Building production ML pipelines at UnitedHealth Group, the largest healthcare company in the US. Owning model deployment, monitoring, and data processing across AWS and Kubernetes. The systems I work on process millions of healthcare records daily to flag care gaps, automate claims review, and surface clinical insights.",
+      "Most ML in healthcare dies in a notebook. A model performs well on historical data, gets handed to engineering, and never survives contact with production traffic, schema drift, or a compliance audit. I work on the systems that keep models alive after deployment — pipelines ingesting millions of records daily, monitoring that catches drift before it reaches patients, infrastructure that makes all of it auditable under HIPAA. The challenge is not building the model. It is building the system around it that runs at 150M-patient scale.",
     problem:
-      "Healthcare data is fragmented. Clinical records, claims, pharmacy data, and lab results live in separate systems. Manual review dominates: nurses document by hand, claims require human approval, and care gaps go undetected until patients show up in the ER. The challenge is building ML systems that run reliably at this scale while meeting HIPAA and SOC 2 requirements.",
+      "A care gap detected six months late is a care gap that sent someone to the ER. Clinical records, claims, pharmacy data, and lab results live in separate systems with different schemas, update cadences, and access controls. Models trained on clean historical data encounter missing fields, delayed records, and format changes in production. The failure mode is not a bad prediction — it is a prediction that looked correct at training time and degrades silently in production until a downstream clinician makes a decision on stale confidence scores.",
     approach: [
-      "Own end-to-end ML pipeline development: data ingestion, feature engineering, model training, deployment, and monitoring",
-      "Deploy models to production on AWS with Kubernetes orchestration and automated rollback on performance degradation",
-      "Build data processing jobs handling millions of healthcare records with strict SLA requirements",
-      "Implement model observability: drift detection, prediction confidence tracking, and alerting for production anomalies",
-      "Work with data scientists to translate research models into production-grade services with latency and throughput guarantees",
-      "Maintain HIPAA compliance across all data pipelines with encryption, access controls, and audit logging",
+      "Own the full lifecycle from data ingestion through feature engineering, training, deployment, and post-deployment monitoring — no handoff gap between research and production",
+      "Deploy on AWS with Kubernetes orchestration and automated rollback triggered by performance degradation, not just infrastructure failure",
+      "Build processing jobs against strict SLAs — healthcare records that arrive late or process late compound downstream into missed care windows",
+      "Instrument every model with drift detection, prediction confidence tracking, and anomaly alerting. If a model's output distribution shifts, we know before a clinician sees the result",
+      "Translate research models into production services with latency and throughput guarantees. A model that takes 30 seconds per prediction is a model that will not be used",
+      "Enforce HIPAA compliance as infrastructure, not policy — encryption at rest and in transit, row-level access controls, immutable audit trails. Compliance is not a checklist item, it is an architectural constraint",
     ],
     designDecisions: [
       {
-        title: "Pipeline-First ML Architecture",
+        title: "Pipeline as the Unit of Deployment",
         description:
-          "Each ML model runs inside a standardized pipeline: data validation, feature computation, inference, post-processing, and result storage. Pipelines are versioned and reproducible. Failed stages retry with exponential backoff. Every prediction is logged with input features for debugging.",
+          "Models do not deploy alone. Every model ships inside a standardized pipeline: data validation, feature computation, inference, post-processing, and result storage. The pipeline is versioned as a single artifact. Failed stages retry with exponential backoff. Every prediction is logged with its input features so any output can be reproduced and debugged months later. The pipeline, not the model, is what gets promoted to production.",
         outcome:
-          "Production models run with 99.9%+ uptime. Failed predictions are automatically retried and flagged for review.",
+          "99.9%+ uptime across production models. Any prediction can be traced back to its exact input state. Failed predictions retry automatically and flag for human review.",
       },
       {
-        title: "Healthcare Compliance by Default",
+        title: "Compliance as Architecture",
         description:
-          "Every data access is authenticated and logged. PHI fields are encrypted at rest and in transit. Row-level security ensures teams only access data they are authorized for. Audit trails are immutable and retained for 7 years.",
+          "HIPAA compliance is typically treated as an audit exercise — encrypt the database, log the accesses, pass the review. We built it as an architectural constraint. Every data access is authenticated and logged at the infrastructure layer. PHI fields are encrypted at rest and in transit. Row-level security ensures teams only touch data they are authorized for. Audit trails are append-only and retained for 7 years. You cannot build a non-compliant pipeline because the infrastructure will not let you.",
         outcome:
-          "Zero compliance incidents. All pipelines pass automated HIPAA audit checks on every deployment.",
+          "Zero compliance incidents. Every pipeline passes automated HIPAA audit checks on every deployment without manual intervention.",
       },
     ],
     impact: [
       {
         metric: "Scale",
         value: "150M+",
-        description: "Patients served by UnitedHealth Group healthcare services",
+        description: "Patients served across UnitedHealth Group — every pipeline decision compounds at this scale",
       },
       {
         metric: "Records",
-        value: "Millions",
-        description: "Healthcare records processed daily through ML pipelines",
+        value: "Millions/day",
+        description: "Healthcare records processed daily with strict SLA guarantees",
       },
       {
         metric: "Uptime",
         value: "99.9%+",
-        description: "Production model availability with automated failover",
+        description: "Production model availability with automated rollback on degradation",
       },
     ],
     stack: [
@@ -127,9 +132,9 @@ export const caseStudies: CaseStudy[] = [
     team: "3 engineers, 1 designer",
     layout: "newspaper",
     overview:
-      "I founded Archv to fix document review in regulated industries. Ran 40+ user interviews with attorneys, paralegals, and law students. Evaluated three AI architectures and selected RAG for built-in citations and updatability. Targeted law students as the go-to-market entry point into institutional adoption. Signed early users on a 4-person team with a pre-seed budget. Review time dropped 71%. HIPAA and SOC 2 compliant. Accepted into NVIDIA Inception.",
+      "I founded Archv because document review in regulated industries is broken in a specific way: the cost of a mistake is catastrophic, but the tools available are either manual or untrustworthy. Generalist AI hallucinates clauses. Manual review takes 4.5 hours per session. We built a third option — AI document review where every response links to its source text and every query is logged for audit. I ran 40+ user interviews, evaluated three AI architectures, selected RAG for built-in citations, and targeted law students as the entry point into institutional adoption. Review time dropped 71%. Verification time dropped 82%. Accepted into NVIDIA Inception. Shipped on a 4-person team with a pre-seed budget.",
     problem:
-      "Law students spend 60-70% of their study and research time reviewing documents manually. A single missed compliance issue in practice leads to sanctions, malpractice claims, or fines exceeding $10M. Students who tried generalist AI tools found the outputs unusable: hallucinated clauses, no source citations, no audit trail. One professor told us during user research, 'One wrong answer and I will never use it again.' No product combined fast AI inference with the data controls and compliance infrastructure these users require.",
+      "Law students spend 60–70% of their research time reviewing documents manually. In practice, one missed compliance clause leads to sanctions, malpractice claims, or fines exceeding $10M. Students who tried generalist AI tools found the outputs unusable: hallucinated clauses, no source citations, no audit trail. A professor told us during user research, 'One wrong answer and I will never use it again.' That sentence defined the product requirement. Trust is not a feature — it is a prerequisite. No product on the market combined fast AI inference with the citation integrity and compliance infrastructure these users demand before they will use it once.",
     approach: [
       "Ran 40+ user interviews with attorneys, paralegals, and compliance officers. Shadowed 3 attorneys during live document review sessions to map workflow pain points",
       "Evaluated three AI architectures: fine-tuned LLM ($500K+, not updatable), ChatGPT API wrapper (no compliance, hallucinations), RAG with vector database (built-in citations, updatable, cost-effective). Selected RAG",
@@ -288,9 +293,9 @@ export const caseStudies: CaseStudy[] = [
         "Monthly pilot check-ins with real users caught issues before they became product debt. We killed two features early that tested poorly and doubled down on citation accuracy.",
       ],
       different: [
-        "Built mobile from day one. Law students review documents between classes constantly. We deprioritized mobile and it should have shipped in V1.",
-        "Invested more in onboarding. The first-run experience was weak. New users needed hand-holding to see the value, which added 2 weeks to every pilot.",
-        "Ran pricing research before launch. We guessed on pricing. Conjoint analysis upfront would have shortened the sales cycle.",
+        "Designed the citation UI for accuracy, not speed. Our first citation format showed the full source paragraph inline. Users trusted it — but it made every response feel slow and heavy. We lost two pilot users before realizing the problem was not the AI latency, it was the visual weight of the answer. Switched to a linked reference pattern and retention recovered. The right answer presented wrong is still the wrong product.",
+        "Invested more in onboarding. The first-run experience was weak. New users needed hand-holding to see the value, which added 2 weeks to every pilot. The product sold itself once someone used it — the problem was getting them to the first successful query.",
+        "Ran pricing research before launch. We guessed on pricing based on competitive benchmarks that did not apply to students. Conjoint analysis upfront would have shortened the sales cycle and prevented a mid-pilot pricing change that confused early users.",
       ],
     },
     brandPhilosophy: {
@@ -330,60 +335,60 @@ export const caseStudies: CaseStudy[] = [
     team: "Engineering Team",
     layout: "newspaper",
     overview:
-      "Built the event ingestion pipeline and frontend dashboards for a growth platform. The pipeline processes user behavior events in real time, feeds them into analytics views, and powers A/B testing infrastructure. I also integrated third-party marketing APIs for campaign automation.",
+      "The growth team was making decisions on intuition because the data was too slow to argue with. Event data scattered across four tools. A/B tests analyzed in spreadsheets days after the experiment ended. Marketing campaigns managed through separate codebases with no shared state. I built the event pipeline, the analytics dashboards, and the experimentation infrastructure that gave the team a single, real-time view of user behavior. Events process in under a second. Dashboard queries that took 12 seconds now take 200 milliseconds. The team stopped debating what happened and started debating what to do about it.",
     problem:
-      "The growth team had no unified view of user behavior. Event data was scattered across multiple tools. Running A/B tests required manual data exports and spreadsheet analysis. Marketing integrations (email, ads, CRM) each had separate codebases with no shared interface. The team needed a single platform to track events, run experiments, and manage campaigns.",
+      "Growth teams operate on feedback loops. The tighter the loop, the faster they learn. This team's loop was broken. User events lived in one tool. Conversion data in another. Marketing campaign results in a third. Running an A/B test meant exporting data, joining it manually in a spreadsheet, and hoping the sample size was large enough to mean anything. By the time the analysis was done, the product had already changed. Marketing integrations — email, ads, CRM — each had their own codebase, their own auth patterns, their own failure modes. No one had a unified picture of what users were doing or why.",
     approach: [
-      "Built an event ingestion pipeline that captures user actions, enriches them with session metadata, and writes to PostgreSQL and Redis for real-time and historical queries",
-      "Developed React dashboards with D3.js charts showing conversion funnels, retention curves, and experiment results",
-      "Implemented A/B testing infrastructure: experiment definition, variant assignment, and statistical significance calculation",
-      "Created a unified API integration layer abstracting email (SendGrid), ads (Google Ads), and CRM (HubSpot) behind a consistent interface",
-      "Optimized PostgreSQL queries for analytics workloads. Added materialized views for frequently accessed metrics",
-      "Worked directly with the growth team to prioritize features based on their experimentation roadmap",
+      "Built a three-stage event pipeline: capture via lightweight SDK, enrichment with session metadata and geo/device context, dual-write to PostgreSQL (historical analysis) and Redis (real-time dashboards)",
+      "Designed React dashboards with D3.js visualizations optimized for the specific questions growth teams ask: conversion funnels, retention cohorts, and experiment results. Each chart type chosen for the decision it supports, not the data it displays",
+      "Shipped A/B testing infrastructure end-to-end: experiment definition, deterministic variant assignment, and statistical significance calculation with guardrails against premature decisions",
+      "Abstracted SendGrid, Google Ads, and HubSpot behind a unified adapter interface. One integration pattern. Shared auth, rate limiting, and error handling. New marketing tools plug in without new architecture",
+      "Optimized analytics queries with materialized views — pre-computed the aggregations the growth team checks daily (DAU, funnel step counts, retention cohorts) on a 5-minute refresh cycle",
+      "Embedded with the growth team to prioritize features against their experimentation roadmap. Built what they would use this week, not what sounded good in a planning doc",
     ],
     designDecisions: [
       {
-        title: "Event-Driven Pipeline Architecture",
+        title: "Dual-Write for Two Time Horizons",
         description:
-          "User events flow through a three-stage pipeline: capture, enrichment, and storage. Capture collects raw events via a lightweight SDK. Enrichment adds session data, geo, and device info. Storage writes to both PostgreSQL (historical) and Redis (real-time).",
+          "Growth teams need two things from event data: what is happening right now, and what happened over the last 90 days. These are different query patterns with different performance requirements. Events write simultaneously to Redis for sub-second real-time dashboards and PostgreSQL for historical analysis. The pipeline handles the fan-out — consumers do not need to know where the data lives.",
         outcome:
-          "Sub-second event processing. Growth team sees live user activity within 1 second of it happening.",
+          "Real-time dashboards update within 1 second of user action. Historical queries span 90 days without competing for the same resources.",
       },
       {
-        title: "Unified Integration Layer",
+        title: "Adapter Pattern for Marketing Integrations",
         description:
-          "Each third-party marketing tool (SendGrid, Google Ads, HubSpot) sits behind a common adapter interface. Adding a new integration means implementing one adapter. Auth, rate limiting, and error handling are shared.",
+          "Each third-party tool — SendGrid, Google Ads, HubSpot — sits behind a common adapter interface. Auth, rate limiting, retry logic, and error handling are shared infrastructure. Adding a new integration means implementing one adapter with one interface. The growth team requests a new tool, and it ships in days because the hard problems are already solved.",
         outcome:
-          "New integrations ship in 1-2 days instead of 1-2 weeks. Reduced code duplication across marketing tools by 70%.",
+          "New integrations ship in 1–2 days instead of 1–2 weeks. Code duplication across marketing tools dropped 70%.",
       },
       {
-        title: "Materialized Views for Analytics",
+        title: "Materialized Views Over Raw Queries",
         description:
-          "Raw event tables grow fast. Running conversion funnel queries directly against them added 8-12 seconds to every dashboard load. We pre-computed the most common aggregations (daily active users, funnel step counts, retention cohorts) into materialized views refreshed on a 5-minute interval.",
+          "Event tables grow by millions of rows per week. The growth team's most common dashboard queries — DAU, conversion funnels, retention cohorts — were scanning raw tables and taking 8–12 seconds per load. At that latency, people stop checking the dashboard. We pre-computed these aggregations into materialized views on a 5-minute refresh. The data is at most 5 minutes stale. The dashboard is instant.",
         outcome:
-          "Dashboard queries dropped from 8-12 seconds to under 200ms. Growth team stopped context-switching while waiting for data.",
+          "Dashboard load dropped from 8–12 seconds to under 200ms. The growth team went from checking metrics once a day to checking them continuously.",
       },
     ],
     impact: [
       {
-        metric: "Event Latency",
+        metric: "Latency",
         value: "<1s",
-        description: "Real-time event processing from capture to dashboard display",
+        description: "Event capture to dashboard display — real-time feedback for the growth team",
       },
       {
         metric: "Query Speed",
         value: "60x",
-        description: "Dashboard queries dropped from 8-12s to <200ms with materialized views",
+        description: "Dashboard queries dropped from 8–12s to <200ms with materialized views",
       },
       {
-        metric: "Integration Speed",
-        value: "1-2 days",
-        description: "Time to add a new third-party marketing integration",
+        metric: "Integration",
+        value: "1–2 days",
+        description: "Time to add a new third-party marketing tool — down from 1–2 weeks",
       },
       {
-        metric: "A/B Testing",
+        metric: "Experiments",
         value: "Shipped",
-        description: "Full experimentation infrastructure with statistical significance",
+        description: "Full A/B testing infrastructure with statistical significance guardrails",
       },
     ],
     stack: [
@@ -408,60 +413,60 @@ export const caseStudies: CaseStudy[] = [
     team: "Cross-functional (engineering + clinical)",
     layout: "newspaper",
     overview:
-      "Built VantaStat, a patient-facing mobile app that connects orthopaedic injury patients to specialists in minutes. Designed and shipped analytics dashboards, HIPAA-compliant backend services, and workflow automation that saved practices ~5 hours of admin time per week. All PHI encrypted at rest and in transit.",
+      "Someone tears their ACL on a Saturday. They wait until Monday to call. The office plays phone tag for two days. They see a general practitioner who refers them to an orthopaedic specialist. Another week. I built VantaStat to collapse that timeline to minutes. A patient describes their injury, uploads photos, and the system routes them to the right specialist immediately. Behind the patient-facing app, I shipped analytics dashboards for practice managers, HIPAA-compliant backend services, and workflow automation that gave back five hours of admin time per week per practice. The entire data layer is encrypted — PHI at rest and in transit, row-level access, immutable audit logging.",
     problem:
-      "Orthopaedic practices run on fragmented tools. Scheduling lives in one system. Patient intake lives in another. Compliance docs sit in a third. Staff spend hours each week on manual data entry and phone tag. Patients wait days to reach a specialist. No single platform connected the patient journey from injury report to specialist consultation.",
+      "Orthopaedic practices run on tools that were never designed to talk to each other. Scheduling lives in one system. Patient intake in another. Compliance documentation in a third. Staff spend hours weekly on manual data entry and phone tag between systems. The patient feels this as wait time — days between injury and specialist consultation. The practice feels it as overhead — admin work that generates no clinical value. No single platform connected the patient journey from injury report to the moment a specialist reviews their case.",
     approach: [
-      "Built React dashboards surfacing workload distribution, patient volumes, and compliance KPIs across practices",
-      "Developed secure backend services handling PHI with AES-256 encryption and database-level row security",
-      "Designed patient intake flow in Figma. Users describe their injury, upload photos, and get matched to a specialist",
-      "Shipped workflow automation that eliminated ~5 hours of weekly admin tasks per practice",
-      "Integrated Twilio for SMS/voice patient communications and Auth0 for identity management",
-      "Debugged and resolved OAuth and webhook failures in production",
+      "Designed the patient intake flow first — in Figma, validated with clinical staff before writing code. The flow had to feel obvious to someone in pain: describe injury, upload photos, tap connect. Three steps, no account creation required",
+      "Built React dashboards surfacing the metrics practice managers actually check: workload distribution across providers, patient volume trends, and compliance KPIs. Designed for daily glance use, not deep analysis",
+      "Developed HIPAA-compliant backend services with AES-256 encryption at rest, TLS in transit, and database-level row security. Every access event logged for audit trails",
+      "Shipped workflow automation targeting the specific admin tasks consuming the most time: appointment scheduling, intake form processing, and referral routing",
+      "Integrated Twilio for SMS and voice patient communications — patients get updates without downloading an app or checking a portal",
+      "Resolved production OAuth and webhook failures that were silently dropping patient intake submissions. The system looked healthy while patients were falling through the cracks",
     ],
     designDecisions: [
       {
-        title: "Mobile-First Patient Intake",
+        title: "Three Steps to a Specialist",
         description:
-          "Patients open the app, describe their injury in plain language, upload photos of the affected area, and tap 'Connect me.' The system routes them to the right orthopaedic specialist based on injury type and location.",
+          "The intake flow has exactly three steps: describe the injury in plain language, upload photos of the affected area, tap 'Connect me.' No account creation. No insurance forms. No dropdown menus asking which body part hurts. The system routes to the right orthopaedic specialist based on injury type and location. Every screen added to this flow is a patient who gives up and calls the office instead.",
         outcome:
-          "Reduced time from injury report to specialist connection from days to minutes.",
+          "Patient-to-specialist connection dropped from 2–3 days to under 5 minutes. The flow completes on a phone screen without scrolling.",
       },
       {
-        title: "Encryption-First Data Layer",
+        title: "Encryption as Infrastructure",
         description:
-          "Every PHI field encrypted at rest using database-level encryption. Row-level security policies ensure users access only their authorized data. Every access event logged for HIPAA audit trails.",
+          "PHI protection is not a feature — it is a layer. Every field containing patient data is encrypted at rest with database-level encryption. Row-level security policies ensure clinicians access only their authorized patients. Every access event is logged immutably for HIPAA audit trails. The system does not trust the application layer to enforce compliance — the database enforces it.",
         outcome:
-          "Zero PHI exposure incidents. Passed all compliance audits during the engagement.",
+          "Zero PHI exposure incidents across the entire engagement. Passed every compliance audit without remediation.",
       },
       {
-        title: "Figma-Driven Development",
+        title: "Prototype Before Code",
         description:
-          "Designed full UI/UX mockups before writing code. Validated flows with clinical end-users through interactive prototypes. Caught workflow issues before a single line shipped.",
+          "Every screen was designed in Figma and validated with clinical end-users through interactive prototypes before engineering began. Practice managers walked through the dashboard. Front desk staff walked through intake. Surgeons walked through the patient view. Workflow issues surfaced in prototyping, not in production.",
         outcome:
-          "Clinical staff feedback shaped the final product directly. Practice managers adopted the platform within the first week.",
+          "Practice managers adopted the platform within the first week of launch. Zero redesign cycles post-ship.",
       },
     ],
     impact: [
       {
+        metric: "Patient Flow",
+        value: "<5 min",
+        description: "Injury report to specialist connection — down from 2–3 days",
+      },
+      {
         metric: "Admin Time",
-        value: "~5hrs",
-        description: "Saved per week per practice through workflow automation",
+        value: "~5hrs/wk",
+        description: "Saved per practice through workflow automation",
       },
       {
         metric: "Adoption",
         value: "1 week",
-        description: "Full adoption by practice managers after launch",
+        description: "Full adoption by practice managers — no training sessions required",
       },
       {
         metric: "PHI Incidents",
         value: "Zero",
-        description: "No data exposure incidents throughout the engagement",
-      },
-      {
-        metric: "Patient Flow",
-        value: "<5 min",
-        description: "Time from injury report to specialist connection, down from 2-3 days",
+        description: "No data exposure across the entire engagement",
       },
     ],
     stack: [
@@ -483,72 +488,117 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "drone-dashboard",
     id: "006",
-    title: "DroneNexus",
-    subtitle: "Real-Time Drone Swarm Management Dashboard",
+    title: "OVERWATCH",
+    subtitle: "Multi-Asset ISR Platform",
     year: "2025",
-    role: "Full-Stack Developer",
+    role: "Designer & Engineer",
     status: "Shipped",
     duration: "2025",
     team: "Solo",
     layout: "newspaper",
     overview:
-      "Built a real-time drone swarm management dashboard for commanding up to 6 autonomous drones simultaneously. Features live map visualization with waypoint navigation, formation controls (V-Formation, Line, Diamond), swarm health monitoring, and a full command center with telemetry data for altitude, speed, and battery levels.",
+      "Ground control software treats interface design as an afterthought. Operators reconstruct situational awareness from scattered data instead of making decisions. I designed and built OVERWATCH as a three-panel spatial architecture — Object Explorer, Situational Map, Directive Center — where selecting an asset propagates context across all panels simultaneously. Telemetry values color-shift at degradation thresholds. The activity stream weights by severity, not chronology. V2 rewrote the stack: Python FastAPI, WebSocket telemetry at 25ms, SQLite persistence, single-file HTML deployment. One file opens on any field laptop and an operator is commanding assets in seconds.",
     problem:
-      "Managing multiple autonomous drones requires operators to monitor dozens of telemetry streams, coordinate flight paths, and respond to anomalies in real time. Existing ground control software is built for single-drone operations and lacks the situational awareness needed for swarm coordination. Operators need a unified interface that surfaces critical data without overwhelming them.",
+      "Ground control stations are built by engineers who have never watched an operator lose a drone because the battery warning was buried three tabs deep. The standard interface dumps raw telemetry into tables, scatters controls across modal dialogs, and treats a map pin as sufficient spatial awareness. Operators running six assets simultaneously are forced to context-switch between views to answer basic questions: which asset is degraded, what is its heading, can I redirect it. The bottleneck is never the hardware. It is always the interface. The data exists — no one designed the hierarchy to surface it at the speed of human perception.",
     approach: [
-      "Designed a three-panel layout: drone list (left), live map (center), command center (right) for optimal operator workflow",
-      "Built real-time telemetry streaming for altitude, speed, battery, and GPS position across all drones",
-      "Implemented waypoint mission planning with execute, loiter, orbit, and RTL (Return to Launch) commands",
-      "Created formation control system supporting V-Formation, Line, Diamond, and custom configurations",
-      "Added swarm-level metrics: health score, average altitude, network latency, and mesh network status",
-      "Built event logging with timestamped entries for all navigation, sensor, and command events",
+      "Studied Palantir's operational design language, military C2 doctrine, and air traffic control interfaces — extracted the patterns that hold under sustained cognitive load and discarded everything decorative",
+      "Defined a spatial information architecture before writing a single line of UI: left panel owns asset state, center owns geospatial context, right panel owns the active task. 60% of the screen never changes between modes — operators build spatial memory instead of re-learning layouts",
+      "Designed a three-state color system — green/nominal, amber/degraded, red/critical — and enforced it ruthlessly across every indicator, label, and status badge. No gradients. No decorative color. If it has color, it encodes state",
+      "Set all telemetry typography in monospace at 10–11px. At scanning speed, proportional fonts create ambiguity between 0/O, 1/l, 8/6. Monospace eliminates it. This is not a style choice — it is an error-rate decision",
+      "Built five operational modes — Observe, Task, Debrief, ISR Feed, Connect — each reconfiguring only the right panel. The Object Explorer and Map remain fixed anchors. Mode switching feels like turning a page, not opening a new application",
+      "Designed micro-interactions for edge cases that generic dashboards ignore: asset selection cascading across panels, telemetry values color-shifting at threshold boundaries, the inspector panel transitioning between empty and populated states, activity stream entries auto-prioritizing by severity",
+      "Engineered the backend in Python with FastAPI and WebSocket telemetry at 25ms latency. SQLite handles mission persistence and session replay for post-op debrief. The entire frontend compiles to a single HTML file — zero build step, zero CDN, opens cold in any browser",
     ],
     designDecisions: [
       {
-        title: "Three-Panel Operator Layout",
+        title: "Spatial Hierarchy Over Feature Hierarchy",
         description:
-          "Split the interface into drone roster (left), live map (center), and command center (right). This mirrors how operators naturally scan: check fleet status, verify positions on map, then issue commands.",
+          "Every C2 tool I audited organizes by feature: a telemetry tab, a map tab, a controls tab. This forces operators to hold a mental model of where the software hid their data. OVERWATCH organizes by spatial position. Left is always fleet state. Center is always the map. Right is always the active work context. Switching from Observe to Task to Debrief only mutates the right panel — the left and center are invariant. Operators stop thinking about the interface within minutes because their eyes learn fixed positions. The cognitive surface area shrinks by keeping the majority of the screen architecturally stable.",
         outcome:
-          "Operators can monitor all drones and issue commands without switching views or losing situational awareness.",
+          "Any data point — battery cell voltage, comm latency, flight mode, mission phase, sensor coverage — is reachable in a single eye movement. Zero tabs. Zero modals. Zero context switches.",
       },
       {
-        title: "Real-Time Swarm Telemetry",
+        title: "Dark UI as Perceptual Engineering",
         description:
-          "Each drone streams altitude, speed, battery, and position data. Swarm-level aggregates (health score, average altitude, network latency) give operators a high-level pulse without checking individual drones.",
+          "The dark theme is a physiological decision, not an aesthetic one. ISR operations run in TOCs, tents, and vehicles — often at night. A bright interface destroys dark-adapted vision and competes with the map for visual dominance. OVERWATCH uses a near-black background with muted panel borders and reserves all brightness for status indicators and interactive elements. The CARTO dark basemap maintains terrain legibility without overpowering asset markers. Amber UNCLASSIFIED banners frame the viewport — a DCSA compliance requirement I repurposed as a visual grounding element that anchors the operator's peripheral awareness.",
         outcome:
-          "98% swarm health visibility with 27ms network latency for responsive command execution.",
+          "The interface is equally readable in direct sunlight and pitch darkness. Status changes register in peripheral vision before conscious attention. The UI reads as operationally credible before a single label is parsed.",
+      },
+      {
+        title: "Domain Ontology Before Interface Design",
+        description:
+          "Before touching any UI code, I modeled the operational domain as four primitives: Assets (platforms with telemetry state), Taskforces (grouped assets sharing directives), Missions (time-bound operations with phases and objectives), and Observations (sensor data bound to coordinates and timestamps). Every component, endpoint, schema, and interaction maps back to this ontology. The Object Explorer renders it as a navigable tree. The Directive Center issues commands against it. The map visualizes it spatially. The ontology is the interface — the pixels just make it visible.",
+        outcome:
+          "New asset types — ground vehicles, maritime vessels, fixed sensors — require zero UI restructuring. The system scales from a 2-drone field exercise to a 50-asset multi-domain operation without a single layout change.",
+      },
+      {
+        title: "Complete Control Surface, Zero Friction",
+        description:
+          "The Directive Center exposes the full operational control vocabulary: safety commands (Launch Prep, Stand Down, Abort), flight commands (Launch, Recover, RTB, Goto), flight modes (Stabilize, Alt Hold, Manual, Guided), and collection patterns (Orbit, Racetrack, Search Grid, Point Stare) with inline parameter adjustment. Below the command surface, a persistent telemetry strip renders battery cell voltage, AGL, ground speed, RSSI, satellite count, and video link quality in real time. Every command is one click. No confirmation modals during active operations — modal dialogs in a time-critical environment are a design failure, not a safety feature.",
+        outcome:
+          "Operators issue launch, recovery, and retasking commands without leaving the primary view. The telemetry strip provides continuous health monitoring that occupies attention proportional to its urgency — nominal values fade, degraded values assert.",
       },
     ],
     impact: [
       {
-        metric: "Drones",
-        value: "6",
-        description: "Simultaneous drone management with individual and swarm controls",
+        metric: "Assets",
+        value: "2–50",
+        description: "Platform-agnostic architecture — any asset type, any domain, same interface",
       },
       {
-        metric: "Swarm Health",
-        value: "98%",
-        description: "Real-time swarm cohesion and health monitoring",
+        metric: "TF Health",
+        value: "97%",
+        description: "Aggregate taskforce health with instant drill-down to per-asset battery, signal, and sensor state",
       },
       {
         metric: "Latency",
-        value: "27ms",
-        description: "Network latency for real-time command execution",
+        value: "25ms",
+        description: "WebSocket telemetry with live attitude, position, velocity, and power state streaming",
+      },
+      {
+        metric: "Coverage",
+        value: "95%",
+        description: "Real-time sensor coverage visualization across orbit, racetrack, grid, and stare patterns",
+      },
+      {
+        metric: "Deploy",
+        value: "1 file",
+        description: "Entire frontend ships as single HTML — no install, no build, no network required",
       },
     ],
     stack: [
-      { category: "Frontend", tools: ["React", "TypeScript", "Tailwind CSS"] },
-      { category: "Mapping", tools: ["Mapbox", "Real-Time GPS", "Waypoint Engine"] },
-      { category: "Data", tools: ["WebSocket", "Telemetry Streams", "Event Logging"] },
-      { category: "Controls", tools: ["Formation Algorithms", "MAVLink", "Mission Planning"] },
+      { category: "Design", tools: ["Information Architecture", "Spatial Hierarchy", "Perceptual Engineering", "Monospace Typography"] },
+      { category: "Frontend", tools: ["HTML", "CSS", "JavaScript", "Canvas API", "Leaflet.js"] },
+      { category: "Mapping", tools: ["CARTO Dark Basemap", "Coverage Overlays", "Waypoint Rendering", "Asset Markers"] },
+      { category: "Backend", tools: ["Python", "FastAPI", "SQLite", "WebSocket"] },
+      { category: "Domain", tools: ["ISR Ontology", "Telemetry Streams", "Mission Replay", "MAVLink Protocol"] },
     ],
     images: [
       {
         src: "/drone-dashboard.webp",
-        caption: "Swarm dashboard. Real-time map with 6 active drones in V-Formation.",
+        caption: "V1 — DroneNexus. React swarm dashboard with Mapbox, six fixed drones, formation controls.",
       },
     ],
-    link: { url: "https://github.com/NyXkim5/DroneNexus", label: "View on GitHub" },
+    versionImages: {
+      v1: {
+        src: "/drone-dashboard.webp",
+        caption: "V1 — DroneNexus. React swarm dashboard with Mapbox, six fixed drones, formation controls.",
+      },
+      v2: {
+        src: "/drone-dashboard-v2.png",
+        caption: "V2 — OVERWATCH. Asset selection cascades across all three panels. Telemetry values color-shift at degradation thresholds. The activity stream auto-weights by operational severity. Every micro-interaction designed for the edge cases that generic dashboards ignore.",
+      },
+      changelog: [
+        "Redesigned spatial hierarchy: fixed Object Explorer and Map with mode-dependent Directive Center across five operational modes",
+        "Enforced three-state color system — green/nominal, amber/degraded, red/critical — with zero decorative color anywhere in the interface",
+        "Replaced Mapbox with CARTO dark basemap for tactical readability in low-light and high-glare environments",
+        "Built domain ontology (Assets, Taskforces, Missions, Observations) as the structural primitive underlying all UI, API, and data layers",
+        "Engineered Python FastAPI backend with 25ms WebSocket telemetry, SQLite mission persistence, and full session replay",
+        "Designed micro-interactions for edge cases: selection propagation, threshold color shifts, severity-weighted activity stream, inspector state transitions",
+        "Shipped entire frontend as single HTML file — zero dependencies, zero build step, opens cold on any browser in any environment",
+      ],
+    },
+    link: { url: "https://droneoverwatch.vercel.app/", label: "View Live" },
     nextProject: "drone-virtual-env",
   },
   {
@@ -563,48 +613,47 @@ export const caseStudies: CaseStudy[] = [
     team: "Solo",
     layout: "newspaper",
     overview:
-      "Built a Ground Control Station (GCS) with 3D equipment preview, sensor noise modeling, flight operations management, and force disposition modules. The virtual environment lets operators configure drone hardware (frame, motors, propellers, power systems, electronics, sensors, thermal components) with real-time compatibility checks and performance calculations.",
+      "Configuring drone hardware is currently a spreadsheet exercise. Operators cross-reference spec sheets, run thrust calculations by hand, and discover incompatibilities after the build is assembled. I built a virtual environment where every component — frame, motors, propellers, power system, electronics, sensors, thermal — lives in a single interface with a 3D preview and real-time performance calculations. Swap a motor and instantly see how it changes thrust-to-weight ratio, max flight time, and hover power draw. The system catches incompatibilities before anything gets bolted together.",
     problem:
-      "Drone operators need to configure and validate hardware setups before flight. Current tools require switching between spec sheets, calculators, and separate software for each subsystem. There's no unified environment where operators can preview equipment in 3D, check compatibility, and see how component choices affect flight performance metrics like thrust-to-weight ratio, max speed, and flight time.",
+      "Hardware configuration for multi-rotor platforms involves six interdependent subsystems. Changing the motor changes the prop clearance, the power draw, the thrust curve, the flight envelope, and the thermal profile. Operators currently manage this across separate spec sheets, Excel calculators, and manufacturer tools that do not share data. Incompatibilities surface during assembly or, worse, during flight. There is no unified environment where an operator can see how one component choice ripples across every performance metric.",
     approach: [
-      "Built a 3D equipment preview with click-to-select, scroll-to-zoom, and drag-to-rotate interaction",
-      "Created an equipment manifest tree with categories: Frame, Motors & Props, Power System, Electronics, Sensors, Thermal",
-      "Implemented real-time performance calculations: all-up weight, thrust-to-weight ratio, max flight time, max payload, max speed, hover power, energy, and hover throttle",
-      "Added sensor noise modeling module for realistic simulation parameters",
-      "Built flight operations panel for mission planning and execution",
-      "Designed force disposition view for multi-drone tactical planning",
+      "Built a 3D equipment preview in Three.js — click to select, scroll to zoom, drag to rotate. Operators see the physical platform update as they swap components",
+      "Designed an equipment manifest tree spanning six subsystem categories: Frame, Motors & Props, Power System, Electronics, Sensors, Thermal. Each category exposes every configurable parameter",
+      "Implemented real-time performance calculations that recompute on every component change: all-up weight, thrust-to-weight ratio, max flight time, max payload, max speed, hover power, energy consumption, and hover throttle percentage",
+      "Added sensor noise modeling for simulation-grade parameter estimation — operators can preview sensor behavior before flight",
+      "Built force disposition view for multi-drone tactical planning — see the full fleet, not just one platform",
     ],
     designDecisions: [
       {
-        title: "Military-Grade HUD Aesthetic",
+        title: "Dark UI with Semantic Color",
         description:
-          "Used a dark theme with green accent typography mimicking military ground control interfaces. Monospace fonts, status bars, and system nominal indicators create an authentic operator experience.",
+          "The interface uses a dark theme with green accent typography consistent with military ground control conventions. The aesthetic is not decorative — operators in this domain expect monospace fonts, status bars, and nominal/degraded/critical state indicators. The visual language matches the operational context.",
         outcome:
-          "Professional GCS interface that aligns with defense and aerospace industry expectations.",
+          "The interface reads as a professional GCS tool. Operators familiar with defense and aerospace systems navigate it without onboarding.",
       },
       {
-        title: "Real-Time Performance Calculations",
+        title: "Every Change Recalculates Everything",
         description:
-          "Every component change instantly recalculates all performance metrics: weight, thrust ratio, flight time, payload capacity, and power draw. Operators see the impact of each hardware choice immediately.",
+          "Component interdependencies are the core complexity of hardware configuration. Swapping a motor changes thrust, power draw, flight time, payload capacity, and thermal profile simultaneously. The system recalculates all eight performance metrics on every change so operators never see stale numbers.",
         outcome:
-          "726g all-up weight, 7.16:1 thrust-to-weight (Sport), 6m 12s max flight time displayed in real-time.",
+          "Real-time feedback: 726g all-up weight, 7.16:1 thrust-to-weight ratio, 6m 12s max flight time — all updating live as components change.",
       },
     ],
     impact: [
       {
-        metric: "Components",
+        metric: "Subsystems",
         value: "6",
-        description: "Major subsystem categories with full configuration trees",
+        description: "Fully configurable categories — frame through thermal management",
       },
       {
         metric: "Metrics",
         value: "8+",
-        description: "Real-time performance calculations updated on every change",
+        description: "Performance calculations recomputed in real time on every component change",
       },
       {
-        metric: "Status",
-        value: "Nominal",
-        description: "All systems compatibility checking with live diagnostics",
+        metric: "Validation",
+        value: "Live",
+        description: "Compatibility checking catches conflicts before assembly",
       },
     ],
     stack: [
@@ -634,38 +683,38 @@ export const caseStudies: CaseStudy[] = [
     team: "Solo",
     layout: "newspaper",
     overview:
-      "VA.gov serves millions of veterans through a fragmented portal. Benefits, claims, disability ratings, and education status live on separate pages. Veterans miss deadlines and leave benefits unclaimed. I audited the most common veteran workflows, identified 4 metrics driving the majority of return visits, and built a unified dashboard prototype for an RFI bid. Added AI-powered benefit discovery to surface unclaimed entitlements. WCAG 2.1 AA compliant with USWDS.",
+      "Veterans leave billions in unclaimed benefits every year — not because they do not qualify, but because the information is buried across disconnected pages on a portal that was never designed around their actual tasks. I audited the most common veteran workflows on VA.gov and found that four metrics drive the majority of return visits: payment status, claim progress, disability rating, and GI Bill balance. I built a unified dashboard prototype for an RFI bid that puts all four on one screen, added AI-powered benefit discovery to surface entitlements veterans do not know they qualify for, and designed the entire interface within USWDS and WCAG 2.1 AA constraints.",
     problem:
-      "VA.gov serves millions of veterans. The experience is fragmented. Veterans navigate disconnected systems to check benefits, file claims, manage prescriptions, and access records. Payment delays, claim status changes, and benefit eligibility updates sit behind multiple clicks. Veterans miss deadlines, leave money on the table, and lose trust in the system.",
+      "VA.gov serves millions of veterans through a portal that reflects the VA's organizational structure, not the veteran's mental model. Checking payment status requires navigating to one section. Filing a claim lives in another. Prescription management in a third. The result: veterans miss filing deadlines because the notification was on a page they never visit. They leave disability rating increases on the table because no one told them they qualify. Every extra click between a veteran and their information is an opportunity for them to give up — and many do.",
     approach: [
-      "Designed a unified dashboard showing monthly benefits ($2,847), active claims (2), disability rating (70%), and GI Bill status (14 months remaining) at a glance",
-      "Built urgent notification system for time-sensitive alerts like payment delays",
-      "Created quick-action grid: Claims, Appeals, Appointments, Prescriptions, Payments, Messages, Travel Pay, Dependents, Direct Deposit, Letters",
-      "Implemented AI-powered Smart Insights with personalized recommendations based on veteran profile",
-      "Added guided tour functionality for first-time users",
-      "Ensured WCAG 2.1 AA accessibility compliance with proper contrast, focus management, and screen reader support",
+      "Designed a unified dashboard showing the four metrics veterans check most: monthly benefits ($2,847), active claims (2), disability rating (70%), and GI Bill balance (14 months remaining). All visible without scrolling",
+      "Built an urgent notification system for time-sensitive alerts — payment delays, claim status changes, approaching deadlines. The things that cost veterans money when missed",
+      "Replaced nested navigation with a quick-action grid: Claims, Appeals, Appointments, Prescriptions, Payments, Messages, Travel Pay, Dependents, Direct Deposit, Letters. One click to any service",
+      "Implemented AI-powered Smart Insights that scan a veteran's profile and surface specific actions: potential rating increases, unclaimed benefits, upcoming filing deadlines. Proactive, not passive",
+      "Built guided tour for first-time users — veterans who distrust government technology need a reason to stay past the first screen",
+      "Designed within WCAG 2.1 AA constraints: proper contrast ratios, full keyboard navigation, screen reader support. Accessibility is not a feature for a government portal — it is a requirement",
     ],
     designDecisions: [
       {
         title: "Four Metrics, Not Forty",
         description:
-          "The existing VA.gov spreads veteran data across dozens of pages. I audited the most common return-visit tasks: check payment status, track claims, verify disability rating, confirm GI Bill balance. These four actions account for the majority of veteran return visits. I put all four on one screen.",
+          "The existing VA.gov spreads veteran data across dozens of pages because it mirrors the VA's internal org chart, not the veteran's mental model. I audited return-visit behavior and found four actions drive the majority of traffic: check payment status, track claims, verify disability rating, confirm GI Bill balance. I put all four on one screen. The design discipline is what gets left out — forty metrics is easy, four is a decision.",
         outcome:
-          "Veterans see their complete benefits picture in under 3 seconds. Zero navigation required for the most common tasks.",
+          "Veterans see their complete benefits picture in under 3 seconds. Zero navigation required for the tasks that bring them back.",
       },
       {
         title: "AI Benefit Discovery",
         description:
-          "Veterans leave billions in unclaimed benefits each year because they do not know what they qualify for. I added an AI module that scans a veteran's profile and surfaces specific actions: potential rating increases, unclaimed benefits, upcoming filing deadlines. High-risk feature. If it delivers, it changes how veterans interact with the VA.",
+          "Veterans leave billions in unclaimed benefits every year because they do not know what they qualify for. The current portal waits for the veteran to ask the right question. I added an AI module that inverts the interaction — it scans the veteran's profile and proactively surfaces specific actions: potential rating increases, unclaimed benefits, approaching filing deadlines. This is the highest-risk feature in the prototype. If the recommendations are wrong, trust is destroyed permanently.",
         outcome:
-          "In prototype testing, users engaged with AI recommendations before any other dashboard element.",
+          "In prototype testing, users engaged with AI recommendations before any other dashboard element. The proactive pattern changed the interaction from pull to push.",
       },
       {
         title: "Quick Actions Over Deep Navigation",
         description:
-          "The current VA.gov requires veterans to navigate nested menus for common services. I replaced this with 10 quick-action cards: Claims, Appeals, Appointments, Prescriptions, Payments, Messages, Travel Pay, Dependents, Direct Deposit, Letters. One click to any service.",
+          "The current VA.gov requires veterans to navigate nested menus organized by VA department — a structure that means nothing to someone trying to refill a prescription. I replaced the navigation with 10 quick-action cards organized by task: Claims, Appeals, Appointments, Prescriptions, Payments, Messages, Travel Pay, Dependents, Direct Deposit, Letters. The veteran's intent, not the VA's org chart, determines the layout.",
         outcome:
-          "Reduced average clicks to reach a service from 4-5 to 1. Veterans no longer need to understand the VA organizational structure to find what they need.",
+          "Average clicks to reach a service dropped from 4–5 to 1. Veterans no longer need to understand VA organizational structure to find what they need.",
       },
     ],
     impact: [
@@ -699,14 +748,14 @@ export const caseStudies: CaseStudy[] = [
     ],
     reflections: {
       worked: [
-        "Dashboard-first design. Four key metrics on one screen eliminated the navigation burden. Users went straight to the information they needed.",
-        "AI insights drew the most engagement in prototype testing. Veterans responded to proactive recommendations over passive data display.",
-        "USWDS compliance reduced design decisions. The government design system kept focus on information architecture, not visual styling.",
+        "Dashboard-first design. Committing to four metrics forced every other element to justify its existence. The constraint produced clarity.",
+        "AI-powered recommendations drew the most engagement in prototype testing. Proactive surfaces outperformed passive data display by a wide margin. Veterans want the system to tell them what to do, not make them figure it out.",
+        "USWDS compliance was a design accelerator, not a constraint. The government design system eliminated visual decisions and kept focus on information architecture — the part that actually matters.",
       ],
       different: [
-        "Tested with veterans earlier. The prototype was validated with general users. Veteran-specific pain points around trust and institutional skepticism need dedicated research.",
-        "Built a claims filing flow instead of a dashboard. The dashboard shows status. The real friction is in filing and appeals. Simplifying that process would have more impact.",
-        "Scoped AI features more narrowly. The smart insights module attempts too much. A single use case like deadline alerts would ship faster and prove value sooner.",
+        "Tested with actual veterans from the start. The prototype was validated with general users. Veterans carry institutional distrust that general users do not — the onboarding, tone, and error handling all need to account for someone who expects the system to fail.",
+        "Built the claims filing flow, not just the dashboard. The dashboard shows status. The real pain is in filing and appeals — simplifying that process would have delivered more value than any amount of dashboard polish.",
+        "Scoped the AI module to one use case. Smart Insights tries to do too much. Shipping deadline alerts alone would have proven value faster and built the trust needed to expand scope.",
       ],
     },
     link: { url: "https://va-gov-mvp-v1.vercel.app/", label: "View Live Demo" },
