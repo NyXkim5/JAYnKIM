@@ -7,6 +7,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/useClient";
 import { playlist, type Song } from "@/data/playlist";
 
 // Cat singing component with the cute cat image
@@ -216,15 +217,7 @@ export default function MusicContent() {
     new Set(playlist.filter((s) => s.fav).map((s) => s.id))
   );
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-    setIsLargeScreen(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setIsLargeScreen(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+  const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
   const filteredPlaylist = useMemo(() => {
     if (!searchQuery) return playlist;
@@ -260,9 +253,12 @@ export default function MusicContent() {
     return () => clearInterval(interval);
   }, [isPlaying, selected]);
 
-  useEffect(() => {
+  // Reset progress when the song changes, during render (no effect needed).
+  const [prevSongId, setPrevSongId] = useState(selected.id);
+  if (prevSongId !== selected.id) {
+    setPrevSongId(selected.id);
     setProgress(0);
-  }, [selected.id]);
+  }
 
   const handlePrev = useCallback(() => {
     const idx = playlist.findIndex((s) => s.id === selected.id);

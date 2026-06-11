@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
+import { useIsMounted, useMediaQuery } from "@/hooks/useClient";
 import {
   motion,
   useMotionValue,
@@ -18,20 +19,17 @@ const MONO = `var(--font-mono), ui-monospace, monospace`;
 const X_COUNT = 18;
 
 function SpinningMarks() {
-  const [marks, setMarks] = useState<{ left: string; top: string; delay: number; repeatDelay: number }[]>([]);
+  const mounted = useIsMounted();
+  const [marks] = useState(() =>
+    Array.from({ length: X_COUNT }, () => ({
+      left: `${Math.random() * 90 + 5}%`,
+      top: `${Math.random() * 90 + 5}%`,
+      delay: Math.random() * 6,
+      repeatDelay: Math.random() * 8 + 4,
+    }))
+  );
 
-  useEffect(() => {
-    setMarks(
-      Array.from({ length: X_COUNT }, () => ({
-        left: `${Math.random() * 90 + 5}%`,
-        top: `${Math.random() * 90 + 5}%`,
-        delay: Math.random() * 6,
-        repeatDelay: Math.random() * 8 + 4,
-      }))
-    );
-  }, []);
-
-  if (marks.length === 0) return null;
+  if (!mounted) return null;
 
   return (
     <>
@@ -134,7 +132,7 @@ function Barcode({ width = 180, height = 28 }: { width?: number; height?: number
 export default function ContactContent() {
   const tagRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
-  const [isTouch, setIsTouch] = useState(false);
+  const isTouch = useMediaQuery("(pointer: coarse)");
   const [cordSway, setCordSway] = useState(0);
   const [gridCursor, setGridCursor] = useState({ x: 0, y: 0 });
 
@@ -148,10 +146,6 @@ export default function ContactContent() {
     stiffness: 100,
     damping: 30,
   });
-
-  useEffect(() => {
-    setIsTouch("ontouchstart" in window || navigator.maxTouchPoints > 0);
-  }, []);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {

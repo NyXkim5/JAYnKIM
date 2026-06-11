@@ -89,19 +89,19 @@ export const caseStudies: CaseStudy[] = [
         description:
           "HIPAA compliance is typically treated as an audit exercise — encrypt the database, log the accesses, pass the review. We built it as an architectural constraint. Every data access is authenticated and logged at the infrastructure layer. PHI fields are encrypted at rest and in transit. Row-level security ensures teams only touch data they are authorized for. Audit trails are append-only and retained for 7 years. You cannot build a non-compliant pipeline because the infrastructure will not let you.",
         outcome:
-          "Zero compliance incidents. Every pipeline passes automated HIPAA audit checks on every deployment without manual intervention.",
+          "Every pipeline runs automated HIPAA audit checks on each deployment, so compliance is enforced by the infrastructure instead of a manual review step.",
       },
     ],
     impact: [
       {
         metric: "Scale",
         value: "150M+",
-        description: "Patients served across UnitedHealth Group — every pipeline decision compounds at this scale",
+        description: "Patients covered by the pipelines I work on. At this scale a silent failure reaches real care decisions",
       },
       {
         metric: "Records",
         value: "Millions/day",
-        description: "Healthcare records processed daily with strict SLA guarantees",
+        description: "Healthcare records processed daily under SLA, because a late record compounds into a missed care window",
       },
       {
         metric: "Uptime",
@@ -185,7 +185,7 @@ export const caseStudies: CaseStudy[] = [
         description:
           "Every API call authenticated. Every data access logged. PHI encrypted at rest and in transit. Custom RBAC maps to compliance roles: reviewer, admin, auditor.",
         outcome:
-          "Passed HIPAA technical safeguard requirements. Clients approved deployment after security review with zero findings.",
+          "Maps directly to HIPAA technical safeguard requirements: encryption, role-based access, and a full audit trail built into the architecture rather than bolted on.",
       },
       {
         title: "Developer-First API Design",
@@ -205,11 +205,6 @@ export const caseStudies: CaseStudy[] = [
         metric: "Verification",
         value: "-82%",
         description: "AI output verification dropped from 45 minutes to 8 minutes per query",
-      },
-      {
-        metric: "Retention",
-        value: "100%",
-        description: "3-month customer retention across all pilot users",
       },
       {
         metric: "Latency",
@@ -299,7 +294,7 @@ export const caseStudies: CaseStudy[] = [
       ],
     },
     brandPhilosophy: {
-      intro: "Archv's visual identity lives in tension. The product interface is stripped down: black text, white space, sharp edges. No decoration. Every pixel earns its place or gets removed. But the brand mark is the opposite. The logo is a burst of color: iridescent ribbons, overlapping circles, a rainbow wordmark. It is playful on purpose. Archv handles compliance documents, regulatory filings, legal risk. The work is serious. The brand says: we make serious work feel approachable. The color in the logo represents the breadth of what Archv touches: law, healthcare, government, finance. Each domain has its own weight. The logo holds all of them together in one playful mark. The interface stays minimal so the content speaks. The brand stays colorful so the company feels human.",
+      intro: "Archv's identity lives in tension. The product interface is stripped down: black text, white space, sharp edges, no decoration. The brand mark is the opposite, a burst of iridescent color. The work is serious, so the interface stays minimal and the content speaks. The company should feel human, so the brand stays colorful. The color also stands for the range of what Archv touches: law, healthcare, government, finance.",
       typography: {
         heading: "Favorit by Dinamo. A geometric grotesque with sharp terminals and wide apertures. It reads fast at small sizes, which matters when attorneys scan compliance dashboards for 6 hours straight. The geometry references architectural drafting lettering. Clean, precise, no flourishes.",
         body: "Inter for UI text. High x-height, open counters, designed for screens. Pairs with Favorit without competing. Body text at 14px/1.6 line height. Dense enough for data-heavy views. Readable enough for long review sessions.",
@@ -437,14 +432,14 @@ export const caseStudies: CaseStudy[] = [
         description:
           "PHI protection is not a feature — it is a layer. Every field containing patient data is encrypted at rest with database-level encryption. Row-level security policies ensure clinicians access only their authorized patients. Every access event is logged immutably for HIPAA audit trails. The system does not trust the application layer to enforce compliance — the database enforces it.",
         outcome:
-          "Zero PHI exposure incidents across the entire engagement. Passed every compliance audit without remediation.",
+          "Compliance is enforced at the database layer, not the application layer, so an application bug cannot expose PHI on its own.",
       },
       {
         title: "Prototype Before Code",
         description:
           "Every screen was designed in Figma and validated with clinical end-users through interactive prototypes before engineering began. Practice managers walked through the dashboard. Front desk staff walked through intake. Surgeons walked through the patient view. Workflow issues surfaced in prototyping, not in production.",
         outcome:
-          "Practice managers adopted the platform within the first week of launch. Zero redesign cycles post-ship.",
+          "Workflow problems surfaced in prototyping instead of production, so the shipped build matched how staff actually work.",
       },
     ],
     impact: [
@@ -461,12 +456,7 @@ export const caseStudies: CaseStudy[] = [
       {
         metric: "Adoption",
         value: "1 week",
-        description: "Full adoption by practice managers — no training sessions required",
-      },
-      {
-        metric: "PHI Incidents",
-        value: "Zero",
-        description: "No data exposure across the entire engagement",
+        description: "Practice managers were running daily operations on the dashboards within the first week",
       },
     ],
     stack: [

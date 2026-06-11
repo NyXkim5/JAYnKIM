@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/useClient";
+import { generatePositions } from "./positions";
 import { cafeRecs, foodRecs, type Rec } from "@/data/recs";
 
 const tabs = ["Cafes", "Food"] as const;
@@ -30,30 +32,6 @@ const colorStyles: Record<string, string> = {
   orange: "bg-orange-200",
   purple: "bg-violet-200",
 };
-
-// Generate random positions for notes
-function generatePositions(count: number, seed: number) {
-  const positions: { x: number; y: number; rotate: number }[] = [];
-  const cols = 5;
-  const cellWidth = 100 / cols;
-
-  for (let i = 0; i < count; i++) {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-
-    // Add randomness within grid cell
-    const randomX = (seed * (i + 1) * 13) % 40 - 20;
-    const randomY = (seed * (i + 1) * 17) % 30 - 15;
-    const randomRotate = ((seed * (i + 1) * 7) % 16) - 8;
-
-    positions.push({
-      x: col * cellWidth + cellWidth / 2 + randomX / 5,
-      y: row * 220 + 20 + randomY,
-      rotate: randomRotate,
-    });
-  }
-  return positions;
-}
 
 function StickyNote({
   rec,
@@ -207,25 +185,20 @@ type View = "board" | "list";
 
 export default function MatchaContent() {
   const [tab, setTab] = useState<Tab>("Cafes");
-  const [view, setView] = useState<View>("board");
-  const [positions, setPositions] = useState<Record<string, { x: number; y: number; rotate: number }>>({});
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const [userView, setUserView] = useState<View | null>(null);
+  const view: View = userView ?? (isMobile ? "list" : "board");
   const items = recMap[tab];
 
-  // Default to list view on mobile
-  useEffect(() => {
-    const zoom = parseFloat(getComputedStyle(document.documentElement).zoom || "1") || 1;
-    if (window.innerWidth / zoom < 768) setView("list");
-  }, []);
-
-  // Generate initial positions when tab changes
-  useEffect(() => {
+  // Deterministic positions per tab; no state, recomputed only when tab changes
+  const positions = useMemo(() => {
     const seed = tab === "Cafes" ? 42 : 73;
     const generated = generatePositions(items.length, seed);
     const posMap: Record<string, { x: number; y: number; rotate: number }> = {};
     items.forEach((item, i) => {
       posMap[item.id] = generated[i];
     });
-    setPositions(posMap);
+    return posMap;
   }, [tab, items]);
 
   const handleDragEnd = () => {
@@ -265,7 +238,7 @@ export default function MatchaContent() {
                 <div className="flex items-center gap-3">
                   {/* View toggle */}
                   <button
-                    onClick={() => setView(view === "board" ? "list" : "board")}
+                    onClick={() => setUserView(view === "board" ? "list" : "board")}
                     className="p-2 rounded-full bg-neutral-100 text-neutral-500 hover:bg-neutral-200 transition-colors"
                     aria-label={`Switch to ${view === "board" ? "list" : "board"} view`}
                     title={`Switch to ${view === "board" ? "list" : "board"} view`}

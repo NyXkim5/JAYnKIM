@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import dynamic from "next/dynamic";
 import "./globals.css";
+import "@/components/ui/ScribbleButton.css";
 import { TransitionProvider } from "@/components/transitions/TransitionProvider";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { ReducedMotionWrapper } from "@/components/ui/ReducedMotionWrapper";

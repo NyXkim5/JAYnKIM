@@ -1,6 +1,5 @@
 "use client";
 
-import styles from "./ScribbleButton.module.css";
 import { TransitionLink } from "@/components/transitions/TransitionLink";
 
 interface ScribbleButtonProps {
@@ -10,12 +9,12 @@ interface ScribbleButtonProps {
 
 export function ScribbleButton({ href, text }: ScribbleButtonProps) {
   return (
-    <TransitionLink href={href} className={styles.button}>
-      <div className={styles.line} />
-      <div className={styles.line} />
-      <span className={styles.text}>{text}</span>
-      <div className={styles.drow1} />
-      <div className={styles.drow2} />
+    <TransitionLink href={href} className="scribble-button">
+      <div className="scribble-line" />
+      <div className="scribble-line" />
+      <span className="scribble-text">{text}</span>
+      <div className="scribble-drow1" />
+      <div className="scribble-drow2" />
     </TransitionLink>
   );
 }

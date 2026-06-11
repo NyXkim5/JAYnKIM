@@ -152,7 +152,7 @@ export default function HomeContent() {
 
               <RevealLeft delay={0.3}>
                 <p className="text-text-black text-base leading-relaxed mb-4">
-                  I&apos;m Jay Kim. I design and build software for domains where the interface is the bottleneck — healthcare, defense, compliance. The kind of tools where a bad layout costs someone time, money, or worse.
+                  I&apos;m Jay Kim. I build software for regulated domains: healthcare, defense, compliance. The systems are complex and the stakes are real, so I care as much about the interface someone uses as the pipeline underneath it.
                 </p>
               </RevealLeft>
               <RevealLeft delay={0.5}>
