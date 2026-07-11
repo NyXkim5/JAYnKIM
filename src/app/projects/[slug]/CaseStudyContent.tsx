@@ -373,7 +373,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
                     <div className="mt-8 pt-6 border-t border-border-light">
                       <Link
                         href={study.architecture.writeupLink}
-                        className="group inline-flex items-center gap-2 font-mono text-[11px] tracking-wider text-text-mid hover:text-text-black transition-colors"
+                        className="group inline-flex items-center gap-2 font-mono text-[11px] tracking-wider text-text-mid hover:text-text-black transition-colors underline underline-offset-4 decoration-border-mid hover:decoration-text-black"
                       >
                         Read the full technical writeup
                         <span className="group-hover:translate-x-1 transition-transform">&#8599;</span>
