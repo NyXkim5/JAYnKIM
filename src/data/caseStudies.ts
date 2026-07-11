@@ -400,10 +400,10 @@ export const caseStudies: CaseStudy[] = [
     id: "003",
     title: "MedVanta Platform",
     subtitle: "Clinical Operations & Compliance Software",
-    year: "2024",
+    year: "2024 – 2025",
     role: "Software Engineer",
     status: "Shipped",
-    duration: "2023 – 2024",
+    duration: "May 2024 – July 2025",
     team: "Cross-functional (engineering + clinical)",
     layout: "newspaper",
     overview:

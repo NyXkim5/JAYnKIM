@@ -34,7 +34,7 @@ const projects = [
     description: "Built VantaStat to collapse the timeline from orthopaedic injury to specialist consultation from days to minutes. Shipped analytics dashboards, HIPAA-compliant backend, and workflow automation saving ~5 hours of admin time per week per practice.",
     tags: ["React", "Python", "FastAPI", "Figma", "HIPAA"],
     status: "Shipped",
-    year: "2023 – 2024",
+    year: "2024 – 2025",
   },
   {
     id: "004",
