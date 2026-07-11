@@ -57,64 +57,63 @@ export const caseStudies: CaseStudy[] = [
     slug: "optum",
     id: "002",
     title: "Optum",
-    subtitle: "Production ML for Healthcare at UnitedHealth Group",
+    subtitle: "Automating RFP Response at UnitedHealth Group",
     year: "2026",
-    role: "Software Engineer, AI/ML",
+    role: "Forward Deployed AI/ML Engineer",
     status: "Current",
     duration: "Feb 2026 – Present",
     team: "Enterprise AI/ML Team",
     layout: "newspaper",
     overview:
-      "Most ML in healthcare dies in a notebook. A model performs well on historical data, gets handed to engineering, and never survives contact with production traffic, schema drift, or a compliance audit. I work on the systems that keep models alive after deployment — pipelines ingesting millions of records daily, monitoring that catches drift before it reaches patients, infrastructure that makes all of it auditable under HIPAA. The challenge is not building the model. It is building the system around it that runs at 150M-patient scale.",
+      "The business receives tens of thousands of RFPs. Each one is a dense document that has to be parsed, routed to the right teams, answered, reviewed, and returned on a deadline. That work used to live in email threads, spreadsheets, and tribal knowledge. I build the platform that replaces it. AI parses incoming RFP documents into structured, answerable questions, and every team involved works in one place to communicate, draft, and complete the response. The hardest technical problem is parsing accuracy. If the system misreads a requirement, everything downstream is wrong, so improving extraction accuracy is the constant focus.",
     problem:
-      "A care gap detected six months late is a care gap that sent someone to the ER. Clinical records, claims, pharmacy data, and lab results live in separate systems with different schemas, update cadences, and access controls. Models trained on clean historical data encounter missing fields, delayed records, and format changes in production. The failure mode is not a bad prediction — it is a prediction that looked correct at training time and degrades silently in production until a downstream clinician makes a decision on stale confidence scores.",
+      "An RFP is not one document for one team. A single response pulls in multiple teams, each answering their own sections against a shared deadline. Before the platform, that coordination happened over email and spreadsheets. Questions got missed, answers got rebuilt from scratch, and nobody had one view of what was done. The source documents themselves are hostile inputs: long PDFs, Word files, and embedded tables in formats that change with every issuer. Parsing them wrong is worse than not parsing them at all, because a misread requirement produces a confident, wrong answer.",
     approach: [
-      "Own the full lifecycle from data ingestion through feature engineering, training, deployment, and post-deployment monitoring — no handoff gap between research and production",
-      "Deploy on AWS with Kubernetes orchestration and automated rollback triggered by performance degradation, not just infrastructure failure",
-      "Build processing jobs against strict SLAs — healthcare records that arrive late or process late compound downstream into missed care windows",
-      "Instrument every model with drift detection, prediction confidence tracking, and anomaly alerting. If a model's output distribution shifts, we know before a clinician sees the result",
-      "Translate research models into production services with latency and throughput guarantees. A model that takes 30 seconds per prediction is a model that will not be used",
-      "Enforce HIPAA compliance as infrastructure, not policy — encryption at rest and in transit, row-level access controls, immutable audit trails. Compliance is not a checklist item, it is an architectural constraint",
+      "Parse incoming RFP documents into structured, answerable questions with AI document extraction. Accuracy here gates everything downstream",
+      "Centralize every team that touches an RFP into one platform. Assignment, drafting, review, and communication happen in the same place",
+      "Treat parsing accuracy as ongoing work, not a one-time build. Keep improving extraction against the real documents the business receives",
+      "Put questions in front of the right team inside the platform instead of an inbox",
+      "Work forward deployed: build directly against the business's real RFP workload and iterate with the teams completing responses in the tool",
+      "Handle sensitive healthcare business data under enterprise security and compliance requirements from day one",
     ],
     designDecisions: [
       {
-        title: "Pipeline as the Unit of Deployment",
+        title: "Parsing Accuracy as the Product",
         description:
-          "Models do not deploy alone. Every model ships inside a standardized pipeline: data validation, feature computation, inference, post-processing, and result storage. The pipeline is versioned as a single artifact. Failed stages retry with exponential backoff. Every prediction is logged with its input features so any output can be reproduced and debugged months later. The pipeline, not the model, is what gets promoted to production.",
+          "RFP formats vary with every issuer. Numbered questions, nested tables, requirements buried in prose, Excel questionnaires with merged cells. At tens of thousands of RFPs, even rare parsing failures add up. So parsing is not a preprocessing step, it is the product, and improving extraction accuracy is treated as ongoing engineering work, not a launch milestone.",
         outcome:
-          "99.9%+ uptime across production models. Any prediction can be traced back to its exact input state. Failed predictions retry automatically and flag for human review.",
+          "Improving parsing accuracy is the central technical work on the platform, and real usage by the teams completing RFPs is what surfaces the errors.",
       },
       {
-        title: "Compliance as Architecture",
+        title: "One Platform, Every Team",
         description:
-          "HIPAA compliance is typically treated as an audit exercise — encrypt the database, log the accesses, pass the review. We built it as an architectural constraint. Every data access is authenticated and logged at the infrastructure layer. PHI fields are encrypted at rest and in transit. Row-level security ensures teams only touch data they are authorized for. Audit trails are append-only and retained for 7 years. You cannot build a non-compliant pipeline because the infrastructure will not let you.",
+          "The alternative was to bolt AI onto the existing workflow of email, spreadsheets, and shared drives. We rejected that. If teams still coordinate outside the system, the system never sees the full picture and answers never become reusable. Instead the platform is where the work happens: questions are assigned, drafted, discussed, reviewed, and completed in one place, with full visibility into what is done and what is blocking.",
         outcome:
-          "Every pipeline runs automated HIPAA audit checks on each deployment, so compliance is enforced by the infrastructure instead of a manual review step.",
+          "Every team that touches an RFP communicates and completes work in the same system. Status is visible, and completed answers become an asset instead of an email attachment.",
       },
     ],
     impact: [
       {
-        metric: "Scale",
-        value: "150M+",
-        description: "Patients covered by the pipelines I work on. At this scale a silent failure reaches real care decisions",
+        metric: "Volume",
+        value: "Tens of thousands",
+        description: "RFPs the business receives. Every one flows through parsing, so accuracy improvements compound across the whole pipeline",
       },
       {
-        metric: "Records",
-        value: "Millions/day",
-        description: "Healthcare records processed daily under SLA, because a late record compounds into a missed care window",
+        metric: "Teams",
+        value: "One platform",
+        description: "All teams involved in an RFP communicate and complete responses in the same system instead of email and spreadsheets",
       },
       {
-        metric: "Uptime",
-        value: "99.9%+",
-        description: "Production model availability with automated rollback on degradation",
+        metric: "Core metric",
+        value: "Parsing accuracy",
+        description: "The number that gates everything downstream. Improving it is the central ongoing technical work",
       },
     ],
     stack: [
-      { category: "Languages", tools: ["Python", "SQL"] },
-      { category: "ML/AI", tools: ["PyTorch", "Scikit-learn", "MLflow", "Feature Stores"] },
-      { category: "Infrastructure", tools: ["AWS", "Kubernetes", "Docker", "Terraform"] },
-      { category: "Data", tools: ["Spark", "Airflow", "PostgreSQL", "S3"] },
-      { category: "Compliance", tools: ["HIPAA", "SOC 2", "Encryption", "Audit Logging"] },
+      { category: "Languages", tools: ["Python", "TypeScript", "SQL"] },
+      { category: "AI/ML", tools: ["LLMs", "Document Parsing", "OCR", "Evaluation Pipelines"] },
+      { category: "Infrastructure", tools: ["Azure", "Docker", "Kubernetes"] },
+      { category: "Compliance", tools: ["Enterprise Security", "Audit Logging"] },
     ],
     images: [],
     link: { url: "#", label: "Private Repo" },
@@ -487,7 +486,7 @@ export const caseStudies: CaseStudy[] = [
     team: "Solo",
     layout: "newspaper",
     overview:
-      "Full-stack ground control system for autonomous drone swarms — 2 to 50 vehicles, any flight controller, any protocol. The system is a monorepo with four modules: a tactical HUD (src/hud) with Leaflet.js and Canvas for real-time map rendering across four operational modes, an Electron desktop simulator (drone-sim) with React 18, Three.js, and Zustand for 3D flight visualization and physics simulation, a Python FastAPI ground control server (backend) handling 10Hz telemetry aggregation, swarm coordination, collision avoidance, geofence enforcement, and a shared protocol layer (src/shared) enforcing type-safe contracts across MAVLink 2.0 and MSP serial protocols. WebSocket broadcasts push telemetry to all connected clients. WebRTC streams sub-100ms video from onboard cameras. 76+ tests across 7 suites.",
+      "I designed and built OVERWATCH solo: a full-stack ground control system for autonomous drone swarms — 2 to 50 vehicles, any flight controller, any protocol. The system is a monorepo with four modules: a tactical HUD (src/hud) with Leaflet.js and Canvas for real-time map rendering across four operational modes, an Electron desktop simulator (drone-sim) with React 18, Three.js, and Zustand for 3D flight visualization and physics simulation, a Python FastAPI ground control server (backend) handling 10Hz telemetry aggregation, swarm coordination, collision avoidance, geofence enforcement, and a shared protocol layer (src/shared) enforcing type-safe contracts across MAVLink 2.0 and MSP serial protocols. WebSocket broadcasts push telemetry to all connected clients. WebRTC streams sub-100ms video from onboard cameras. 76+ tests across 7 suites.",
     problem:
       "Ground control stations are built by engineers who have never watched an operator lose a drone because the battery warning was buried three tabs deep. The standard interface dumps raw telemetry into tables, scatters controls across modal dialogs, and treats a map pin as sufficient spatial awareness. Operators running a six-drone swarm are forced to context-switch between views to answer basic questions: which asset is degraded, what is its heading, can I redirect it. Beyond the interface, most GCS software only supports a single flight controller protocol and has no real swarm intelligence — no formation geometry, no collision avoidance, no automatic leader election, no geofence enforcement. The gap is not hardware. It is the entire software stack between the radio and the operator's decision.",
     approach: [
