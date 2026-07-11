@@ -26,7 +26,6 @@ export function CommandPalette() {
       category: "page" as const,
       action: () => navigateTo(r.path),
     })),
-    { id: "resume", label: "Download Resume", category: "action", action: () => { window.open("/resume.pdf", "_blank"); } },
     { id: "github", label: "GitHub", category: "action", action: () => { window.open("https://github.com/NyXkim5", "_blank"); } },
     { id: "linkedin", label: "LinkedIn", category: "action", action: () => { window.open("https://www.linkedin.com/in/joonhyuknkim/", "_blank"); } },
     { id: "email", label: "Send Email", category: "action", action: () => { window.open("mailto:joonhyuknkim@gmail.com", "_self"); } },

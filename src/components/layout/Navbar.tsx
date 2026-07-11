@@ -139,15 +139,6 @@ export function Navbar() {
             Contact
           </TransitionLink>
 
-          {/* Resume button - prominent */}
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-[13px] tracking-wider uppercase px-4 py-2 rounded transition-all bg-text-black text-white hover:bg-text-dark"
-          >
-            Resume
-          </a>
         </div>
 
         {/* Mobile hamburger */}
@@ -206,23 +197,6 @@ export function Navbar() {
                 );
               })}
 
-              {/* Mobile resume button */}
-              <motion.div
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: allLinks.length * 0.05 }}
-                className="pt-3"
-              >
-                <a
-                  href="/resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setMenuOpen(false)}
-                  className="block py-3 font-mono text-sm tracking-wider uppercase text-center rounded bg-text-black text-white"
-                >
-                  Download Resume
-                </a>
-              </motion.div>
             </div>
           </motion.div>
         )}
