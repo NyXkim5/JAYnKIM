@@ -23,7 +23,7 @@ const projects = [
     slug: "optum",
     title: "Optum, UnitedHealth Group",
     description: "The business receives tens of thousands of RFPs. I build the platform that automates them: AI document parsing that turns dense RFP documents into structured, answerable questions, and one workspace where every team communicates and completes responses together. Improving parsing accuracy is the core ongoing work.",
-    tags: ["Python", "AI/ML", "Azure", "Document Parsing", "Healthcare"],
+    tags: ["Python", "AI/ML", "Document Parsing", "Healthcare"],
     status: "Current",
     year: "Feb 2026 – Present",
   },

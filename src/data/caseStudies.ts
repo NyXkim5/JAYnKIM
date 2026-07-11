@@ -112,7 +112,7 @@ export const caseStudies: CaseStudy[] = [
     stack: [
       { category: "Languages", tools: ["Python", "TypeScript", "SQL"] },
       { category: "AI/ML", tools: ["LLMs", "Document Parsing", "OCR", "Evaluation Pipelines"] },
-      { category: "Infrastructure", tools: ["Azure", "Docker", "Kubernetes"] },
+      { category: "Infrastructure", tools: ["Docker", "Kubernetes"] },
       { category: "Compliance", tools: ["Enterprise Security", "Audit Logging"] },
     ],
     images: [],
