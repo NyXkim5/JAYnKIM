@@ -5,20 +5,14 @@ import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/transitions/TransitionLink";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { GlitchText } from "@/components/ui/GlitchText";
 import { PRIMARY_ROUTES, SECONDARY_ROUTES } from "@/data/routes";
 
 const primaryLinks = PRIMARY_ROUTES.map((r) => ({ label: r.label, href: r.path }));
 const moreLinks = SECONDARY_ROUTES.map((r) => ({ label: r.label, href: r.path }));
 const allLinks = [...primaryLinks.slice(0, 3), ...moreLinks, primaryLinks[3]];
 
-interface NavbarProps {
-  variant?: "light" | "dark";
-}
-
-export function Navbar({ variant = "light" }: NavbarProps) {
+export function Navbar() {
   const pathname = usePathname();
-  const isDark = variant === "dark";
   const [menuOpen, setMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreButtonRef = useRef<HTMLButtonElement>(null);
@@ -47,24 +41,13 @@ export function Navbar({ variant = "light" }: NavbarProps) {
   }, []);
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50",
-        isDark
-          ? "bg-transparent"
-          : "bg-bg-white/80 backdrop-blur-sm border-b border-border-light"
-      )}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 bg-bg-white/80 backdrop-blur-sm border-b border-border-light">
       <nav className="flex items-center justify-between px-5 md:px-8 h-16">
         <TransitionLink
           href="/"
-          className={cn(
-            "font-mono text-[15px] font-bold tracking-widest uppercase",
-            isDark ? "text-white hover:text-accent-cyan" : "text-text-black hover:text-text-mid",
-            "transition-colors"
-          )}
+          className="font-mono text-[15px] font-bold tracking-widest uppercase text-text-black hover:text-text-mid transition-colors"
         >
-          <GlitchText text="Jay Kim" interval={6000} />
+          Jay Kim
         </TransitionLink>
 
         {/* Desktop links */}
@@ -79,9 +62,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
                   "font-mono text-sm tracking-wider uppercase transition-colors",
-                  isDark
-                    ? isActive ? "text-accent-cyan" : "text-white/60 hover:text-white"
-                    : isActive ? "text-text-black" : "text-text-mid hover:text-text-black"
+                  isActive ? "text-text-black" : "text-text-mid hover:text-text-black"
                 )}
               >
                 {link.label}
@@ -105,9 +86,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
               aria-haspopup="true"
               className={cn(
                 "font-mono text-sm tracking-wider uppercase transition-colors flex items-center gap-1 bg-transparent border-none p-0",
-                isDark
-                  ? moreOpen ? "text-accent-cyan" : "text-white/60 hover:text-white"
-                  : moreOpen ? "text-text-black" : "text-text-mid hover:text-text-black"
+                moreOpen ? "text-text-black" : "text-text-mid hover:text-text-black"
               )}
             >
               More
@@ -119,16 +98,11 @@ export function Navbar({ variant = "light" }: NavbarProps) {
             <AnimatePresence>
               {moreOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: 4, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 4, scale: 0.95 }}
-                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                  className={cn(
-                    "absolute top-full left-1/2 -translate-x-1/2 mt-2 py-2 px-1 rounded-lg border min-w-[120px]",
-                    isDark
-                      ? "bg-bg-dark-elevated border-border-dark"
-                      : "bg-bg-white border-border-light shadow-lg"
-                  )}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 4 }}
+                  transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 py-2 px-1 rounded-lg border min-w-[120px] bg-bg-white border-border-light shadow-lg"
                   ref={dropdownRef}
                   onKeyDown={handleDropdownKeyDown}
                 >
@@ -141,9 +115,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                         aria-current={isActive ? "page" : undefined}
                         className={cn(
                           "block px-4 py-2.5 font-mono text-sm tracking-wider uppercase transition-colors rounded",
-                          isDark
-                            ? isActive ? "text-accent-cyan bg-white/5" : "text-white/60 hover:text-white hover:bg-white/5"
-                            : isActive ? "text-text-black bg-bg-light" : "text-text-mid hover:text-text-black hover:bg-bg-light"
+                          isActive ? "text-text-black bg-bg-light" : "text-text-mid hover:text-text-black hover:bg-bg-light"
                         )}
                       >
                         {link.label}
@@ -161,9 +133,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
             aria-current={pathname === "/contact" ? "page" : undefined}
             className={cn(
               "font-mono text-sm tracking-wider uppercase transition-colors",
-              isDark
-                ? pathname === "/contact" ? "text-accent-cyan" : "text-white/60 hover:text-white"
-                : pathname === "/contact" ? "text-text-black" : "text-text-mid hover:text-text-black"
+              pathname === "/contact" ? "text-text-black" : "text-text-mid hover:text-text-black"
             )}
           >
             Contact
@@ -174,12 +144,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
             href="/resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className={cn(
-              "font-mono text-[13px] tracking-wider uppercase px-4 py-2 rounded transition-all",
-              isDark
-                ? "bg-accent-green/20 text-accent-green border border-accent-green/30 hover:bg-accent-green/30"
-                : "bg-text-black text-white hover:bg-text-dark"
-            )}
+            className="font-mono text-[13px] tracking-wider uppercase px-4 py-2 rounded transition-all bg-text-black text-white hover:bg-text-dark"
           >
             Resume
           </a>
@@ -193,15 +158,15 @@ export function Navbar({ variant = "light" }: NavbarProps) {
         >
           <motion.span
             animate={menuOpen ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
-            className={cn("block w-5 h-[1.5px] origin-center", isDark ? "bg-white" : "bg-text-black")}
+            className="block w-5 h-[1.5px] origin-center bg-text-black"
           />
           <motion.span
             animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
-            className={cn("block w-5 h-[1.5px]", isDark ? "bg-white" : "bg-text-black")}
+            className="block w-5 h-[1.5px] bg-text-black"
           />
           <motion.span
             animate={menuOpen ? { rotate: -45, y: -5 } : { rotate: 0, y: 0 }}
-            className={cn("block w-5 h-[1.5px] origin-center", isDark ? "bg-white" : "bg-text-black")}
+            className="block w-5 h-[1.5px] origin-center bg-text-black"
           />
         </button>
       </nav>
@@ -214,10 +179,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-            className={cn(
-              "md:hidden overflow-hidden border-t",
-              isDark ? "bg-bg-dark border-border-dark" : "bg-bg-white border-border-light"
-            )}
+            className="md:hidden overflow-hidden border-t bg-bg-white border-border-light"
           >
             <div className="px-5 py-4 space-y-1" onKeyDown={(e) => { if (e.key === "Escape") setMenuOpen(false); }}>
               {allLinks.map((link, i) => {
@@ -225,8 +187,8 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                 return (
                   <motion.div
                     key={link.href}
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                   >
                     <TransitionLink
@@ -234,10 +196,8 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                       onClick={() => setMenuOpen(false)}
                       aria-current={isActive ? "page" : undefined}
                       className={cn(
-                        "block py-3 border-b font-mono text-sm tracking-wider uppercase transition-colors",
-                        isDark
-                          ? `border-border-dark ${isActive ? "text-accent-cyan" : "text-white/70"}`
-                          : `border-border-light ${isActive ? "text-text-black" : "text-text-mid"}`
+                        "block py-3 border-b border-border-light font-mono text-sm tracking-wider uppercase transition-colors",
+                        isActive ? "text-text-black" : "text-text-mid"
                       )}
                     >
                       {link.label}
@@ -248,8 +208,8 @@ export function Navbar({ variant = "light" }: NavbarProps) {
 
               {/* Mobile resume button */}
               <motion.div
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: allLinks.length * 0.05 }}
                 className="pt-3"
               >
@@ -258,12 +218,7 @@ export function Navbar({ variant = "light" }: NavbarProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setMenuOpen(false)}
-                  className={cn(
-                    "block py-3 font-mono text-sm tracking-wider uppercase text-center rounded",
-                    isDark
-                      ? "bg-accent-green/20 text-accent-green border border-accent-green/30"
-                      : "bg-text-black text-white"
-                  )}
+                  className="block py-3 font-mono text-sm tracking-wider uppercase text-center rounded bg-text-black text-white"
                 >
                   Download Resume
                 </a>

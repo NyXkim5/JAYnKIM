@@ -5,11 +5,7 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
-import { GridReveal } from "@/components/ui/GridReveal";
-import { ScrambleText } from "@/components/ui/ScrambleText";
-import { RevealUp, RevealBlur, RevealLine } from "@/components/ui/RevealAnimations";
-import { LiveClock } from "@/components/ui/LiveClock";
-import { StatusIndicator, SecurityBadge, HexCode, SectionScanLine } from "@/components/ui/CyberAccents";
+import { Reveal, RevealLine } from "@/components/ui/RevealAnimations";
 import { ScribbleButton } from "@/components/ui/ScribbleButton";
 
 const projects = [
@@ -26,8 +22,8 @@ const projects = [
     id: "002",
     slug: "optum",
     title: "Optum, UnitedHealth Group",
-    description: "Building the systems that keep ML models alive after deployment — pipelines ingesting millions of records daily, monitoring that catches drift before it reaches patients, infrastructure auditable under HIPAA. 150M+ patients served.",
-    tags: ["Python", "AI/ML", "AWS", "Kubernetes", "Healthcare"],
+    description: "The business receives tens of thousands of RFPs. I build the platform that automates them: AI document parsing that turns dense RFP documents into structured, answerable questions, and one workspace where every team communicates and completes responses together. Improving parsing accuracy is the core ongoing work.",
+    tags: ["Python", "AI/ML", "Azure", "Document Parsing", "Healthcare"],
     status: "Current",
     year: "Feb 2026 – Present",
   },
@@ -58,71 +54,42 @@ export default function ProjectsContent() {
       <PageTransition>
         <main className="pt-16">
           {/* Header */}
-          <section className="px-5 md:px-8 pt-16 pb-12 border-b border-border-light relative overflow-hidden">
-            <GridReveal />
-            <SectionScanLine />
-            <motion.div
-              className="flex items-center justify-between mb-4 relative z-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              <div className="flex items-center gap-4">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-text-light border border-border-light px-2 py-0.5">
-                  Operations Log
-                </span>
-                <StatusIndicator label="DB" status="SYNC" />
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="hidden sm:inline"><HexCode /></span>
-                <span className="font-mono text-[10px] text-text-light tracking-wider uppercase">
-                  <LiveClock className="text-[10px] text-text-light" />
-                </span>
-              </div>
-            </motion.div>
-            <RevealUp className="relative z-10">
+          <section className="px-5 md:px-8 pt-16 pb-12 border-b border-border-light">
+            <Reveal>
               <div className="flex items-baseline justify-between">
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-text-black">
-                  <ScrambleText text="Work" delay={100} speed={35} stagger={40} />
+                <h1 className="text-6xl md:text-8xl font-bold tracking-tight text-text-black">
+                  Work
                 </h1>
                 <span className="font-mono text-xs text-text-light tracking-wider">
                   {projects.length.toString().padStart(3, "0")} Entries
                 </span>
               </div>
-            </RevealUp>
-            <RevealBlur delay={0.3}>
+            </Reveal>
+            <Reveal delay={0.1}>
               <p className="text-sm text-text-mid mt-4 max-w-xl">
                 Select a role to view details.
               </p>
-            </RevealBlur>
-            <motion.div
-              className="flex items-center gap-4 mt-4 relative z-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              <SecurityBadge level="CLEARANCE-A" />
-            </motion.div>
+            </Reveal>
           </section>
 
-          <RevealLine delay={0.4} />
+          <RevealLine delay={0.2} />
 
           {/* Table header */}
           <div className="hidden md:grid grid-cols-[50px_1fr_1fr_100px_80px] gap-4 px-5 md:px-8 py-4 border-b border-border-light">
-            <span className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase">No</span>
-            <span className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase">Name</span>
-            <span className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase">Description</span>
-            <span className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase">Status</span>
-            <span className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase text-right">Year</span>
+            <span className="font-mono text-[11px] tracking-[0.2em] text-text-light uppercase">No</span>
+            <span className="font-mono text-[11px] tracking-[0.2em] text-text-light uppercase">Name</span>
+            <span className="font-mono text-[11px] tracking-[0.2em] text-text-light uppercase">Description</span>
+            <span className="font-mono text-[11px] tracking-[0.2em] text-text-light uppercase">Status</span>
+            <span className="font-mono text-[11px] tracking-[0.2em] text-text-light uppercase text-right">Year</span>
           </div>
 
           {/* Project rows */}
           {projects.map((project, i) => (
             <TransitionLink key={project.id} href={`/projects/${project.slug}`}>
               <motion.div
-                initial={{ opacity: 0, y: 20, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: 0.5 + i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.08, duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
                 className="group grid grid-cols-1 md:grid-cols-[50px_1fr_1fr_100px_80px] gap-2 md:gap-4 px-5 md:px-8 py-8 border-b border-border-light hover:bg-bg-light transition-colors"
               >
                 <span className="font-mono text-xs text-text-light">
@@ -136,7 +103,7 @@ export default function ProjectsContent() {
                   </span>
                   <div className="flex flex-wrap gap-2 mt-2 md:hidden">
                     {project.tags.map((tag) => (
-                      <span key={tag} className="font-mono text-[10px] text-text-light">
+                      <span key={tag} className="font-mono text-[11px] text-text-light">
                         {tag}
                       </span>
                     ))}
@@ -149,7 +116,7 @@ export default function ProjectsContent() {
                   </p>
                   <div className="flex flex-wrap gap-3 mt-2">
                     {project.tags.map((tag) => (
-                      <span key={tag} className="font-mono text-[10px] text-text-light">
+                      <span key={tag} className="font-mono text-[11px] text-text-light">
                         {tag}
                       </span>
                     ))}
@@ -181,7 +148,7 @@ export default function ProjectsContent() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.5 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
             className="px-5 md:px-8 pt-24 pb-16 flex justify-center"
           >
             <ScribbleButton href="/lab" text="VISIT PROJECTS" />

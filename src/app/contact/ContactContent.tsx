@@ -499,7 +499,7 @@ export default function ContactContent() {
                           33.68°N 117.82°W
                         </p>
                         <p className="text-[9px] tracking-[0.15em]" style={{ color: "#ccc", fontFamily: MONO }}>
-                          CLEARANCE VALID
+                          ORANGE COUNTY, CA
                         </p>
                       </div>
                     </div>

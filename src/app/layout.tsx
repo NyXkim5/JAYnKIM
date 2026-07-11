@@ -10,7 +10,6 @@ import { BASE_URL } from "@/data/config";
 
 const Cursor = dynamic(() => import("@/components/ui/Cursor").then((m) => m.Cursor));
 const ClickSoundProvider = dynamic(() => import("@/components/ui/ClickSound").then((m) => m.ClickSoundProvider));
-const BootSequence = dynamic(() => import("@/components/ui/BootSequence").then((m) => m.BootSequence));
 const Terminal = dynamic(() => import("@/components/ui/Terminal").then((m) => m.Terminal));
 const KonamiCode = dynamic(() => import("@/components/ui/KonamiCode").then((m) => m.KonamiCode));
 const CommandPalette = dynamic(() => import("@/components/ui/CommandPalette").then((m) => m.CommandPalette));
@@ -85,7 +84,6 @@ export default function RootLayout({
           Skip to content
         </a>
         <ReducedMotionWrapper>
-          <BootSequence />
           <Cursor />
           <ClickSoundProvider />
           <TransitionProvider>
