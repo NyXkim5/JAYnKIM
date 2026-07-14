@@ -467,6 +467,19 @@ export default function ContactContent() {
                         <div className="h-[1px] flex-1" style={{ backgroundColor: "#ddd" }} />
                       </div>
 
+                      {/* Email to inquire */}
+                      <a
+                        href="mailto:joonhyuknkim@gmail.com?subject=Inquiry"
+                        className="group flex items-center justify-center gap-2.5 py-3 px-4 rounded transition-all hover:opacity-90 active:scale-[0.98]"
+                        style={{ backgroundColor: "#111", color: "#eee", border: "1px solid #333" }}
+                      >
+                        <span className="text-[10px] tracking-[0.2em] font-bold" style={{ fontFamily: MONO }}>
+                          EMAIL TO INQUIRE
+                        </span>
+                        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" className="opacity-50 group-hover:opacity-100 transition-opacity" aria-hidden="true">
+                          <path d="M3 9L9 3M9 3H4.5M9 3v4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </a>
                     </div>
 
                     {/* ── Barcode strip ── */}

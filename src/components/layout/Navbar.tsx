@@ -139,6 +139,13 @@ export function Navbar() {
             Contact
           </TransitionLink>
 
+          {/* Email to inquire - prominent */}
+          <a
+            href="mailto:joonhyuknkim@gmail.com?subject=Inquiry"
+            className="font-mono text-[13px] tracking-wider uppercase px-4 py-2 rounded transition-all bg-text-black text-white hover:bg-text-dark"
+          >
+            Email to Inquire
+          </a>
         </div>
 
         {/* Mobile hamburger */}
@@ -197,6 +204,21 @@ export function Navbar() {
                 );
               })}
 
+              {/* Mobile email to inquire button */}
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: allLinks.length * 0.05 }}
+                className="pt-3"
+              >
+                <a
+                  href="mailto:joonhyuknkim@gmail.com?subject=Inquiry"
+                  onClick={() => setMenuOpen(false)}
+                  className="block py-3 font-mono text-sm tracking-wider uppercase text-center rounded bg-text-black text-white"
+                >
+                  Email to Inquire
+                </a>
+              </motion.div>
             </div>
           </motion.div>
         )}
