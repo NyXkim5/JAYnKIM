@@ -81,6 +81,8 @@ def main() -> int:
     for order, pick in enumerate(plan.chosen, start=1):
         c = cands[pick]
         labels[str(nearest_cell(demand, c.position[0], c.position[1]))] = str(order)
+    if len(labels) != SENSORS:
+        raise SystemExit(f"label collision: {len(labels)} labels for {SENSORS} sensors, chosen={list(plan.chosen)}")
     snapshot = {
         "persona": "hardware",
         "cols": CELLS,
