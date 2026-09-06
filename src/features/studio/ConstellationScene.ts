@@ -1,11 +1,14 @@
 import type { Ground } from "@/features/persona/personas";
 import {
   drawFrame,
+  hitTest,
   initNodes,
   paletteFor,
+  seedEvidence,
   stepNodes,
   MOUSE_RADIUS,
   OFFSCREEN,
+  type EvidenceMark,
   type GridNode,
   type Mouse,
   type Palette,
@@ -23,12 +26,14 @@ function fitCanvas(canvas: HTMLCanvasElement, w: number, h: number): CanvasRende
   return ctx;
 }
 
-// Owns one canvas: sizing, the cursor in canvas space, and the frame clock.
+// Owns one canvas: sizing, the cursor in canvas space, the glow, and the clock.
 export class ConstellationScene {
   private ctx: CanvasRenderingContext2D | null = null;
   private width = 0;
   private height = 0;
   private nodes: GridNode[] = [];
+  private marks: EvidenceMark[] = [];
+  private glow = 1;
   private readonly palette: Palette;
   private readonly mouse: TrackedMouse = {
     x: OFFSCREEN,
@@ -43,25 +48,46 @@ export class ConstellationScene {
     this.palette = paletteFor(ground);
   }
 
+  seed(marks: EvidenceMark[]): void {
+    this.marks = marks;
+    if (this.nodes.length) seedEvidence(this.nodes, this.marks);
+  }
+
+  setGlow(glow: number): void {
+    this.glow = glow;
+  }
+
   resize(w: number, h: number): void {
     this.width = Math.floor(w);
     this.height = Math.floor(h);
     if (this.width === 0 || this.height === 0) return;
     this.ctx = fitCanvas(this.canvas, this.width, this.height);
     this.nodes = initNodes(this.width, this.height);
+    seedEvidence(this.nodes, this.marks);
     this.draw();
+  }
+
+  private toLocal(clientX: number, clientY: number): { x: number; y: number } | null {
+    const r = this.canvas.getBoundingClientRect();
+    const inside = clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+    return inside ? { x: clientX - r.left, y: clientY - r.top } : null;
   }
 
   // Cursor in canvas space; anything outside the canvas counts as away.
   pointer(clientX: number, clientY: number): void {
-    const r = this.canvas.getBoundingClientRect();
-    const inside = clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
-    this.mouse.x = inside ? clientX - r.left : OFFSCREEN;
-    this.mouse.y = inside ? clientY - r.top : OFFSCREEN;
+    const local = this.toLocal(clientX, clientY);
+    this.mouse.x = local ? local.x : OFFSCREEN;
+    this.mouse.y = local ? local.y : OFFSCREEN;
+  }
+
+  // The evidence mark under a click, if any.
+  pick(clientX: number, clientY: number): EvidenceMark | null {
+    const local = this.toLocal(clientX, clientY);
+    return local ? hitTest(this.nodes, local.x, local.y) : null;
   }
 
   draw(): void {
-    if (this.ctx) drawFrame(this.ctx, this.nodes, this.mouse, this.palette, this.width, this.height);
+    if (this.ctx) drawFrame(this.ctx, this.nodes, this.mouse, this.palette, this.width, this.height, this.glow);
   }
 
   private tick(dt: number): void {

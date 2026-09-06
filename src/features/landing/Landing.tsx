@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
 import { usePageTransition } from "@/components/transitions/TransitionProvider";
 import {
@@ -20,7 +20,9 @@ import { Specimen } from "@/features/specimen/Specimen";
 import { frameFor, snapshotFor } from "@/features/specimen/adapters";
 import type { SnapshotSource } from "@/features/specimen/snapshot";
 import type { SpecimenFrame } from "@/features/specimen/types";
+import { EVIDENCE, sourceHref } from "@/features/evidence/registry";
 import { ConstellationGrid } from "@/features/studio/ConstellationGrid";
+import type { EvidenceMark } from "@/features/studio/constellation";
 import { useLanguageCycle } from "@/features/studio/useLanguageCycle";
 import { Clock } from "./Clock";
 
@@ -92,12 +94,36 @@ const NAME_KO = "김준혁";
 const STUDIO_QUOTE = "Irregular thinking leads to irregular designs.";
 const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
 
-function StudioStage({ reduced, claim }: { reduced: boolean; claim: string }) {
+// Every registry entry becomes a node in the grid. Hovering reveals the value,
+// clicking goes to its source. Nothing in the grid is invented.
+const STUDIO_MARKS: EvidenceMark[] = EVIDENCE.map((e) => ({
+  id: e.id,
+  value: e.value,
+  unit: e.unit,
+  href: sourceHref(e),
+}));
+
+function StudioStage({
+  reduced,
+  claim,
+  onSelect,
+}: {
+  reduced: boolean;
+  claim: string;
+  onSelect: (mark: EvidenceMark) => void;
+}) {
   const title = useLanguageCycle(NAME_EN, NAME_KO, 3500, reduced);
+  const videoRef = useRef<HTMLVideoElement>(null);
   return (
     <>
       <div className="absolute left-0 top-0 h-full w-1/2">
-        <ConstellationGrid ground="black" className="absolute inset-0" />
+        <ConstellationGrid
+          ground="black"
+          marks={STUDIO_MARKS}
+          videoRef={videoRef}
+          onSelect={onSelect}
+          className="absolute inset-0"
+        />
         <div
           className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center px-5 text-white mix-blend-difference md:px-8"
           style={TIMES}
@@ -110,6 +136,7 @@ function StudioStage({ reduced, claim }: { reduced: boolean; claim: string }) {
         </div>
       </div>
       <video
+        ref={videoRef}
         className="fixed right-0 top-0 h-screen w-1/2 object-cover"
         src={STUDIO_VIDEO}
         autoPlay={!reduced}
@@ -183,6 +210,13 @@ export function Landing() {
     if (personaKey) navigateTo(`/${personaKey}`);
   }, [navigateTo, personaKey]);
   useLandingKeys(setView, enter);
+  const openMark = useCallback(
+    (m: EvidenceMark) => {
+      if (m.href.startsWith("http")) window.open(m.href, "_blank", "noopener,noreferrer");
+      else navigateTo(m.href);
+    },
+    [navigateTo],
+  );
 
   const black = ground === "black";
   const fg = black ? "text-white" : "text-black";
@@ -200,7 +234,7 @@ export function Landing() {
       {frame ? (
         <LandingStage frame={frame} ground={ground} fg={fg} black={black} claim={claim} onEnter={enter} />
       ) : (
-        <StudioStage reduced={reduced} claim={claim} />
+        <StudioStage reduced={reduced} claim={claim} onSelect={openMark} />
       )}
       {frame && <LandingFooter view={view} ground={ground} dim={dim} />}
     </main>

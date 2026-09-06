@@ -1,12 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import { useReducedMotion } from "framer-motion";
 import type { Ground } from "@/features/persona/personas";
 import { ConstellationScene } from "./ConstellationScene";
-import { OFFSCREEN } from "./constellation";
+import { OFFSCREEN, type EvidenceMark } from "./constellation";
+import { glowFor, sampleVideoLuma, smooth } from "./videoLuma";
 
-type Props = { ground: Ground; className?: string };
+type Props = {
+  ground: Ground;
+  marks: EvidenceMark[];
+  videoRef?: RefObject<HTMLVideoElement | null>;
+  onSelect?: (mark: EvidenceMark) => void;
+  className?: string;
+};
+
+const LUMA_INTERVAL_MS = 250;
 
 function attachPointer(scene: ConstellationScene): () => void {
   const move = (e: MouseEvent) => scene.pointer(e.clientX, e.clientY);
@@ -19,9 +28,24 @@ function attachPointer(scene: ConstellationScene): () => void {
   };
 }
 
-export function ConstellationGrid({ ground, className }: Props) {
+// Samples the film a few times a second and eases the grid's glow toward it.
+function attachGlow(scene: ConstellationScene, video: HTMLVideoElement | null): () => void {
+  if (!video) return () => {};
+  const scratch = document.createElement("canvas");
+  let glow = 1;
+  const id = setInterval(() => {
+    const luma = sampleVideoLuma(video, scratch);
+    if (luma === null) return;
+    glow = smooth(glow, glowFor(luma));
+    scene.setGlow(glow);
+  }, LUMA_INTERVAL_MS);
+  return () => clearInterval(id);
+}
+
+export function ConstellationGrid({ ground, marks, videoRef, onSelect, className }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sceneRef = useRef<ConstellationScene | null>(null);
   const reduced = useReducedMotion() ?? false;
 
   useEffect(() => {
@@ -29,20 +53,30 @@ export function ConstellationGrid({ ground, className }: Props) {
     const canvas = canvasRef.current;
     if (!wrap || !canvas) return;
     const scene = new ConstellationScene(canvas, ground);
+    sceneRef.current = scene;
+    scene.seed(marks);
     const ro = new ResizeObserver(([entry]) => scene.resize(entry.contentRect.width, entry.contentRect.height));
     ro.observe(wrap);
     // Reduced motion gets one still frame of the grid at rest.
     const stop = reduced ? () => {} : scene.start();
     const detach = reduced ? () => {} : attachPointer(scene);
+    const stopGlow = reduced ? () => {} : attachGlow(scene, videoRef?.current ?? null);
     return () => {
       stop();
       detach();
+      stopGlow();
       ro.disconnect();
+      sceneRef.current = null;
     };
-  }, [ground, reduced]);
+  }, [ground, marks, reduced, videoRef]);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const mark = sceneRef.current?.pick(e.clientX, e.clientY);
+    if (mark && onSelect) onSelect(mark);
+  };
 
   return (
-    <div ref={wrapRef} className={className}>
+    <div ref={wrapRef} className={className} onClick={handleClick}>
       <canvas ref={canvasRef} aria-hidden="true" className="block h-full w-full" />
     </div>
   );
