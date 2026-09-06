@@ -46,8 +46,7 @@ export function usePersona(): { persona: PersonaKey; setPersona: (k: PersonaKey)
   const [persona, setState] = useState<PersonaKey>(DEFAULT_PERSONA);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setState(readStoredPersona(browserStorage()));
+    queueMicrotask(() => setState(readStoredPersona(browserStorage())));
   }, []);
 
   const setPersona = useCallback((k: PersonaKey) => {
