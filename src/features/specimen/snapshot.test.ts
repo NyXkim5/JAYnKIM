@@ -52,6 +52,13 @@ describe("upsample", () => {
     expect(up.cells[10]).toEqual({ v: 0.25, label: "1" });
     expect(up.cells[11]).toEqual({ v: 0.25 });
   });
+
+  it("rejects a factor that is not a positive integer", () => {
+    const f = snapshotToFrame(snap());
+    expect(() => upsample(f, 0)).toThrow(/factor/);
+    expect(() => upsample(f, -1)).toThrow(/factor/);
+    expect(() => upsample(f, 1.5)).toThrow(/factor/);
+  });
 });
 
 describe("placeholderFrame", () => {

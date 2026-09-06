@@ -48,6 +48,7 @@ export function snapshotToFrame(s: SpecimenSnapshot): SpecimenFrame {
 }
 
 export function upsample(frame: SpecimenFrame, factor: number): SpecimenFrame {
+  if (!Number.isInteger(factor) || factor < 1) throw new Error(`upsample factor invalid: ${factor}`);
   const cols = frame.cols * factor;
   const rows = frame.rows * factor;
   const cells: Cell[] = new Array(cols * rows);
