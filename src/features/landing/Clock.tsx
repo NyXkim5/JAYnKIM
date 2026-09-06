@@ -14,6 +14,7 @@ export function Clock({ ground }: { ground: Ground }) {
   useEffect(() => {
     let id: ReturnType<typeof setInterval> | null = null;
     const start = () => {
+      if (id) return;
       queueMicrotask(() => setTime(utcNow()));
       id = setInterval(() => setTime(utcNow()), 1000);
     };
@@ -22,7 +23,7 @@ export function Clock({ ground }: { ground: Ground }) {
       id = null;
     };
     const onVisibility = () => (document.hidden ? stop() : start());
-    start();
+    if (!document.hidden) start();
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
       stop();

@@ -22,6 +22,10 @@ export function Readout({ persona, ground, intervalMs = 6000 }: Props) {
   if (!e) return null;
   const fg = ground === "black" ? "text-white" : "text-black";
   const dim = ground === "black" ? "text-white/50" : "text-black/50";
+  const linkCls =
+    ground === "black"
+      ? "text-white/50 hover:text-white underline-offset-4 hover:underline"
+      : "text-black/50 hover:text-black underline-offset-4 hover:underline";
 
   return (
     <div className="pointer-events-auto flex w-full items-end justify-between gap-6 font-mono text-[11px] tracking-[0.14em] uppercase">
@@ -29,7 +33,7 @@ export function Readout({ persona, ground, intervalMs = 6000 }: Props) {
         <span className="text-[13px]">{e.value}</span>
         {e.unit && <span className={`ml-2 ${dim}`}>{e.unit}</span>}
       </div>
-      <a href={sourceHref(e)} className={`${dim} hover:${fg} underline-offset-4 hover:underline`} aria-label={`Source: ${e.repo} ${e.path}`}>
+      <a href={sourceHref(e)} className={linkCls} aria-label={`Source: ${e.repo} ${e.path}`}>
         {e.path}
       </a>
     </div>
