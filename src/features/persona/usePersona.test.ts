@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parsePersona, readStoredPersona, writeStoredPersona, STORAGE_KEY } from "./usePersona";
+import { parseView, readStoredView, writeStoredView, STORAGE_KEY } from "./usePersona";
 
 function memoryStorage(initial: Record<string, string> = {}) {
   const map = new Map(Object.entries(initial));
@@ -20,34 +20,38 @@ function throwingStorage() {
   };
 }
 
-describe("parsePersona", () => {
-  it("accepts known keys and rejects everything else", () => {
-    expect(parsePersona("software")).toBe("software");
-    expect(parsePersona("war")).toBeNull();
-    expect(parsePersona(null)).toBeNull();
-    expect(parsePersona(undefined)).toBeNull();
+describe("parseView", () => {
+  it("accepts studio and persona keys and rejects everything else", () => {
+    expect(parseView("studio")).toBe("studio");
+    expect(parseView("software")).toBe("software");
+    expect(parseView("war")).toBeNull();
+    expect(parseView(null)).toBeNull();
+    expect(parseView(undefined)).toBeNull();
   });
 });
 
-describe("readStoredPersona", () => {
-  it("returns the stored key when valid", () => {
-    expect(readStoredPersona(memoryStorage({ [STORAGE_KEY]: "product" }))).toBe("product");
+describe("readStoredView", () => {
+  it("returns the stored view when valid", () => {
+    expect(readStoredView(memoryStorage({ [STORAGE_KEY]: "product" }))).toBe("product");
+    expect(readStoredView(memoryStorage({ [STORAGE_KEY]: "studio" }))).toBe("studio");
   });
 
-  it("falls back to the default when missing, invalid, null, or throwing", () => {
-    expect(readStoredPersona(memoryStorage())).toBe("hardware");
-    expect(readStoredPersona(memoryStorage({ [STORAGE_KEY]: "nope" }))).toBe("hardware");
-    expect(readStoredPersona(null)).toBe("hardware");
-    expect(readStoredPersona(throwingStorage())).toBe("hardware");
+  it("falls back to studio when missing, invalid, null, or throwing", () => {
+    expect(readStoredView(memoryStorage())).toBe("studio");
+    expect(readStoredView(memoryStorage({ [STORAGE_KEY]: "nope" }))).toBe("studio");
+    expect(readStoredView(null)).toBe("studio");
+    expect(readStoredView(throwingStorage())).toBe("studio");
   });
 });
 
-describe("writeStoredPersona", () => {
+describe("writeStoredView", () => {
   it("writes and survives a throwing storage", () => {
     const s = memoryStorage();
-    writeStoredPersona(s, "business");
+    writeStoredView(s, "business");
     expect(s.getItem(STORAGE_KEY)).toBe("business");
-    expect(() => writeStoredPersona(throwingStorage(), "business")).not.toThrow();
-    expect(() => writeStoredPersona(null, "business")).not.toThrow();
+    writeStoredView(s, "studio");
+    expect(s.getItem(STORAGE_KEY)).toBe("studio");
+    expect(() => writeStoredView(throwingStorage(), "business")).not.toThrow();
+    expect(() => writeStoredView(null, "business")).not.toThrow();
   });
 });

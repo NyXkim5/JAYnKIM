@@ -1,15 +1,14 @@
-// src/features/evidence/Readout.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { TransitionLink } from "@/components/transitions/TransitionLink";
-import type { Ground, PersonaKey } from "@/features/persona/personas";
-import { evidenceFor, sourceHref } from "./registry";
+import { STUDIO, type Ground, type LandingView } from "@/features/persona/personas";
+import { EVIDENCE, evidenceFor, sourceHref } from "./registry";
 
-type Props = { persona: PersonaKey; ground: Ground; intervalMs?: number };
+type Props = { persona: LandingView; ground: Ground; intervalMs?: number };
 
 export function Readout({ persona, ground, intervalMs = 6000 }: Props) {
-  const entries = evidenceFor(persona);
+  const entries = persona === STUDIO ? EVIDENCE : evidenceFor(persona);
   const [i, setI] = useState(0);
 
   useEffect(() => {

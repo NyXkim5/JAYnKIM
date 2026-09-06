@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { DEFAULT_PERSONA, isPersonaKey, type PersonaKey } from "./personas";
+import { DEFAULT_VIEW, isLandingView, type LandingView } from "./personas";
 
 export const STORAGE_KEY = "jaykim.persona";
 
@@ -10,24 +10,24 @@ export type StorageLike = {
   setItem: (key: string, value: string) => void;
 };
 
-export function parsePersona(raw: string | null | undefined): PersonaKey | null {
+export function parseView(raw: string | null | undefined): LandingView | null {
   if (!raw) return null;
-  return isPersonaKey(raw) ? raw : null;
+  return isLandingView(raw) ? raw : null;
 }
 
-export function readStoredPersona(storage: StorageLike | null): PersonaKey {
-  if (!storage) return DEFAULT_PERSONA;
+export function readStoredView(storage: StorageLike | null): LandingView {
+  if (!storage) return DEFAULT_VIEW;
   try {
-    return parsePersona(storage.getItem(STORAGE_KEY)) ?? DEFAULT_PERSONA;
+    return parseView(storage.getItem(STORAGE_KEY)) ?? DEFAULT_VIEW;
   } catch {
-    return DEFAULT_PERSONA;
+    return DEFAULT_VIEW;
   }
 }
 
-export function writeStoredPersona(storage: StorageLike | null, key: PersonaKey): void {
+export function writeStoredView(storage: StorageLike | null, view: LandingView): void {
   if (!storage) return;
   try {
-    storage.setItem(STORAGE_KEY, key);
+    storage.setItem(STORAGE_KEY, view);
   } catch {
     // Storage can be blocked in private windows. The choice still applies for this visit.
   }
@@ -42,17 +42,17 @@ function browserStorage(): StorageLike | null {
   }
 }
 
-export function usePersona(): { persona: PersonaKey; setPersona: (k: PersonaKey) => void } {
-  const [persona, setState] = useState<PersonaKey>(DEFAULT_PERSONA);
+export function useLandingView(): { view: LandingView; setView: (v: LandingView) => void } {
+  const [view, setState] = useState<LandingView>(DEFAULT_VIEW);
 
   useEffect(() => {
-    queueMicrotask(() => setState(readStoredPersona(browserStorage())));
+    queueMicrotask(() => setState(readStoredView(browserStorage())));
   }, []);
 
-  const setPersona = useCallback((k: PersonaKey) => {
-    setState(k);
-    writeStoredPersona(browserStorage(), k);
+  const setView = useCallback((v: LandingView) => {
+    setState(v);
+    writeStoredView(browserStorage(), v);
   }, []);
 
-  return { persona, setPersona };
+  return { view, setView };
 }

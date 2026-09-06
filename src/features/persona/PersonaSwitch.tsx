@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { PERSONAS, type Ground, type PersonaKey } from "./personas";
 
 type Props = {
-  value: PersonaKey;
+  value: PersonaKey | null;
   onChange: (key: PersonaKey) => void;
   ground: Ground;
   asLinks?: boolean;

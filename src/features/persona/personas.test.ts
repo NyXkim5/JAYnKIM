@@ -3,7 +3,10 @@ import {
   PERSONAS,
   PERSONA_KEYS,
   DEFAULT_PERSONA,
+  DEFAULT_VIEW,
+  STUDIO_CLAIM,
   isPersonaKey,
+  isLandingView,
   getPersona,
 } from "./personas";
 
@@ -39,5 +42,14 @@ describe("personas", () => {
       expect(p.claim.length).toBeGreaterThan(20);
       expect(p.claim).not.toContain("—");
     }
+  });
+
+  it("treats studio as the default landing view but not a persona", () => {
+    expect(DEFAULT_VIEW).toBe("studio");
+    expect(isLandingView("studio")).toBe(true);
+    expect(isLandingView("software")).toBe(true);
+    expect(isLandingView("war")).toBe(false);
+    expect(isPersonaKey("studio")).toBe(false);
+    expect(STUDIO_CLAIM).not.toContain("—");
   });
 });

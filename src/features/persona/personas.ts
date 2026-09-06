@@ -62,3 +62,15 @@ export function getPersona(key: PersonaKey): Persona {
   if (!found) throw new Error(`unknown persona: ${key}`);
   return found;
 }
+
+// Studio is the zoomed-out default view of the landing. It is not a persona
+// and never appears in the switch; a visitor reaches it first and returns to
+// it with Esc, 0, or the wordmark.
+export const STUDIO = "studio" as const;
+export type LandingView = PersonaKey | typeof STUDIO;
+export const DEFAULT_VIEW: LandingView = STUDIO;
+export const STUDIO_CLAIM = "Four disciplines, one rule. Every number on this site traces to a file.";
+
+export function isLandingView(x: string): x is LandingView {
+  return x === STUDIO || isPersonaKey(x);
+}

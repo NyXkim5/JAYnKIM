@@ -2,8 +2,8 @@
 
 import { useRef, useCallback, useMemo, createElement } from "react";
 import { motion } from "framer-motion";
-import { getPersona } from "@/features/persona/personas";
-import { readStoredPersona } from "@/features/persona/usePersona";
+import { getPersona, STUDIO } from "@/features/persona/personas";
+import { readStoredView } from "@/features/persona/usePersona";
 
 // ─── Types ──────────────────────────────────────────────────────────
 type EffectProps = {
@@ -62,8 +62,9 @@ function getOverlayColor(route: string): string {
   if (WHITE_PERSONA.test(route)) return "#ffffff";
   if (route === "/") {
     const storage = typeof window === "undefined" ? null : window.localStorage;
-    const persona = getPersona(readStoredPersona(storage));
-    return persona.ground === "black" ? "#0a0a0a" : "#ffffff";
+    const view = readStoredView(storage);
+    if (view === STUDIO) return "#0a0a0a";
+    return getPersona(view).ground === "black" ? "#0a0a0a" : "#ffffff";
   }
   return "#0a0a0a";
 }
