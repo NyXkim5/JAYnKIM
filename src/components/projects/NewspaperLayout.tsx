@@ -480,33 +480,35 @@ export function NewspaperLayout({
       </div>
 
       {/* Full-width: Impact */}
-      <div className="border-t border-border-light pt-6 mb-12">
-        <h2 className="font-mono text-[10px] tracking-[0.2em] uppercase text-text-light mb-6">
-          Impact
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-0 border-t border-l border-border-light">
-          {study.impact.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="border-r border-b border-border-light p-5"
-            >
-              <p className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase mb-2">
-                {item.metric}
-              </p>
-              <p className="text-3xl font-bold text-text-black tracking-tight mb-1">
-                {item.value}
-              </p>
-              <p className="text-[11px] text-text-mid leading-relaxed">
-                {item.description}
-              </p>
-            </motion.div>
-          ))}
+      {study.impact.length > 0 && (
+        <div className="border-t border-border-light pt-6 mb-12">
+          <h2 className="font-mono text-[10px] tracking-[0.2em] uppercase text-text-light mb-6">
+            Impact
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-0 border-t border-l border-border-light">
+            {study.impact.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="border-r border-b border-border-light p-5"
+              >
+                <p className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase mb-2">
+                  {item.metric}
+                </p>
+                <p className="text-3xl font-bold text-text-black tracking-tight mb-1">
+                  {item.value}
+                </p>
+                <p className="text-[11px] text-text-mid leading-relaxed">
+                  {item.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Next project */}
       {study.nextProject && (
