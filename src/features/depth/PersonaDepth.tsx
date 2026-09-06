@@ -19,7 +19,7 @@ function tone(ground: Ground) {
   return {
     bg: black ? "#0a0a0a" : "#ffffff",
     fg: black ? "text-white" : "text-black",
-    dim: black ? "text-white/50" : "text-black/50",
+    dim: black ? "text-white/60" : "text-black/60",
     line: black ? "border-white/10" : "border-black/10",
   };
 }

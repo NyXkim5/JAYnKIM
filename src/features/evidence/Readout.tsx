@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TransitionLink } from "@/components/transitions/TransitionLink";
 import type { Ground, PersonaKey } from "@/features/persona/personas";
 import { evidenceFor, sourceHref } from "./registry";
 
@@ -21,11 +22,11 @@ export function Readout({ persona, ground, intervalMs = 6000 }: Props) {
   const e = entries[i];
   if (!e) return null;
   const fg = ground === "black" ? "text-white" : "text-black";
-  const dim = ground === "black" ? "text-white/50" : "text-black/50";
+  const dim = ground === "black" ? "text-white/60" : "text-black/60";
   const linkCls =
     ground === "black"
-      ? "text-white/50 hover:text-white underline-offset-4 hover:underline"
-      : "text-black/50 hover:text-black underline-offset-4 hover:underline";
+      ? "text-white/60 hover:text-white underline-offset-4 hover:underline"
+      : "text-black/60 hover:text-black underline-offset-4 hover:underline";
 
   return (
     <div className="pointer-events-auto flex w-full items-end justify-between gap-6 font-mono text-[11px] tracking-[0.14em] uppercase">
@@ -33,9 +34,15 @@ export function Readout({ persona, ground, intervalMs = 6000 }: Props) {
         <span className="text-[13px]">{e.value}</span>
         {e.unit && <span className={`ml-2 ${dim}`}>{e.unit}</span>}
       </div>
-      <a href={sourceHref(e)} className={linkCls} aria-label={`Source: ${e.repo} ${e.path}`}>
-        {e.path}
-      </a>
+      {e.public ? (
+        <a href={sourceHref(e)} className={linkCls} aria-label={`Source: ${e.repo} ${e.path}`} target="_blank" rel="noopener noreferrer">
+          {e.path}
+        </a>
+      ) : (
+        <TransitionLink href={sourceHref(e)} className={linkCls} aria-label={`Source: ${e.repo} ${e.path}`}>
+          {e.path}
+        </TransitionLink>
+      )}
     </div>
   );
 }

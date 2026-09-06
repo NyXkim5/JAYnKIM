@@ -2,6 +2,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo } from "react";
+import { useReducedMotion } from "framer-motion";
 import { usePageTransition } from "@/components/transitions/TransitionProvider";
 import { getPersona, PERSONAS, type Ground, type PersonaKey } from "@/features/persona/personas";
 import { usePersona } from "@/features/persona/usePersona";
@@ -24,6 +25,7 @@ function useLandingKeys(setPersona: (k: PersonaKey) => void, enter: () => void) 
       if (isTypingTarget(e) || e.metaKey || e.ctrlKey || e.altKey) return;
       const byIndex = PERSONAS.find((p) => String(p.index) === e.key);
       if (byIndex) return setPersona(byIndex.key);
+      if (e.key === "Enter" && (e.target as HTMLElement | null)?.closest("a,button")) return;
       if (e.key === "Enter") enter();
     };
     window.addEventListener("keydown", handler);
@@ -71,7 +73,7 @@ function LandingStage({
   return (
     <div className="absolute inset-x-0 top-[14vh] bottom-[22vh] flex flex-col items-center justify-center gap-8 px-5">
       <Specimen frame={frame} ground={ground} className="h-full w-full max-w-[min(80vh,900px)]" />
-      <p className={`max-w-xl text-center font-mono text-[13px] leading-relaxed tracking-wide ${fg}`} aria-live="polite">
+      <p className={`max-w-xl text-center font-mono text-[13px] leading-relaxed tracking-wide ${fg}`}>
         {claim}
       </p>
       <button
@@ -111,13 +113,15 @@ export function Landing() {
   const p = getPersona(persona);
   const frame = useMemo(() => frameFor(persona), [persona]);
   const snapshot = snapshotFor(persona);
-  const claim = useScrambleText(p.claim, { speed: 30, staggerPerChar: 12 });
+  const scrambled = useScrambleText(p.claim, { speed: 30, staggerPerChar: 12 });
+  const reduced = useReducedMotion() ?? false;
+  const claim = reduced ? p.claim : scrambled;
   const enter = useCallback(() => navigateTo(`/${persona}`), [navigateTo, persona]);
   useLandingKeys(setPersona, enter);
 
   const black = p.ground === "black";
   const fg = black ? "text-white" : "text-black";
-  const dim = black ? "text-white/50" : "text-black/50";
+  const dim = black ? "text-white/60" : "text-black/60";
 
   return (
     <main
@@ -126,7 +130,9 @@ export function Landing() {
       data-ground={p.ground}
     >
       <p className="sr-only">
-        The figure is a dot matrix rendered from real data. {snapshot ? `${snapshot.source.repo} ${snapshot.source.path}, ${snapshot.source.how}.` : "This persona is in progress."}
+        {snapshot
+          ? `The figure is a dot matrix rendered from real data: ${snapshot.source.repo} ${snapshot.source.path}, ${snapshot.source.how}.`
+          : "This persona is in progress. The figure is a placeholder, not data."}
       </p>
 
       <LandingHeader persona={persona} setPersona={setPersona} ground={p.ground} fg={fg} />

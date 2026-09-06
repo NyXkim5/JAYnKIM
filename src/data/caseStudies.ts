@@ -128,7 +128,7 @@ export const caseStudies: CaseStudy[] = [
     team: "3 engineers, 1 designer",
     layout: "newspaper",
     overview:
-      "I founded Archv because document review in regulated industries is broken in a specific way: the cost of a mistake is catastrophic, but the tools available are either manual or untrustworthy. Generalist AI hallucinates clauses. Manual review takes 4.5 hours per session. We built a third option — AI document review where every response links to its source text and every query is logged for audit. I ran 40+ user interviews, evaluated three AI architectures, selected RAG for built-in citations, and targeted law students as the entry point into institutional adoption. Review time dropped 71%. Verification time dropped 82%. Accepted into NVIDIA Inception. Shipped on a 4-person team with a pre-seed budget.",
+      "I founded Archv because document review in regulated industries is broken in a specific way: the cost of a mistake is catastrophic, but the tools available are either manual or untrustworthy. Generalist AI hallucinates clauses. Manual review takes 4.5 hours per session. We built a third option — AI document review where every response links to its source text and every query is logged for audit. I ran 40+ user interviews, evaluated three AI architectures, selected RAG for built-in citations, and targeted law students as the entry point into institutional adoption. Shipped on a 4-person team with a pre-seed budget.",
     problem:
       "Law students spend 60–70% of their research time reviewing documents manually. In practice, one missed compliance clause leads to sanctions, malpractice claims, or fines exceeding $10M. Students who tried generalist AI tools found the outputs unusable: hallucinated clauses, no source citations, no audit trail. A professor told us during user research, 'One wrong answer and I will never use it again.' That sentence defined the product requirement. Trust is not a feature — it is a prerequisite. No product on the market combined fast AI inference with the citation integrity and compliance infrastructure these users demand before they will use it once.",
     approach: [
@@ -138,20 +138,19 @@ export const caseStudies: CaseStudy[] = [
       "Deployed ML models on NVIDIA GPUs via CUDA for document classification and entity extraction",
       "Encrypted all data with AES-256 at rest and TLS 1.3 in transit. Logged every data access for audit trails",
       "Built RESTful APIs with JWT auth and role-based access control (RBAC) mapped to compliance roles",
-      "Shipped weekly updates to early users. Monthly pilot check-ins caught issues before they became product debt",
+      "Shipped updates on a regular cadence and used check-ins to catch issues before they became product debt",
     ],
     designDecisions: [
       {
         title: "Students First, Institutions Second",
         description:
           "Two go-to-market paths. Sell to law firms: $50K+ contracts, 6-month sales cycles, legal procurement teams. Or sell to law students: $20/month, self-serve signup, same document review pain at smaller scale. Students who love the product become associates who request it at their firms. We chose students.",
-        outcome:
-          "Signed early users with zero sales team. Three program administrators approved Archv after students requested it.",
+        outcome: "Students were the entry point into institutional adoption.",
       },
       {
-        title: "Killed Two Features in Pilot",
+        title: "Killed Two Underperforming Features",
         description:
-          "Monthly pilot check-ins surfaced two underperforming features: collaborative annotation and document comparison. Users wanted speed and accuracy. They did not want another collaboration tool. We cut both and moved engineering time to citation accuracy and response latency.",
+          "Regular check-ins surfaced two underperforming features: collaborative annotation and document comparison. Users wanted speed and accuracy. They did not want another collaboration tool. We cut both and moved engineering time to citation accuracy and response latency.",
         outcome:
           "Faster release cycles. Citation accuracy became the top-rated feature in user feedback. No user requested the removed features.",
       },
@@ -274,12 +273,12 @@ export const caseStudies: CaseStudy[] = [
       worked: [
         "Citation-first design. Trust requires verifiability. Every AI response links to source text. This became our primary differentiator against tools that produce unsourced summaries.",
         "Built for students first, sold through institutions second. Law students loved the product. Program administrators approved it. The compliance dashboard gave admin staff full visibility into AI usage, queries, and data access.",
-        "Monthly pilot check-ins with real users caught issues before they became product debt. We killed two features early that tested poorly and doubled down on citation accuracy.",
+        "Regular check-ins with real users caught issues before they became product debt. We killed two features early that tested poorly and doubled down on citation accuracy.",
       ],
       different: [
-        "Designed the citation UI for accuracy, not speed. Our first citation format showed the full source paragraph inline. Users trusted it — but it made every response feel slow and heavy. We lost two pilot users before realizing the problem was not the AI latency, it was the visual weight of the answer. Switched to a linked reference pattern and retention recovered. The right answer presented wrong is still the wrong product.",
-        "Invested more in onboarding. The first-run experience was weak. New users needed hand-holding to see the value, which added 2 weeks to every pilot. The product sold itself once someone used it — the problem was getting them to the first successful query.",
-        "Ran pricing research before launch. We guessed on pricing based on competitive benchmarks that did not apply to students. Conjoint analysis upfront would have shortened the sales cycle and prevented a mid-pilot pricing change that confused early users.",
+        "Designed the citation UI for accuracy, not speed. Our first citation format showed the full source paragraph inline. Users trusted it — but it made every response feel slow and heavy. Switched to a linked reference pattern and retention recovered. The right answer presented wrong is still the wrong product.",
+        "Invested more in onboarding. The first-run experience was weak. New users needed hand-holding to see the value, which added 2 weeks to every onboarding cycle. The product sold itself once someone used it — the problem was getting them to the first successful query.",
+        "Ran pricing research before launch. We guessed on pricing based on competitive benchmarks that did not apply to students. Conjoint analysis upfront would have shortened the sales cycle and avoided a confusing mid-stream pricing change.",
       ],
     },
     brandPhilosophy: {

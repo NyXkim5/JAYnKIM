@@ -29,6 +29,7 @@ export function useScrambleText(
     }
 
     let cancelled = false;
+    let done = false;
     const chars = target.split("");
 
     // Initialize with Korean chars (spaces stay as spaces)
@@ -75,18 +76,20 @@ export function useScrambleText(
 
         setDisplay(next.join(""));
 
-        if (!allDone) {
+        if (allDone) {
+          done = true;
+        } else {
           frameRef.current = requestAnimationFrame(animate);
         }
       };
 
       // Run at ~25fps for the scramble tick feel
       const tick = () => {
-        if (cancelled) return;
+        if (cancelled || done) return;
         frameRef.current = requestAnimationFrame((now) => {
           animate(now);
           // Schedule next tick
-          if (!cancelled) {
+          if (!cancelled && !done) {
             setTimeout(tick, speed);
           }
         });

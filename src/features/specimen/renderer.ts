@@ -53,7 +53,7 @@ function grayCss(g: number): string {
   return `rgb(${n},${n},${n})`;
 }
 
-export function paint(ctx: CanvasRenderingContext2D, calls: DrawCall[], ground: Ground): void {
+export function paint(ctx: CanvasRenderingContext2D, calls: DrawCall[], ground: Ground, fontFamily: string): void {
   ctx.fillStyle = ground === "black" ? "#0a0a0a" : "#ffffff";
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   for (const call of calls) {
@@ -65,7 +65,7 @@ export function paint(ctx: CanvasRenderingContext2D, calls: DrawCall[], ground: 
     ctx.save();
     ctx.translate(call.x, call.y);
     ctx.rotate(-Math.PI / 2);
-    ctx.font = `${call.size}px var(--font-jetbrains), monospace`;
+    ctx.font = `${call.size}px ${fontFamily}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(call.text, 0, 0);

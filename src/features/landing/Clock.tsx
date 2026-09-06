@@ -31,7 +31,7 @@ export function Clock({ ground }: { ground: Ground }) {
     };
   }, []);
 
-  const dim = ground === "black" ? "text-white/50" : "text-black/50";
+  const dim = ground === "black" ? "text-white/60" : "text-black/60";
   return (
     <span className={`font-mono text-[11px] tracking-[0.14em] ${dim}`} suppressHydrationWarning>
       {time ? `UTC ${time}` : "UTC"}

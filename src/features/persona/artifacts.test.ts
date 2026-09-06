@@ -19,7 +19,11 @@ describe("artifacts", () => {
   it("resolves every evidence id and case study slug it references", () => {
     for (const a of ARTIFACTS) {
       if (a.evidenceId) expect(findEvidence(a.evidenceId), a.title).toBeDefined();
-      if (a.caseStudySlug) expect(findStudy(a.caseStudySlug), a.title).toBeDefined();
+      if (a.caseStudySlug) {
+        const study = findStudy(a.caseStudySlug);
+        expect(study, a.title).toBeDefined();
+        expect(study?.personas, a.title).toContain(a.persona);
+      }
     }
   });
 

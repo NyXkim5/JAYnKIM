@@ -1,8 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { caseStudies, findStudy } from "./caseStudies";
+import { caseStudies, findStudy, studiesFor } from "./caseStudies";
 import { findEvidence } from "@/features/evidence/registry";
 import { PERSONA_KEYS } from "@/features/persona/personas";
-import { studiesFor } from "./caseStudies";
 
 describe("caseStudies", () => {
   it("has at least one study", () => {
@@ -54,5 +53,26 @@ describe("caseStudies content rules", () => {
 
   it("filters by persona", () => {
     expect(studiesFor("hardware").map((s) => s.slug)).toEqual(["drone-dashboard", "drone-virtual-env"]);
+  });
+
+  it("never claims traction in body prose", () => {
+    const banned = /\b(signed|customers?|pilots?|early users|first users|active users|paying)\b/i;
+    for (const s of caseStudies) {
+      const fields: { label: string; text: string }[] = [
+        { label: "overview", text: s.overview },
+        { label: "problem", text: s.problem },
+        ...s.approach.map((text, i) => ({ label: `approach[${i}]`, text })),
+        ...s.designDecisions.flatMap((d, i) => [
+          { label: `designDecisions[${i}].title`, text: d.title },
+          { label: `designDecisions[${i}].description`, text: d.description },
+          { label: `designDecisions[${i}].outcome`, text: d.outcome },
+        ]),
+        ...(s.reflections?.worked.map((text, i) => ({ label: `reflections.worked[${i}]`, text })) ?? []),
+        ...(s.reflections?.different.map((text, i) => ({ label: `reflections.different[${i}]`, text })) ?? []),
+      ];
+      for (const { label, text } of fields) {
+        expect(text, `${s.slug}: ${label}`).not.toMatch(banned);
+      }
+    }
   });
 });

@@ -30,6 +30,10 @@ function useCanvasSize(ref: React.RefObject<HTMLDivElement | null>) {
   return size;
 }
 
+function resolveMonoFamily(): string {
+  return getComputedStyle(document.documentElement).getPropertyValue("--font-jetbrains").trim() || "ui-monospace, monospace";
+}
+
 function draw(canvas: HTMLCanvasElement, frame: SpecimenFrame, ground: Ground, w: number, h: number) {
   const dpr = window.devicePixelRatio || 1;
   if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
@@ -39,7 +43,8 @@ function draw(canvas: HTMLCanvasElement, frame: SpecimenFrame, ground: Ground, w
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  paint(ctx, render(frame, w, h, ground), ground);
+  const family = resolveMonoFamily();
+  paint(ctx, render(frame, w, h, ground), ground, family);
 }
 
 export function Specimen({ frame, ground, idle = true, className }: Props) {
