@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 // ─── Types ──────────────────────────────────────────────────────────
 type EffectProps = {
   phase: "cover" | "reveal";
+  color: string;
   onCoverDone: () => void;
   onRevealDone: () => void;
 };
@@ -36,12 +37,16 @@ function usePhaseCallback(
 }
 
 const EASE = [0.76, 0, 0.24, 1] as const;
-const BG = "#0a0a0a";
 
 // ─── Route → Effect map ─────────────────────────────────────────────
 
+const BLACK_PERSONA = /^\/(hardware|software)(\/|$)/;
+const WHITE_PERSONA = /^\/(product|business)(\/|$)/;
+
 function getEffect(route: string): React.ComponentType<EffectProps> {
   if (route === "/") return HorizontalBlinds;
+  if (BLACK_PERSONA.test(route)) return PixelGrid;
+  if (WHITE_PERSONA.test(route)) return BlocksScatter;
   if (route.startsWith("/projects")) return ColumnWipe;
   if (route === "/lab") return PixelGrid;
   if (route === "/contact") return AsciiScramble;
@@ -51,13 +56,18 @@ function getEffect(route: string): React.ComponentType<EffectProps> {
   return ColumnWipe;
 }
 
+function getOverlayColor(route: string): string {
+  if (route === "/" || BLACK_PERSONA.test(route)) return "#0a0a0a";
+  return "#ffffff";
+}
+
 // ═════════════════════════════════════════════════════════════════════
 // EFFECTS — All use clipPath (proven to work with framer-motion)
 // ═════════════════════════════════════════════════════════════════════
 
 // 1. Horizontal Blinds — Home (/)
 // 8 horizontal strips wipe in from alternating sides
-function HorizontalBlinds({ phase, onCoverDone, onRevealDone }: EffectProps) {
+function HorizontalBlinds({ phase, color, onCoverDone, onRevealDone }: EffectProps) {
   const count = 8;
   const onDone = usePhaseCallback(onCoverDone, onRevealDone);
   const isReveal = phase === "reveal";
@@ -69,7 +79,7 @@ function HorizontalBlinds({ phase, onCoverDone, onRevealDone }: EffectProps) {
         return (
           <motion.div
             key={i}
-            style={{ flex: 1, background: BG }}
+            style={{ flex: 1, background: color }}
             initial={{
               clipPath: fromLeft
                 ? "inset(0% 100% 0% 0%)"
@@ -99,7 +109,7 @@ function HorizontalBlinds({ phase, onCoverDone, onRevealDone }: EffectProps) {
 
 // 2. Column Wipe — Work (/projects)
 // 6 vertical columns wipe down staggered left-to-right
-function ColumnWipe({ phase, onCoverDone, onRevealDone }: EffectProps) {
+function ColumnWipe({ phase, color, onCoverDone, onRevealDone }: EffectProps) {
   const count = 6;
   const onDone = usePhaseCallback(onCoverDone, onRevealDone);
   const isReveal = phase === "reveal";
@@ -109,7 +119,7 @@ function ColumnWipe({ phase, onCoverDone, onRevealDone }: EffectProps) {
       {Array.from({ length: count }).map((_, i) => (
         <motion.div
           key={i}
-          style={{ flex: 1, background: BG }}
+          style={{ flex: 1, background: color }}
           initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
           animate={{
             clipPath: isReveal
@@ -132,7 +142,7 @@ function ColumnWipe({ phase, onCoverDone, onRevealDone }: EffectProps) {
 
 // 3. Pixel Grid — Lab (/lab)
 // 8x5 grid of squares appear/disappear in random order via circle clips
-function PixelGrid({ phase, onCoverDone, onRevealDone }: EffectProps) {
+function PixelGrid({ phase, color, onCoverDone, onRevealDone }: EffectProps) {
   const cols = 8;
   const rows = 5;
   const total = cols * rows;
@@ -171,7 +181,7 @@ function PixelGrid({ phase, onCoverDone, onRevealDone }: EffectProps) {
         return (
           <motion.div
             key={i}
-            style={{ background: BG }}
+            style={{ background: color }}
             initial={{ clipPath: "circle(0% at 50% 50%)" }}
             animate={{
               clipPath: isReveal
@@ -191,14 +201,14 @@ function PixelGrid({ phase, onCoverDone, onRevealDone }: EffectProps) {
 
 // 4. ASCII Scramble — Contact (/contact)
 // Circle clip-path expands/contracts over rapidly scrambling monospace characters
-function AsciiScramble({ phase, onCoverDone, onRevealDone }: EffectProps) {
+function AsciiScramble({ phase, color, onCoverDone, onRevealDone }: EffectProps) {
   const onDone = usePhaseCallback(onCoverDone, onRevealDone);
   const isReveal = phase === "reveal";
 
   return (
     <motion.div
       className="fixed inset-0 z-[9999] pointer-events-auto"
-      style={{ background: BG }}
+      style={{ background: color }}
       initial={{ clipPath: "circle(0% at 50% 50%)" }}
       animate={{
         clipPath: isReveal
@@ -213,7 +223,7 @@ function AsciiScramble({ phase, onCoverDone, onRevealDone }: EffectProps) {
 
 // 5. Line Wipe — Writing (/writing)
 // 12 horizontal lines sweep in from left, staggered like typewriter
-function LineWipe({ phase, onCoverDone, onRevealDone }: EffectProps) {
+function LineWipe({ phase, color, onCoverDone, onRevealDone }: EffectProps) {
   const count = 12;
   const onDone = usePhaseCallback(onCoverDone, onRevealDone);
   const isReveal = phase === "reveal";
@@ -223,7 +233,7 @@ function LineWipe({ phase, onCoverDone, onRevealDone }: EffectProps) {
       {Array.from({ length: count }).map((_, i) => (
         <motion.div
           key={i}
-          style={{ flex: 1, background: BG }}
+          style={{ flex: 1, background: color }}
           initial={{ clipPath: "inset(0% 100% 0% 0%)" }}
           animate={{
             clipPath: isReveal
@@ -246,7 +256,7 @@ function LineWipe({ phase, onCoverDone, onRevealDone }: EffectProps) {
 
 // 6. Blocks Scatter — Recs (/matcha)
 // 4x3 grid blocks with diamond clip-path expand/contract in staggered order
-function BlocksScatter({ phase, onCoverDone, onRevealDone }: EffectProps) {
+function BlocksScatter({ phase, color, onCoverDone, onRevealDone }: EffectProps) {
   const cols = 4;
   const rows = 3;
   const total = cols * rows;
@@ -280,7 +290,7 @@ function BlocksScatter({ phase, onCoverDone, onRevealDone }: EffectProps) {
       {Array.from({ length: total }).map((_, i) => (
         <motion.div
           key={i}
-          style={{ background: BG }}
+          style={{ background: color }}
           initial={{
             clipPath: "polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)",
           }}
@@ -305,7 +315,7 @@ function BlocksScatter({ phase, onCoverDone, onRevealDone }: EffectProps) {
 
 // 7. Wave Columns — Music (/music)
 // 10 columns grow from bottom with sinusoidal timing (center first)
-function WaveColumns({ phase, onCoverDone, onRevealDone }: EffectProps) {
+function WaveColumns({ phase, color, onCoverDone, onRevealDone }: EffectProps) {
   const count = 10;
   const onDone = usePhaseCallback(onCoverDone, onRevealDone);
   const isReveal = phase === "reveal";
@@ -320,7 +330,7 @@ function WaveColumns({ phase, onCoverDone, onRevealDone }: EffectProps) {
         return (
           <motion.div
             key={i}
-            style={{ flex: 1, background: BG }}
+            style={{ flex: 1, background: color }}
             initial={{ clipPath: "inset(100% 0% 0% 0%)" }}
             animate={{
               clipPath: isReveal
@@ -346,5 +356,10 @@ export function TransitionOverlay({
   onCoverDone,
   onRevealDone,
 }: OverlayProps) {
-  return createElement(getEffect(target), { phase, onCoverDone, onRevealDone });
+  return createElement(getEffect(target), {
+    phase,
+    color: getOverlayColor(target),
+    onCoverDone,
+    onRevealDone,
+  });
 }

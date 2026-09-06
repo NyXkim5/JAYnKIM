@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/transitions/TransitionLink";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { PRIMARY_ROUTES, SECONDARY_ROUTES } from "@/data/routes";
+import { NAV_ROUTES, SECONDARY_ROUTES } from "@/data/routes";
 
-const primaryLinks = PRIMARY_ROUTES.map((r) => ({ label: r.label, href: r.path }));
+const primaryLinks = NAV_ROUTES.map((r) => ({ label: r.label, href: r.path }));
 const moreLinks = SECONDARY_ROUTES.map((r) => ({ label: r.label, href: r.path }));
-const allLinks = [...primaryLinks.slice(0, 3), ...moreLinks, primaryLinks[3]];
+const allLinks = [...primaryLinks, ...moreLinks, { label: "Contact", href: "/contact" }];
 
 export function Navbar() {
   const pathname = usePathname();
@@ -53,7 +53,7 @@ export function Navbar() {
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8">
           {/* Primary links */}
-          {primaryLinks.slice(0, 3).map((link) => {
+          {primaryLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <TransitionLink

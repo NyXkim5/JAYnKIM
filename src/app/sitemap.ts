@@ -5,6 +5,11 @@ import { BASE_URL } from "@/data/config";
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
     "",
+    "/hardware",
+    "/software",
+    "/product",
+    "/business",
+    "/about",
     "/projects",
     "/lab",
     "/writing",
