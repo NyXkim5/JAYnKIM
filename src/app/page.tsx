@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import HomeContent from "./HomeContent";
+import { Landing } from "@/features/landing/Landing";
 
 export const metadata: Metadata = {
   title: "Jay Kim — Software Engineer",
   description:
-    "Software engineer specializing in AI/ML, full-stack development, and design. Based in Orange County, CA.",
+    "Hardware, software and AI/ML, product, and business. Pick a persona. Every number on this site traces to a file.",
 };
 
 export default function Home() {
-  return <HomeContent />;
+  return <Landing />;
 }
