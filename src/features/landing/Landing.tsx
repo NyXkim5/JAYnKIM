@@ -130,7 +130,7 @@ function StudioStage({
           style={TIMES}
         >
           <h1
-            className={`pointer-events-auto inline-block origin-left text-6xl font-bold leading-none md:text-9xl ${title.warping ? "animate-[text-warp_1.5s_ease-in-out]" : ""}`}
+            className={`pointer-events-auto inline-block origin-left text-6xl font-bold leading-none md:text-9xl ${title.warping ? "animate-[text-warp_1.4s_ease-in-out]" : ""}`}
             style={DOODLE}
             aria-label={NAME_EN}
             onMouseEnter={title.onEnter}
