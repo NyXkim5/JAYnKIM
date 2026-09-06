@@ -1,7 +1,7 @@
 # jaykim.studio redesign: persona instrument
 
 Date: 2026-09-05
-Status: draft for review
+Status: approved by Jay 2026-09-05. Typeface stays Inter + JetBrains Mono for Phase 1. Unverified metrics in section 12 are removed by default.
 Branch: `worktree-portfolio-update` off `origin/main`
 
 ## 1. Purpose
@@ -167,6 +167,7 @@ Reuse, do not rebuild.
 - `src/components/transitions/TransitionOverlay.tsx` already maps route to effect with seven clipPath wipes. It gains a second axis: persona-to-persona transitions on the landing use `PixelGrid` for black-to-black and white-to-white, and `BlocksScatter` when the ground flips.
 - `src/hooks/useScrambleText.ts` from branch `wip/dossier-terminal` is cherry-picked into `features/persona/useScrambleText.ts`. The Hangul-to-Latin resolve stays. It is the one personal flourish on the landing.
 - Ground flip is a full-viewport background transition coordinated with the overlay, so the page never shows a white flash between two black states.
+- **Every route change uses the overlay, not only the landing.** Landing to depth page, depth page to case study, case study back. The route-to-effect map is extended so each persona owns a default effect for its depth and case-study routes. Jay confirmed 2026-09-05 that page-to-page transitions are in scope, not just the persona switch.
 
 ## 10. Depth pages
 
@@ -221,7 +222,7 @@ Every `impact[]` metric in `caseStudies.ts` is checked against the registry. Cur
 |---|---|---|
 | optum | Tens of thousands, One platform, Parsing accuracy | Keep. Qualitative by rule. |
 | archv | Review Time -71%, Verification -82%, Latency <2s | Unverified. Remove unless Jay names the source. |
-| archv | NVIDIA Inception: Admitted | Keep if the acceptance email is on disk. Otherwise remove. |
+| archv | NVIDIA Inception: Admitted | Remove. Jay's call, 2026-09-05. |
 | archv | Early Adoption: Signed | Remove. Rule 4. No signed document found. |
 | cactus | 60x, <1s, 1-2 days, Shipped | Unverified. This is a work project with no repo on disk. Remove or Jay names the source. |
 | medvanta | <5 min, ~5hrs/wk, 1 week | Unverified. Remove unless Jay names the source. |
