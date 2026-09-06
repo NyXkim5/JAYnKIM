@@ -185,7 +185,7 @@ export function Landing() {
       ) : (
         <StudioStage reduced={reduced} fg={fg} claim={claim} />
       )}
-      <LandingFooter view={view} ground={ground} dim={dim} />
+      {frame && <LandingFooter view={view} ground={ground} dim={dim} />}
     </main>
   );
 }
