@@ -20,6 +20,7 @@ import { Specimen } from "@/features/specimen/Specimen";
 import { frameFor, snapshotFor } from "@/features/specimen/adapters";
 import type { SnapshotSource } from "@/features/specimen/snapshot";
 import type { SpecimenFrame } from "@/features/specimen/types";
+import { ConstellationGrid } from "@/features/studio/ConstellationGrid";
 import { Clock } from "./Clock";
 
 const STUDIO_VIDEO = "/studio/studiovid.mp4";
@@ -85,9 +86,17 @@ function LandingHeader({
   );
 }
 
-function StudioStage({ reduced, fg, claim }: { reduced: boolean; fg: string; claim: string }) {
+function StudioStage({ reduced, claim }: { reduced: boolean; claim: string }) {
   return (
     <>
+      <div className="absolute left-0 top-0 h-full w-1/2">
+        <ConstellationGrid ground="black" className="absolute inset-0" />
+        <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center px-5 text-white mix-blend-difference md:px-8">
+          <h1 className="font-mono text-5xl font-black uppercase leading-none tracking-tighter md:text-8xl">Jay Kim</h1>
+          <p className="mt-4 max-w-md font-mono text-[13px] leading-relaxed tracking-wide">{claim}</p>
+          <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.18em] opacity-60">Press 1 to 4</p>
+        </div>
+      </div>
       <video
         className="fixed right-0 top-0 h-screen w-1/2 object-cover"
         src={STUDIO_VIDEO}
@@ -98,10 +107,6 @@ function StudioStage({ reduced, fg, claim }: { reduced: boolean; fg: string; cla
         preload="auto"
         aria-hidden="true"
       />
-      <div className="absolute left-5 right-1/2 top-[14vh] bottom-[22vh] flex flex-col justify-center gap-6 pr-8 md:left-8">
-        <p className={`max-w-md font-mono text-[13px] leading-relaxed tracking-wide ${fg}`}>{claim}</p>
-        <p className={`font-mono text-[11px] tracking-[0.18em] uppercase opacity-60 ${fg}`}>Press 1 to 4</p>
-      </div>
     </>
   );
 }
@@ -183,7 +188,7 @@ export function Landing() {
       {frame ? (
         <LandingStage frame={frame} ground={ground} fg={fg} black={black} claim={claim} onEnter={enter} />
       ) : (
-        <StudioStage reduced={reduced} fg={fg} claim={claim} />
+        <StudioStage reduced={reduced} claim={claim} />
       )}
       {frame && <LandingFooter view={view} ground={ground} dim={dim} />}
     </main>
