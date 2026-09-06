@@ -23,7 +23,7 @@ import type { SpecimenFrame } from "@/features/specimen/types";
 import { EVIDENCE, sourceHref } from "@/features/evidence/registry";
 import { ConstellationGrid } from "@/features/studio/ConstellationGrid";
 import type { EvidenceMark } from "@/features/studio/constellation";
-import { useLanguageCycle } from "@/features/studio/useLanguageCycle";
+import { useLanguageHover } from "@/features/studio/useLanguageHover";
 import { Clock } from "./Clock";
 
 const STUDIO_VIDEO = "/studio/studiovid.mp4";
@@ -113,7 +113,7 @@ function StudioStage({
   claim: string;
   onSelect: (mark: EvidenceMark) => void;
 }) {
-  const title = useLanguageCycle(NAME_EN, NAME_KO, 3500, reduced);
+  const title = useLanguageHover(NAME_EN, NAME_KO, reduced);
   const videoRef = useRef<HTMLVideoElement>(null);
   return (
     <>
@@ -129,8 +129,14 @@ function StudioStage({
           className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center px-5 text-white mix-blend-difference md:px-8"
           style={TIMES}
         >
-          <h1 className="text-6xl font-bold leading-none md:text-9xl" style={DOODLE} aria-label={NAME_EN}>
-            {title}
+          <h1
+            className={`pointer-events-auto inline-block origin-left text-6xl font-bold leading-none md:text-9xl ${title.warping ? "animate-[text-warp_1.5s_ease-in-out]" : ""}`}
+            style={DOODLE}
+            aria-label={NAME_EN}
+            onMouseEnter={title.onEnter}
+            onMouseLeave={title.onLeave}
+          >
+            {title.text}
           </h1>
           <p className="mt-5 max-w-md text-[15px] leading-relaxed">{claim}</p>
           <p className="mt-6 max-w-md text-[15px] italic leading-relaxed opacity-70">&ldquo;{STUDIO_QUOTE}&rdquo;</p>
