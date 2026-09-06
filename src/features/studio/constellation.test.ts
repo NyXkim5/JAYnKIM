@@ -54,9 +54,10 @@ describe("stepNodes", () => {
 });
 
 describe("paletteFor", () => {
-  it("uses the site ground colours and one green accent", () => {
+  it("uses the site ground colours with a hot pink field and deep pink accent", () => {
     expect(paletteFor("black").bg).toBe("#0a0a0a");
     expect(paletteFor("white").bg).toBe("#ffffff");
-    expect(paletteFor("black").accent).toBe("34, 197, 94");
+    expect(paletteFor("black").node).toBe("255, 105, 180");
+    expect(paletteFor("black").accent).toBe("255, 20, 147");
   });
 });

@@ -28,11 +28,12 @@ const DAMPING = 0.82;
 const MAX_CONN_DIST = 75;
 const HIGHLIGHT_DIST = 90;
 
+// Hot pink field, deep pink where the cursor lives. Jay's call, 2026-09-06.
 export function paletteFor(ground: Ground): Palette {
   if (ground === "black") {
-    return { bg: "#0a0a0a", node: "255, 255, 255", accent: "34, 197, 94", lineAlpha: 0.18 };
+    return { bg: "#0a0a0a", node: "255, 105, 180", accent: "255, 20, 147", lineAlpha: 0.3 };
   }
-  return { bg: "#ffffff", node: "17, 17, 17", accent: "22, 163, 74", lineAlpha: 0.08 };
+  return { bg: "#ffffff", node: "219, 39, 119", accent: "190, 24, 93", lineAlpha: 0.1 };
 }
 
 function hexLabel(i: number, j: number): string {
@@ -124,7 +125,7 @@ export function drawNodes(ctx: CanvasRenderingContext2D, nodes: GridNode[], mous
   for (const n of nodes) {
     const dist = Math.hypot(mouse.x - n.x, mouse.y - n.y);
     const near = dist < mouse.radius;
-    const alpha = near ? 0.95 : 0.25 + Math.sin(n.pulse) * 0.1;
+    const alpha = near ? 0.95 : 0.5 + Math.sin(n.pulse) * 0.12;
     const radius = near ? n.radius * 2.2 : n.radius + Math.sin(n.pulse) * 0.3;
     ctx.fillStyle = near ? `rgba(${p.accent}, ${alpha})` : `rgba(${p.node}, ${alpha})`;
     ctx.beginPath();
