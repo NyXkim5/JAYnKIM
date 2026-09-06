@@ -4,7 +4,6 @@
 import { useEffect } from "react";
 import { TransitionLink } from "@/components/transitions/TransitionLink";
 import { usePageTransition } from "@/components/transitions/TransitionProvider";
-import { Clock } from "@/features/landing/Clock";
 import { getPersona, type PersonaKey } from "./personas";
 import { PersonaSwitch } from "./PersonaSwitch";
 
@@ -29,7 +28,6 @@ export function PersonaBar({ persona }: { persona: PersonaKey }) {
       </TransitionLink>
       <div className="flex items-center gap-6">
         <PersonaSwitch value={persona} onChange={() => {}} ground={p.ground} asLinks />
-        <Clock ground={p.ground} />
       </div>
     </header>
   );

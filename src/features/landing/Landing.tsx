@@ -24,7 +24,6 @@ import { EVIDENCE, sourceHref } from "@/features/evidence/registry";
 import { ConstellationGrid } from "@/features/studio/ConstellationGrid";
 import type { EvidenceMark } from "@/features/studio/constellation";
 import { useLanguageHover } from "@/features/studio/useLanguageHover";
-import { Clock } from "./Clock";
 import { GridReveal } from "./GridReveal";
 import { useViewTransition, type ViewTransition } from "./useViewTransition";
 
@@ -85,7 +84,6 @@ function LandingHeader({
       </button>
       <div className={`flex flex-col items-end gap-2 ${backdrop}`}>
         <PersonaSwitch value={studio ? null : view} onChange={setView} ground={ground} />
-        <Clock ground={ground} />
       </div>
     </header>
   );
