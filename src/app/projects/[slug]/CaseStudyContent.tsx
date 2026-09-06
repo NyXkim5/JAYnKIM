@@ -50,7 +50,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
     );
   }
 
-  const sections = [
+  const allNavItems = [
     { id: "overview", label: "Overview" },
     { id: "problem", label: "Problem" },
     { id: "approach", label: "Approach" },
@@ -61,6 +61,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
     { id: "stack", label: "Stack" },
     ...(study.reflections ? [{ id: "reflections", label: "Reflections" }] : []),
   ];
+  const navItems = allNavItems.filter((item) => item.id !== "impact" || study.impact.length > 0);
 
   return (
     <>
@@ -196,7 +197,7 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
                   Sections
                 </p>
                 <ul className="space-y-1">
-                  {sections.map((s) => (
+                  {navItems.map((s) => (
                     <li key={s.id}>
                       <a
                         href={`#${s.id}`}
@@ -560,33 +561,35 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
               )}
 
               {/* Impact */}
-              <section id="impact" className="mb-14">
-                <h2 className="font-mono text-[10px] tracking-[0.2em] uppercase text-text-light mb-6">
-                  Impact
-                </h2>
-                <div className="grid grid-cols-2 gap-0 border-t border-l border-border-light">
-                  {study.impact.map((item, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                      className="border-r border-b border-border-light p-6"
-                    >
-                      <p className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase mb-2">
-                        {item.metric}
-                      </p>
-                      <p className="text-3xl md:text-4xl font-bold text-text-black tracking-tight mb-2">
-                        {item.value}
-                      </p>
-                      <p className="text-xs text-text-mid leading-relaxed">
-                        {item.description}
-                      </p>
-                    </motion.div>
-                  ))}
-                </div>
-              </section>
+              {study.impact.length > 0 && (
+                <section id="impact" className="mb-14">
+                  <h2 className="font-mono text-[10px] tracking-[0.2em] uppercase text-text-light mb-6">
+                    Impact
+                  </h2>
+                  <div className="grid grid-cols-2 gap-0 border-t border-l border-border-light">
+                    {study.impact.map((item, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 }}
+                        className="border-r border-b border-border-light p-6"
+                      >
+                        <p className="font-mono text-[10px] tracking-[0.2em] text-text-light uppercase mb-2">
+                          {item.metric}
+                        </p>
+                        <p className="text-3xl md:text-4xl font-bold text-text-black tracking-tight mb-2">
+                          {item.value}
+                        </p>
+                        <p className="text-xs text-text-mid leading-relaxed">
+                          {item.description}
+                        </p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               {/* Stack */}
               <section id="stack" className="mb-14">

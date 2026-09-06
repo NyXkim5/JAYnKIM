@@ -1,6 +1,9 @@
+import type { PersonaKey } from "@/features/persona/personas";
+
 export interface CaseStudy {
   slug: string;
   id: string;
+  personas: PersonaKey[];
   title: string;
   subtitle: string;
   year: string;
@@ -20,6 +23,7 @@ export interface CaseStudy {
     metric: string;
     value: string;
     description: string;
+    evidenceId: string;
   }[];
   stack: { category: string; tools: string[] }[];
   images: { src: string; caption: string }[];
@@ -56,6 +60,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "optum",
     id: "002",
+    personas: ["software"],
     title: "Optum",
     subtitle: "Automating RFP Response at UnitedHealth Group",
     year: "2026",
@@ -96,17 +101,8 @@ export const caseStudies: CaseStudy[] = [
       {
         metric: "Volume",
         value: "Tens of thousands",
-        description: "RFPs the business receives. Every one flows through parsing, so accuracy improvements compound across the whole pipeline",
-      },
-      {
-        metric: "Teams",
-        value: "One platform",
-        description: "All teams involved in an RFP communicate and complete responses in the same system instead of email and spreadsheets",
-      },
-      {
-        metric: "Core metric",
-        value: "Parsing accuracy",
-        description: "The number that gates everything downstream. Improving it is the central ongoing technical work",
+        description: "RFPs a year through one platform",
+        evidenceId: "optum.rfp.volume",
       },
     ],
     stack: [
@@ -122,6 +118,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "archv",
     id: "001",
+    personas: ["software", "product"],
     title: "Archv",
     subtitle: "AI-Powered Document Review for Regulated Industries",
     year: "2025",
@@ -196,29 +193,22 @@ export const caseStudies: CaseStudy[] = [
     ],
     impact: [
       {
-        metric: "Review Time",
-        value: "-71%",
-        description: "Document review dropped from 4.5 hours to 1.3 hours per session",
+        metric: "Verified quotes",
+        value: "13 of 18",
+        description: "Citations proven byte-exact against stored page text in the committed eval baseline",
+        evidenceId: "archvbrain.eval.verifiedQuotes",
       },
       {
-        metric: "Verification",
-        value: "-82%",
-        description: "AI output verification dropped from 45 minutes to 8 minutes per query",
+        metric: "False anchors",
+        value: "0",
+        description: "Citations whose offsets fail to locate their quoted text. The number that matters, and it is zero.",
+        evidenceId: "archvbrain.eval.falseAnchors",
       },
       {
-        metric: "Latency",
-        value: "<2s",
-        description: "Document classification on 50+ page legal files",
-      },
-      {
-        metric: "NVIDIA Inception",
-        value: "Admitted",
-        description: "Accepted into NVIDIA's accelerator for AI startups",
-      },
-      {
-        metric: "Early Adoption",
-        value: "Signed",
-        description: "Onboarded first law student users during initial launch",
+        metric: "Gold rows",
+        value: "45",
+        description: "Hand-labelled reasoning, hallucination, and conflict datasets the judge scores against",
+        evidenceId: "archvbrain.eval.goldRows",
       },
     ],
     stack: [
@@ -320,6 +310,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "cactus",
     id: "004",
+    personas: ["software"],
     title: "Cactus",
     subtitle: "Event Ingestion and Growth Analytics Platform",
     year: "2025",
@@ -363,28 +354,7 @@ export const caseStudies: CaseStudy[] = [
           "Dashboard load dropped from 8–12 seconds to under 200ms. The growth team went from checking metrics once a day to checking them continuously.",
       },
     ],
-    impact: [
-      {
-        metric: "Latency",
-        value: "<1s",
-        description: "Event capture to dashboard display — real-time feedback for the growth team",
-      },
-      {
-        metric: "Query Speed",
-        value: "60x",
-        description: "Dashboard queries dropped from 8–12s to <200ms with materialized views",
-      },
-      {
-        metric: "Integration",
-        value: "1–2 days",
-        description: "Time to add a new third-party marketing tool — down from 1–2 weeks",
-      },
-      {
-        metric: "Experiments",
-        value: "Shipped",
-        description: "Full A/B testing infrastructure with statistical significance guardrails",
-      },
-    ],
+    impact: [],
     stack: [
       { category: "Frontend", tools: ["React", "TypeScript", "D3.js", "Tailwind CSS"] },
       { category: "Backend", tools: ["Node.js", "PostgreSQL", "Redis"] },
@@ -398,6 +368,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "medvanta",
     id: "003",
+    personas: ["product", "software"],
     title: "MedVanta Platform",
     subtitle: "Clinical Operations & Compliance Software",
     year: "2024 – 2025",
@@ -441,23 +412,7 @@ export const caseStudies: CaseStudy[] = [
           "Workflow problems surfaced in prototyping instead of production, so the shipped build matched how staff actually work.",
       },
     ],
-    impact: [
-      {
-        metric: "Patient Flow",
-        value: "<5 min",
-        description: "Injury report to specialist connection — down from 2–3 days",
-      },
-      {
-        metric: "Admin Time",
-        value: "~5hrs/wk",
-        description: "Saved per practice through workflow automation",
-      },
-      {
-        metric: "Adoption",
-        value: "1 week",
-        description: "Practice managers were running daily operations on the dashboards within the first week",
-      },
-    ],
+    impact: [],
     stack: [
       { category: "Frontend", tools: ["React", "TypeScript", "Tailwind CSS"] },
       { category: "Backend", tools: ["Python", "FastAPI", "PostgreSQL"] },
@@ -477,6 +432,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "drone-dashboard",
     id: "006",
+    personas: ["hardware"],
     title: "OVERWATCH",
     subtitle: "Autonomous Swarm Ground Control System",
     year: "2025",
@@ -532,29 +488,22 @@ export const caseStudies: CaseStudy[] = [
     ],
     impact: [
       {
-        metric: "Fleet",
-        value: "2–50",
-        description: "Stress-tested at 50 drones — 1,225 pairwise collision checks per tick, all safety systems nominal",
-      },
-      {
-        metric: "Telemetry",
-        value: "10Hz",
-        description: "Full telemetry pipeline: position, attitude, velocity, battery, GPS, link quality, formation state per drone",
-      },
-      {
-        metric: "Latency",
-        value: "<100ms",
-        description: "Sub-100ms WebRTC video streaming, 100ms telemetry broadcast interval, sub-200ms HUD render",
-      },
-      {
         metric: "Tests",
-        value: "76+",
-        description: "7 test suites: formation geometry, collision avoidance, geofence, wire protocol, MSP, stress, API integration",
+        value: "3,800",
+        description: "Collected by pytest across the core, sensor, and vision services",
+        evidenceId: "dronenexus.tests.collected",
       },
       {
-        metric: "Endpoints",
-        value: "18",
-        description: "Full REST API surface with JWT auth, WebSocket telemetry, WebRTC video, and mission control",
+        metric: "Test files",
+        value: "221",
+        description: "Under services/, covering fusion, siting, terrain, protocol, and vision",
+        evidenceId: "dronenexus.tests.files",
+      },
+      {
+        metric: "Core",
+        value: "77,616",
+        description: "Lines of Python in services/core alone",
+        evidenceId: "dronenexus.core.lines",
       },
     ],
     stack: [
@@ -595,6 +544,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "drone-virtual-env",
     id: "007",
+    personas: ["hardware"],
     title: "DroneNexus",
     subtitle: "Ground Control Station & Virtual Environment",
     year: "2025",
@@ -630,23 +580,7 @@ export const caseStudies: CaseStudy[] = [
           "Real-time feedback: 726g all-up weight, 7.16:1 thrust-to-weight ratio, 6m 12s max flight time — all updating live as components change.",
       },
     ],
-    impact: [
-      {
-        metric: "Subsystems",
-        value: "6",
-        description: "Fully configurable categories — frame through thermal management",
-      },
-      {
-        metric: "Metrics",
-        value: "8+",
-        description: "Performance calculations recomputed in real time on every component change",
-      },
-      {
-        metric: "Validation",
-        value: "Live",
-        description: "Compatibility checking catches conflicts before assembly",
-      },
-    ],
+    impact: [],
     stack: [
       { category: "Frontend", tools: ["React", "TypeScript", "Tailwind CSS"] },
       { category: "3D", tools: ["Three.js", "WebGL", "3D Model Rendering"] },
@@ -665,6 +599,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "va-gov-mvp",
     id: "008",
+    personas: ["product", "business"],
     title: "VA.gov MVP",
     subtitle: "Conceptual Redesign for Veterans Affairs Portal",
     year: "2025",
@@ -708,23 +643,7 @@ export const caseStudies: CaseStudy[] = [
           "Average clicks to reach a service dropped from 4–5 to 1. Veterans no longer need to understand VA organizational structure to find what they need.",
       },
     ],
-    impact: [
-      {
-        metric: "Quick Actions",
-        value: "10",
-        description: "One-click access to the most common veteran services",
-      },
-      {
-        metric: "Key Metrics",
-        value: "4",
-        description: "Benefits, claims, disability, and education status visible at a glance",
-      },
-      {
-        metric: "Accessibility",
-        value: "AA",
-        description: "WCAG 2.1 AA compliant with full keyboard navigation and screen reader support",
-      },
-    ],
+    impact: [],
     stack: [
       { category: "Frontend", tools: ["Next.js", "TypeScript", "Tailwind CSS"] },
       { category: "Design System", tools: ["USWDS", "Accessibility", "Responsive Design"] },
@@ -756,4 +675,8 @@ export const caseStudies: CaseStudy[] = [
 
 export function findStudy(slug: string): CaseStudy | undefined {
   return caseStudies.find((s) => s.slug === slug);
+}
+
+export function studiesFor(persona: PersonaKey): CaseStudy[] {
+  return caseStudies.filter((s) => s.personas.includes(persona));
 }
