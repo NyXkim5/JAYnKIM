@@ -55,7 +55,7 @@ def candidates() -> list[Candidate]:
         for j in range(6):
             east = 250.0 + 500.0 * i
             north = -250.0 - 500.0 * j
-            out.append(Candidate(position=(east, north, 10.0), range_m=1800.0, label=f"{i}{j}"))
+            out.append(Candidate(position=(east, north, 10.0), range_m=900.0, label=f"{i}{j}"))
     return out
 
 
@@ -93,7 +93,7 @@ def main() -> int:
             "repo": "NyXkim5/DroneNexus",
             "commit": head_sha(DRONENEXUS),
             "path": "services/core/siting/",
-            "how": "python3 scripts/specimen/hardware.py (ridge terrain, 48x48 demand at 50 m, 36 candidates, k=4)",
+            "how": "python3 scripts/specimen/hardware.py (ridge terrain, 48x48 demand at 50 m, 36 candidates, k=4, range 900 m)",
             "observedAt": dt.date.today().isoformat(),
             "note": f"expected_fraction={plan.expected_fraction:.4f} chosen={list(plan.chosen)} marginal={[round(g, 1) for g in plan.marginal_gain]}",
         },
