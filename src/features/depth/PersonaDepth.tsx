@@ -4,7 +4,7 @@
 import { TransitionLink } from "@/components/transitions/TransitionLink";
 import { studiesFor, type CaseStudy } from "@/data/caseStudies";
 import { SECONDARY_ROUTES } from "@/data/routes";
-import { findEvidence, sourceHref } from "@/features/evidence/registry";
+import { evidenceFor, findEvidence, sourceHref, type Evidence } from "@/features/evidence/registry";
 import { artifactsFor, type Artifact } from "@/features/persona/artifacts";
 import { PersonaBar } from "@/features/persona/PersonaBar";
 import { getPersona, type Ground, type Persona, type PersonaKey } from "@/features/persona/personas";
@@ -28,7 +28,7 @@ function ArtifactCard({ a, ground }: { a: Artifact; ground: Ground }) {
   const t = tone(ground);
   const e = a.evidenceId ? findEvidence(a.evidenceId) : undefined;
   return (
-    <article id={a.evidenceId} className={`border-t py-6 ${t.line}`}>
+    <article className={`border-t py-6 ${t.line}`}>
       <p className={`font-mono text-[11px] tracking-[0.14em] uppercase ${t.dim}`}>{a.file}</p>
       <h3 className={`mt-2 text-lg font-semibold ${t.fg}`}>{a.title}</h3>
       <p className={`mt-2 max-w-2xl text-[15px] leading-relaxed ${t.fg}`}>{a.what}</p>
@@ -83,6 +83,38 @@ function ArtifactsSection({ artifacts, ground, t }: { artifacts: Artifact[]; gro
   );
 }
 
+function EvidenceRow({ e, t }: { e: Evidence; t: Tone }) {
+  return (
+    <li id={e.id} className={`scroll-mt-16 border-t py-4 ${t.line}`}>
+      <p className={`font-mono text-[12px] tracking-wide ${t.fg}`}>
+        <span className="text-[14px]">{e.value}</span>
+        {e.unit && <span className={`ml-2 ${t.dim}`}>{e.unit}</span>}
+      </p>
+      <p className={`mt-1 font-mono text-[11px] tracking-[0.1em] ${t.dim}`}>
+        {e.repo} · {e.path} · via {e.how} · {e.observedAt}
+        {e.public && (
+          <a href={sourceHref(e)} className="ml-3 underline underline-offset-4" target="_blank" rel="noopener noreferrer">
+            source
+          </a>
+        )}
+      </p>
+    </li>
+  );
+}
+
+function EvidenceSection({ persona, ground }: { persona: PersonaKey; ground: Ground }) {
+  const t = tone(ground);
+  const evidence = evidenceFor(persona);
+  return (
+    <section className="px-5 pt-14 md:px-8">
+      <h2 className={`font-mono text-[11px] tracking-[0.2em] uppercase ${t.dim}`}>Evidence</h2>
+      <ul className="mt-4">
+        {evidence.map((e) => <EvidenceRow key={e.id} e={e} t={t} />)}
+      </ul>
+    </section>
+  );
+}
+
 function CaseStudiesSection({ persona, studies, t }: { persona: PersonaKey; studies: CaseStudy[]; t: Tone }) {
   return (
     <section className="px-5 pt-14 md:px-8">
@@ -131,6 +163,7 @@ export function PersonaDepth({ persona }: { persona: PersonaKey }) {
       <ClaimSection persona={p} t={t} />
       <SpecimenSection persona={persona} ground={p.ground} snapshot={snapshot} t={t} />
       <ArtifactsSection artifacts={artifacts} ground={p.ground} t={t} />
+      <EvidenceSection persona={persona} ground={p.ground} />
       <CaseStudiesSection persona={persona} studies={studies} t={t} />
       <OffDutyFooter t={t} />
     </main>
