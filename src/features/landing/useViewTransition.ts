@@ -22,31 +22,34 @@ export function useViewTransition(
 ): Controls {
   const [transition, setTransition] = useState<ViewTransition | null>(null);
   const viewRef = useRef(view);
-  const busyRef = useRef(false);
+  const transitionRef = useRef<ViewTransition | null>(null);
   useEffect(() => {
     viewRef.current = view;
   }, [view]);
+  useEffect(() => {
+    transitionRef.current = transition;
+  }, [transition]);
 
   const requestView = useCallback(
     (v: LandingView) => {
-      if (v === viewRef.current || busyRef.current) return;
+      if (v === viewRef.current || transitionRef.current) return;
       if (reduced) return setView(v);
-      busyRef.current = true;
-      setTransition({ to: v, phase: "cover", seed: Date.now() });
+      const next = { to: v, phase: "cover" as const, seed: Date.now() };
+      transitionRef.current = next;
+      setTransition(next);
     },
     [reduced, setView],
   );
 
   const onCoverDone = useCallback(() => {
-    setTransition((t) => {
-      if (!t) return t;
-      setView(t.to);
-      return { ...t, phase: "reveal" };
-    });
+    const t = transitionRef.current;
+    if (!t || t.phase !== "cover") return;
+    setView(t.to);
+    setTransition({ ...t, phase: "reveal" });
   }, [setView]);
 
   const onRevealDone = useCallback(() => {
-    busyRef.current = false;
+    transitionRef.current = null;
     setTransition(null);
   }, []);
 

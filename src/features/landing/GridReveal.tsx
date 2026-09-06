@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import type { Ground } from "@/features/persona/personas";
 import {
@@ -28,6 +28,13 @@ export function GridReveal({ phase, ground, seed, onDone }: Props) {
   const black = ground === "black";
   const fill = black ? "#0a0a0a" : "#ffffff";
   const line = black ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)";
+
+  // Safety net: if the frame loop stalls (background tab), finish the phase
+  // on a timer so the overlay can never stay stuck over the page.
+  useEffect(() => {
+    const id = setTimeout(onDone, (spread + fade) * 1000 + 400);
+    return () => clearTimeout(id);
+  }, [phase, spread, fade, onDone]);
 
   return (
     <div
