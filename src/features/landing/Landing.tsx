@@ -93,6 +93,7 @@ const NAME_EN = "Jay Kim";
 const NAME_KO = "김준혁";
 const STUDIO_QUOTE = "Irregular thinking leads to irregular designs.";
 const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
+const DOODLE = { fontFamily: "var(--font-doodle), 'Comic Sans MS', cursive" } as const;
 
 // Every registry entry becomes a node in the grid. Hovering reveals the value,
 // clicking goes to its source. Nothing in the grid is invented.
@@ -128,7 +129,7 @@ function StudioStage({
           className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center px-5 text-white mix-blend-difference md:px-8"
           style={TIMES}
         >
-          <h1 className="text-5xl font-bold uppercase leading-none tracking-tight md:text-8xl" aria-label={NAME_EN}>
+          <h1 className="text-6xl font-bold leading-none md:text-9xl" style={DOODLE} aria-label={NAME_EN}>
             {title}
           </h1>
           <p className="mt-5 max-w-md text-[15px] leading-relaxed">{claim}</p>

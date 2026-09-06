@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Gaegu, Inter, JetBrains_Mono } from "next/font/google";
 import dynamic from "next/dynamic";
 import "./globals.css";
 import "@/components/ui/ScribbleButton.css";
@@ -17,6 +17,14 @@ const KeyboardNav = dynamic(() => import("@/components/ui/KeyboardNav").then((m)
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+// Handwritten face for the Studio name only. Carries Hangul and Latin so the
+// English/Korean cycle never falls back to a different font.
+const gaegu = Gaegu({
+  variable: "--font-doodle",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
@@ -76,7 +84,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} ${gaegu.variable} antialiased`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[99999] focus:px-4 focus:py-2 focus:bg-accent-green focus:text-black focus:rounded focus:font-mono focus:text-sm"
