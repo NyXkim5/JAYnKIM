@@ -1,8 +1,9 @@
-// src/features/persona/PersonaSwitch.tsx
 "use client";
 
+import { useState } from "react";
 import { TransitionLink } from "@/components/transitions/TransitionLink";
 import { cn } from "@/lib/utils";
+import { GlitchLabel } from "./GlitchLabel";
 import { PERSONAS, type Ground, type PersonaKey } from "./personas";
 
 type Props = {
@@ -21,33 +22,26 @@ function tabClass(active: boolean, ground: Ground): string {
 }
 
 export function PersonaSwitch({ value, onChange, ground, asLinks = false }: Props) {
+  const [hover, setHover] = useState<PersonaKey | null>(null);
   return (
     <div role="tablist" aria-label="Persona" className="flex items-center gap-2">
       {PERSONAS.map((p) => {
         const active = p.key === value;
-        const label = `[${p.short}]`;
+        const hoverProps = { onMouseEnter: () => setHover(p.key), onMouseLeave: () => setHover(null) };
+        const label = (
+          <>
+            [<GlitchLabel text={p.short} active={hover === p.key} />]
+          </>
+        );
         if (asLinks) {
           return (
-            <TransitionLink
-              key={p.key}
-              href={`/${p.key}`}
-              role="tab"
-              aria-selected={active}
-              className={tabClass(active, ground)}
-            >
+            <TransitionLink key={p.key} href={`/${p.key}`} role="tab" aria-selected={active} className={tabClass(active, ground)} {...hoverProps}>
               {label}
             </TransitionLink>
           );
         }
         return (
-          <button
-            key={p.key}
-            type="button"
-            role="tab"
-            aria-selected={active}
-            onClick={() => onChange(p.key)}
-            className={tabClass(active, ground)}
-          >
+          <button key={p.key} type="button" role="tab" aria-selected={active} onClick={() => onChange(p.key)} className={tabClass(active, ground)} {...hoverProps}>
             {label}
           </button>
         );

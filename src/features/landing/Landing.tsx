@@ -25,6 +25,8 @@ import { ConstellationGrid } from "@/features/studio/ConstellationGrid";
 import type { EvidenceMark } from "@/features/studio/constellation";
 import { useLanguageHover } from "@/features/studio/useLanguageHover";
 import { Clock } from "./Clock";
+import { GridReveal } from "./GridReveal";
+import { useViewTransition, type ViewTransition } from "./useViewTransition";
 
 const STUDIO_VIDEO = "/studio/studiovid.mp4";
 
@@ -201,22 +203,14 @@ function LandingFooter({ view, ground, dim }: { view: LandingView; ground: Groun
   );
 }
 
-export function Landing() {
-  const { view, setView } = useLandingView();
-  const { navigateTo } = usePageTransition();
-  const personaKey: PersonaKey | null = view === STUDIO ? null : view;
-  const p = personaKey ? getPersona(personaKey) : null;
-  const ground: Ground = p ? p.ground : "black";
-  const frame = useMemo(() => (personaKey ? frameFor(personaKey) : null), [personaKey]);
-  const source = personaKey ? (snapshotFor(personaKey)?.source ?? null) : null;
-  const target = p ? p.claim : STUDIO_CLAIM;
-  const scrambled = useScrambleText(target, { speed: 30, staggerPerChar: 12 });
-  const reduced = useReducedMotion() ?? false;
-  const claim = reduced ? target : scrambled;
+function groundOf(view: LandingView): Ground {
+  return view === STUDIO ? "black" : getPersona(view).ground;
+}
+
+function useLandingActions(personaKey: PersonaKey | null, navigateTo: (href: string) => void) {
   const enter = useCallback(() => {
     if (personaKey) navigateTo(`/${personaKey}`);
   }, [navigateTo, personaKey]);
-  useLandingKeys(setView, enter);
   const openMark = useCallback(
     (m: EvidenceMark) => {
       if (m.href.startsWith("http")) window.open(m.href, "_blank", "noopener,noreferrer");
@@ -224,6 +218,38 @@ export function Landing() {
     },
     [navigateTo],
   );
+  return { enter, openMark };
+}
+
+function TransitionLayer({
+  t,
+  onCoverDone,
+  onRevealDone,
+}: {
+  t: ViewTransition | null;
+  onCoverDone: () => void;
+  onRevealDone: () => void;
+}) {
+  if (!t) return null;
+  const onDone = t.phase === "cover" ? onCoverDone : onRevealDone;
+  return <GridReveal phase={t.phase} ground={groundOf(t.to)} seed={t.seed} onDone={onDone} />;
+}
+
+export function Landing() {
+  const { view, setView } = useLandingView();
+  const { navigateTo } = usePageTransition();
+  const reduced = useReducedMotion() ?? false;
+  const { transition, requestView, onCoverDone, onRevealDone } = useViewTransition(view, setView, reduced);
+  const personaKey: PersonaKey | null = view === STUDIO ? null : view;
+  const p = personaKey ? getPersona(personaKey) : null;
+  const ground = groundOf(view);
+  const frame = useMemo(() => (personaKey ? frameFor(personaKey) : null), [personaKey]);
+  const source = personaKey ? (snapshotFor(personaKey)?.source ?? null) : null;
+  const target = p ? p.claim : STUDIO_CLAIM;
+  const scrambled = useScrambleText(target, { speed: 30, staggerPerChar: 12 });
+  const claim = reduced ? target : scrambled;
+  const { enter, openMark } = useLandingActions(personaKey, navigateTo);
+  useLandingKeys(requestView, enter);
 
   const black = ground === "black";
   const fg = black ? "text-white" : "text-black";
@@ -237,13 +263,14 @@ export function Landing() {
       data-view={view}
     >
       <p className="sr-only">{srDescription(!personaKey, source)}</p>
-      <LandingHeader view={view} setView={setView} ground={ground} fg={fg} />
+      <LandingHeader view={view} setView={requestView} ground={ground} fg={fg} />
       {frame ? (
         <LandingStage frame={frame} ground={ground} fg={fg} black={black} claim={claim} onEnter={enter} />
       ) : (
         <StudioStage reduced={reduced} claim={claim} onSelect={openMark} />
       )}
       {frame && <LandingFooter view={view} ground={ground} dim={dim} />}
+      <TransitionLayer t={transition} onCoverDone={onCoverDone} onRevealDone={onRevealDone} />
     </main>
   );
 }

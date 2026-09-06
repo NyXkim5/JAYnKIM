@@ -18,7 +18,9 @@ describe("PersonaSwitch", () => {
   it("calls onChange with the key when a tab is clicked", () => {
     const onChange = vi.fn();
     render(<PersonaSwitch value="hardware" onChange={onChange} ground="black" />);
-    fireEvent.click(screen.getByText("[PRODUCT]"));
+    const product = screen.getAllByRole("tab")[2];
+    expect(product.textContent).toBe("[PRODUCT]");
+    fireEvent.click(product);
     expect(onChange).toHaveBeenCalledWith("product");
   });
 });

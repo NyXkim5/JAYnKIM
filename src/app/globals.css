@@ -59,6 +59,22 @@ body {
   }
 }
 
+/* Persona tab: the last three letters jitter with a pink split while glitching */
+@keyframes tab-glitch {
+  0% {
+    transform: translate(0, 0);
+    text-shadow: none;
+  }
+  50% {
+    transform: translate(1px, -1px);
+    text-shadow: -1px 0 rgba(255, 20, 147, 0.85), 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  100% {
+    transform: translate(-1px, 1px);
+    text-shadow: 1px 0 rgba(255, 20, 147, 0.85);
+  }
+}
+
 /* Reduced motion support - disable animations for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   *,
