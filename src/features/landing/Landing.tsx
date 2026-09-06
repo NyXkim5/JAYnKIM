@@ -21,6 +21,7 @@ import { frameFor, snapshotFor } from "@/features/specimen/adapters";
 import type { SnapshotSource } from "@/features/specimen/snapshot";
 import type { SpecimenFrame } from "@/features/specimen/types";
 import { ConstellationGrid } from "@/features/studio/ConstellationGrid";
+import { useLanguageCycle } from "@/features/studio/useLanguageCycle";
 import { Clock } from "./Clock";
 
 const STUDIO_VIDEO = "/studio/studiovid.mp4";
@@ -86,15 +87,26 @@ function LandingHeader({
   );
 }
 
+const NAME_EN = "Jay Kim";
+const NAME_KO = "김준혁";
+const STUDIO_QUOTE = "Irregular thinking leads to irregular designs.";
+const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
+
 function StudioStage({ reduced, claim }: { reduced: boolean; claim: string }) {
+  const title = useLanguageCycle(NAME_EN, NAME_KO, 3500, reduced);
   return (
     <>
       <div className="absolute left-0 top-0 h-full w-1/2">
         <ConstellationGrid ground="black" className="absolute inset-0" />
-        <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center px-5 text-white mix-blend-difference md:px-8">
-          <h1 className="font-mono text-5xl font-black uppercase leading-none tracking-tighter md:text-8xl">Jay Kim</h1>
-          <p className="mt-4 max-w-md font-mono text-[13px] leading-relaxed tracking-wide">{claim}</p>
-          <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.18em] opacity-60">Press 1 to 4</p>
+        <div
+          className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center px-5 text-white mix-blend-difference md:px-8"
+          style={TIMES}
+        >
+          <h1 className="text-5xl font-bold uppercase leading-none tracking-tight md:text-8xl" aria-label={NAME_EN}>
+            {title}
+          </h1>
+          <p className="mt-5 max-w-md text-[15px] leading-relaxed">{claim}</p>
+          <p className="mt-6 max-w-md text-[15px] italic leading-relaxed opacity-70">&ldquo;{STUDIO_QUOTE}&rdquo;</p>
         </div>
       </div>
       <video
