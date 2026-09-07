@@ -82,3 +82,9 @@ a {
 img {
   content-visibility: auto;
 }
+
+/* Terminal caret on the Stealth page: a hard on/off blink, no fade. */
+@keyframes caret {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
