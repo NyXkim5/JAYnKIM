@@ -1,5 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { breath, chooseFocus, coordsLabel, CYCLE_MS, cycleIndex, DURATIONS, ORDER, phaseAt, pull, SAYINGS, stageFor, warp } from "./grid";
+import {
+  BASE_ALPHA,
+  breath,
+  chooseFocus,
+  coordsLabel,
+  CYCLE_MS,
+  cycleIndex,
+  dimAlpha,
+  DURATIONS,
+  focusAlpha,
+  focusPulse,
+  ORDER,
+  phaseAt,
+  pull,
+  SAYINGS,
+  SPACING,
+  stageFor,
+} from "./grid";
 
 const banned = /\b(signed|customers?|pilots?|early users|first users|active users|paying)\b/i;
 
@@ -28,26 +45,30 @@ describe("stealth grid cycle", () => {
     expect(pull("release", 1)).toBeCloseTo(0);
   });
 
-  it("bends grid points toward the focus, near ones most, far ones barely, none at rest", () => {
-    const focus = { x: 500, y: 300, saying: SAYINGS[0] };
-    expect(warp(100, 100, focus, 0, 300)).toEqual([100, 100]);
-    const [nx, ny] = warp(540, 320, focus, 1, 300);
-    expect(Math.hypot(nx - focus.x, ny - focus.y)).toBeLessThan(Math.hypot(40, 20) * 0.2);
-    const [fx, fy] = warp(2000, 1500, focus, 1, 300);
-    expect(Math.hypot(fx - 2000, fy - 1500)).toBeLessThan(1);
-    for (const [x, y] of [[300, 300], [700, 100], [500, 600]] as const) {
-      const [wx, wy] = warp(x, y, focus, 0.5, 300);
-      expect(Math.hypot(wx - focus.x, wy - focus.y)).toBeLessThan(Math.hypot(x - focus.x, y - focus.y));
+  it("breathes once per rest, full at both ends and dipping to 70 percent in the middle", () => {
+    expect(breath(0)).toBeCloseTo(1);
+    expect(breath(1)).toBeCloseTo(1);
+    expect(breath(0.5)).toBeCloseTo(0.7);
+    for (const t of [0.1, 0.3, 0.6, 0.9]) {
+      expect(breath(t)).toBeGreaterThanOrEqual(0.7);
+      expect(breath(t)).toBeLessThanOrEqual(1);
     }
   });
 
-  it("breathes gently around full strength and unit scale", () => {
-    for (const t of [0, 0.25, 0.5, 0.75, 1]) {
-      const { alpha, scale } = breath(t);
-      expect(alpha).toBeGreaterThanOrEqual(0.6);
-      expect(alpha).toBeLessThanOrEqual(1);
-      expect(Math.abs(scale - 1)).toBeLessThanOrEqual(0.012 + 1e-9);
+  it("dims the rest of the grid as the focus takes hold and brightens the focus with the pull", () => {
+    expect(dimAlpha(0, 1)).toBeCloseTo(BASE_ALPHA);
+    expect(dimAlpha(1, 1)).toBeCloseTo(BASE_ALPHA * 0.22);
+    expect(dimAlpha(0, 0.7)).toBeCloseTo(BASE_ALPHA * 0.7);
+    const climb = [0, 0.5, 1].map((k) => focusAlpha(k, 1));
+    expect(climb[0]).toBeCloseTo(BASE_ALPHA);
+    expect(climb[1]).toBeGreaterThan(climb[0]);
+    expect(climb[2]).toBeGreaterThan(climb[1]);
+    expect(focusAlpha(1, 1)).toBeLessThanOrEqual(0.85);
+    for (const ms of [0, 325, 650, 975, 1300]) {
+      expect(focusPulse(ms)).toBeGreaterThanOrEqual(0.6);
+      expect(focusPulse(ms)).toBeLessThanOrEqual(1);
     }
+    expect(SPACING).toBeGreaterThanOrEqual(80);
   });
 
   it("chooses a focus inside the safe margins with a fresh saying, and labels it with four digits", () => {

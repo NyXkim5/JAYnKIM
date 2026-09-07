@@ -1,4 +1,4 @@
-// Pure timing and geometry for the Stealth grid. The canvas component only
+// Pure timing and brightness for the Stealth grid. The canvas component only
 // draws what these functions return, so the cycle can be tested without a DOM.
 
 export type Phase = "breathe" | "converge" | "hold" | "release";
@@ -6,7 +6,8 @@ export type Phase = "breathe" | "converge" | "hold" | "release";
 export const ORDER: readonly Phase[] = ["breathe", "converge", "hold", "release"];
 export const DURATIONS: Record<Phase, number> = { breathe: 4200, converge: 1500, hold: 2800, release: 1100 };
 export const CYCLE_MS = ORDER.reduce((sum, p) => sum + DURATIONS[p], 0);
-export const SPACING = 48;
+export const SPACING = 96;
+export const BASE_ALPHA = 0.11;
 
 // Short lines about warfare. Jay's voice, no figures, nothing attributed.
 export const SAYINGS: readonly string[] = [
@@ -35,8 +36,8 @@ function easeOut(t: number): number {
   return 1 - Math.pow(1 - t, 3);
 }
 
-// How hard the grid is pulled toward the focus: nothing while breathing,
-// rising through converge, full during hold, letting go through release.
+// How far the grid's attention has moved to the focus: nothing while
+// breathing, rising through converge, full during hold, letting go through release.
 export function pull(phase: Phase, t: number): number {
   if (phase === "breathe") return 0;
   if (phase === "converge") return easeOut(t);
@@ -44,21 +45,28 @@ export function pull(phase: Phase, t: number): number {
   return 1 - easeOut(t);
 }
 
-// Move a grid point toward the focus. Close points move almost all the way,
-// far points barely, so lines bend in around the focus instead of sliding.
-export function warp(x: number, y: number, focus: Focus, k: number, radius: number): [number, number] {
-  if (k <= 0) return [x, y];
-  const dx = focus.x - x;
-  const dy = focus.y - y;
-  const d2 = dx * dx + dy * dy;
-  const f = k * 0.92 * Math.exp(-d2 / (2 * radius * radius));
-  return [x + dx * f, y + dy * f];
+// The resting grid takes one breath per breathe phase: full strength at both
+// ends, dipping to 70 percent in the middle, so the phase joins cleanly.
+export function breath(t: number): number {
+  return 1 - 0.3 * (0.5 - 0.5 * Math.cos(t * Math.PI * 2));
 }
 
-// The resting grid breathes: line strength and scale drift with one slow wave.
-export function breath(t: number): { alpha: number; scale: number } {
-  const wave = Math.sin(t * Math.PI * 2);
-  return { alpha: 0.8 + 0.2 * wave, scale: 1 + 0.012 * wave };
+// Everything outside the focus dims as the focus takes hold, down to about a
+// fifth of resting strength.
+export function dimAlpha(k: number, rest: number): number {
+  return BASE_ALPHA * rest * (1 - 0.78 * k);
+}
+
+// The focused region breathes faster than the resting grid, about one breath
+// every 1.3 seconds.
+export function focusPulse(elapsed: number): number {
+  return 0.8 + 0.2 * Math.sin((elapsed / 1300) * Math.PI * 2);
+}
+
+// Line strength at the centre of the focus. It climbs with the pull and
+// carries the pulse, capped well below solid white so the text stays on top.
+export function focusAlpha(k: number, pulse: number): number {
+  return Math.min(0.85, BASE_ALPHA * (1 + 5 * k) * pulse);
 }
 
 export function chooseFocus(width: number, height: number, random: () => number, previous?: Focus): Focus {

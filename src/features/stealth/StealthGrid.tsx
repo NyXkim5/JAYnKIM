@@ -1,35 +1,58 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { breath, chooseFocus, coordsLabel, cycleIndex, phaseAt, pull, SPACING, stageFor, warp, type Focus, type Phase, type Stage } from "./grid";
+import {
+  breath,
+  chooseFocus,
+  coordsLabel,
+  cycleIndex,
+  dimAlpha,
+  focusAlpha,
+  focusPulse,
+  phaseAt,
+  pull,
+  SPACING,
+  stageFor,
+  type Focus,
+  type Phase,
+  type Stage,
+} from "./grid";
 
 const PINK = "#ff69b4";
-const SAMPLES = 48;
 type Overlay = { focus: Focus; stage: Stage };
 
-function drawGrid(ctx: CanvasRenderingContext2D, w: number, h: number, focus: Focus | null, k: number, phase: Phase, t: number) {
-  const { alpha, scale } = phase === "breathe" ? breath(t) : { alpha: 1, scale: 1 };
-  const radius = Math.min(w, h) * 0.34;
-  const at = (x: number, y: number): [number, number] => {
-    const sx = w / 2 + (x - w / 2) * scale;
-    const sy = h / 2 + (y - h / 2) * scale;
-    return focus ? warp(sx, sy, focus, k, radius) : [sx, sy];
-  };
-  ctx.clearRect(0, 0, w, h);
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = `rgba(255, 255, 255, ${0.11 * alpha})`;
-  const line = (points: [number, number][]) => {
-    ctx.beginPath();
-    points.forEach(([x, y], i) => (i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)));
-    ctx.stroke();
-  };
+function strokeGrid(ctx: CanvasRenderingContext2D, w: number, h: number, style: string | CanvasGradient) {
+  ctx.strokeStyle = style;
+  ctx.beginPath();
   for (let x = SPACING; x < w; x += SPACING) {
-    line(Array.from({ length: SAMPLES + 1 }, (_, i) => at(x, (h * i) / SAMPLES)));
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, h);
   }
   for (let y = SPACING; y < h; y += SPACING) {
-    line(Array.from({ length: SAMPLES + 1 }, (_, i) => at((w * i) / SAMPLES, y)));
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
   }
-  if (focus && k > 0) drawMarker(ctx, focus, k);
+  ctx.stroke();
+}
+
+// Two passes over the same straight lines: a dim pass for the whole grid, then
+// a bright pass whose stroke is a radial gradient centred on the focus, so the
+// lines near the point glow and breathe while everything else stays dim.
+// Nothing moves, so nothing stretches.
+function drawGrid(ctx: CanvasRenderingContext2D, w: number, h: number, focus: Focus | null, k: number, phase: Phase, t: number, elapsed: number) {
+  const rest = phase === "breathe" ? breath(t) : 1;
+  ctx.clearRect(0, 0, w, h);
+  ctx.lineWidth = 1;
+  strokeGrid(ctx, w, h, `rgba(255, 255, 255, ${dimAlpha(k, rest)})`);
+  if (!focus || k <= 0) return;
+  const radius = Math.min(w, h) * 0.32;
+  const a = focusAlpha(k, focusPulse(elapsed));
+  const glow = ctx.createRadialGradient(focus.x, focus.y, 0, focus.x, focus.y, radius);
+  glow.addColorStop(0, `rgba(255, 255, 255, ${a})`);
+  glow.addColorStop(0.55, `rgba(255, 255, 255, ${a * 0.35})`);
+  glow.addColorStop(1, "rgba(255, 255, 255, 0)");
+  strokeGrid(ctx, w, h, glow);
+  drawMarker(ctx, focus, k);
 }
 
 function drawMarker(ctx: CanvasRenderingContext2D, focus: Focus, k: number) {
@@ -43,10 +66,10 @@ function drawMarker(ctx: CanvasRenderingContext2D, focus: Focus, k: number) {
   ctx.stroke();
 }
 
-// The grid breathes, then picks a point. Every line bends in toward it, the
-// point gets its coordinates and one line about warfare, then it all lets go
-// and the grid breathes again before choosing the next point. With reduced
-// motion the grid is drawn once, still.
+// The grid breathes, then picks a point. The breath gathers there, the rest of
+// the grid dims, the point gets its coordinates and one line about warfare,
+// then it all lets go and the grid breathes again before choosing the next
+// point. With reduced motion the grid is drawn once, still.
 export function StealthGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [overlay, setOverlay] = useState<Overlay | null>(null);
@@ -86,14 +109,14 @@ export function StealthGrid() {
         setOverlay(stage && focus ? { focus, stage } : null);
         lastStage = stage;
       }
-      drawGrid(ctx, size.w, size.h, focus, pull(phase, t), phase, t);
+      drawGrid(ctx, size.w, size.h, focus, pull(phase, t), phase, t, elapsed);
       frame = requestAnimationFrame(tick);
     };
 
     resize();
     window.addEventListener("resize", resize);
     if (reduced) {
-      drawGrid(ctx, size.w, size.h, null, 0, "hold", 0);
+      drawGrid(ctx, size.w, size.h, null, 0, "hold", 0, 0);
     } else {
       frame = requestAnimationFrame(tick);
     }
@@ -111,7 +134,7 @@ export function StealthGrid() {
   );
 }
 
-// Coordinates appear as the lines arrive, the saying once they have settled,
+// Coordinates appear as the focus gathers, the saying once it has settled,
 // and both fade as the grid lets go. Placed beside the point, flipped to the
 // left when the point sits in the right half of the screen.
 function FocusLabel({ overlay }: { overlay: Overlay }) {
