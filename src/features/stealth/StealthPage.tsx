@@ -1,4 +1,5 @@
 import { PersonaBar } from "@/features/persona/PersonaBar";
+import { HorseVideo } from "./HorseVideo";
 import { StealthGrid } from "./StealthGrid";
 
 export const STEALTH_STATEMENT =
@@ -38,6 +39,7 @@ export function StealthPage() {
           <span data-glow style={GLOW}>{STEALTH_CLOSER_WORD}</span>.
           <Caret />
         </p>
+        <HorseVideo />
       </div>
     </main>
   );

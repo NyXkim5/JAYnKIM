@@ -49,7 +49,7 @@ const STUDIO_MARKS: EvidenceMark[] = EVIDENCE.map((e) => ({
 
 function LandingHeader() {
   return (
-    <header className="absolute left-5 right-5 top-5 z-10 flex items-start justify-between md:left-8 md:right-8 md:top-6">
+    <header className="fixed inset-x-0 top-0 z-10 flex h-12 items-center justify-between px-5 md:px-8">
       <span className="font-mono text-[13px] font-bold tracking-[0.2em] uppercase text-white">
         <span className="text-[#ff69b4]">[</span>Studio<span className="text-[#ff69b4]">]</span>
       </span>

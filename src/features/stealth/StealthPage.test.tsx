@@ -48,6 +48,15 @@ describe("StealthPage", () => {
     expect(caret.className).toContain("motion-reduce:animate-none");
   });
 
+  it("puts the pink horse under the closer, inside the centred block", () => {
+    const { container } = render(<StealthPage />);
+    const video = container.querySelector("video[data-horse]");
+    if (!video) throw new Error("horse video missing");
+    const closer = container.querySelector("[data-glow]")?.parentElement;
+    expect(closer?.nextElementSibling).toBe(video);
+    expect(video.className).toContain("mx-auto");
+  });
+
   it("keeps both lines clear of traction language", () => {
     expect(`${STEALTH_STATEMENT} ${STEALTH_CLOSER_BEFORE}${STEALTH_CLOSER_WORD}`).not.toMatch(banned);
   });
