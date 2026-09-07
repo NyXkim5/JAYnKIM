@@ -15,6 +15,8 @@ export type ProjectStatus =
   | "COMMUNITY";
 
 export type ProjectImage = { src: string; alt: string };
+// A demo clip served from public/, shown above the figures with a poster frame.
+export type ProjectVideo = { src: string; poster: string; alt: string };
 export type ProjectSpec = { label: string; evidenceId: string };
 
 export type Project = {
@@ -26,6 +28,7 @@ export type Project = {
   caveat: string;
   specs: ProjectSpec[];
   images: ProjectImage[];
+  video?: ProjectVideo;
   caseStudySlug?: string;
   // A real address the window's URL bar can show: a live site or the repo.
   url?: string;
@@ -197,6 +200,11 @@ export const PROJECTS: readonly Project[] = [
     images: [
       { src: "/projects/archv-eval.png", alt: "Nineteen eval cases against four verification flags, every false anchor cell empty, and the totals block beside it" },
     ],
+    video: {
+      src: "/projects/archv-demo.mp4",
+      poster: "/projects/archv-demo-poster.jpg",
+      alt: "Archv Ink product demo, the assistant answering a FERPA question about student PII inside the firm workspace, cut from the Archv website",
+    },
     caseStudySlug: "archv",
     url: "https://github.com/NyXkim5/archv-mock-service",
     privateRepo: true,

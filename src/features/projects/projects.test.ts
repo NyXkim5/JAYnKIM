@@ -21,11 +21,17 @@ describe("projects", () => {
     }
   });
 
-  it("points every image at a file that exists in public", () => {
+  it("points every image and demo clip at a file that exists in public", () => {
     for (const p of PROJECTS) {
       for (const img of p.images) {
         expect(existsSync(join(process.cwd(), "public", img.src)), `${p.slug}: ${img.src}`).toBe(true);
         expect(img.alt.length).toBeGreaterThan(10);
+      }
+      if (p.video) {
+        for (const file of [p.video.src, p.video.poster]) {
+          expect(existsSync(join(process.cwd(), "public", file)), `${p.slug}: ${file}`).toBe(true);
+        }
+        expect(p.video.alt.length).toBeGreaterThan(10);
       }
     }
   });

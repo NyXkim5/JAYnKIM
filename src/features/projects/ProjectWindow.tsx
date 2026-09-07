@@ -5,7 +5,7 @@ import Image from "next/image";
 import { findStudy } from "@/data/caseStudies";
 import { findEvidence, sourceHref } from "@/features/evidence/registry";
 import { CaseStudyPanel } from "./CaseStudyPanel";
-import type { Project, ProjectImage, ProjectSpec } from "./projects";
+import type { Project, ProjectImage, ProjectSpec, ProjectVideo } from "./projects";
 import { WindowChrome, type WindowTab } from "./WindowChrome";
 
 const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
@@ -32,6 +32,29 @@ function Figure({ img }: { img: ProjectImage }) {
         <Corners />
       </div>
       <figcaption className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">{img.alt}</figcaption>
+    </figure>
+  );
+}
+
+// The demo clip sits in the same bracketed frame as a figure. It never
+// autoplays: a poster frame shows until the reader presses play.
+function Video({ video }: { video: ProjectVideo }) {
+  return (
+    <figure>
+      <div className="relative aspect-video w-full bg-black">
+        <video
+          className="absolute inset-0 h-full w-full"
+          controls
+          playsInline
+          preload="metadata"
+          poster={video.poster}
+          aria-label={video.alt}
+        >
+          <source src={video.src} type="video/mp4" />
+        </video>
+        <Corners />
+      </div>
+      <figcaption className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">{video.alt}</figcaption>
     </figure>
   );
 }
@@ -72,6 +95,7 @@ function Overview({ project }: { project: Project }) {
         </h2>
       </div>
       <p className="max-w-xl text-[15px] leading-relaxed" style={TIMES}>{project.claim}</p>
+      {project.video && <Video video={project.video} />}
       {project.images.map((img) => <Figure key={img.src} img={img} />)}
       {project.specs.length > 0 && <div>{project.specs.map((s) => <SpecRow key={s.evidenceId} spec={s} />)}</div>}
       <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">caveat: {project.caveat}</p>

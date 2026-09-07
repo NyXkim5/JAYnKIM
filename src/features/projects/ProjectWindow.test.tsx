@@ -57,6 +57,20 @@ describe("ProjectWindow", () => {
     expect(body.className).not.toMatch(/(^|\s)overflow-y-auto/);
   });
 
+  it("plays the Archv Ink demo clip from a poster frame, never autoplaying", () => {
+    const { container, project } = open("archv-ink");
+    const video = container.querySelector("video");
+    if (!video || !project.video) throw new Error("archv-ink video missing");
+    expect(video.getAttribute("poster")).toBe(project.video.poster);
+    expect(video.hasAttribute("controls")).toBe(true);
+    expect(video.hasAttribute("autoplay")).toBe(false);
+    expect(video.querySelector("source")?.getAttribute("src")).toBe(project.video.src);
+    expect(screen.getByText(project.video.alt)).toBeTruthy();
+    cleanup();
+    const { container: plain } = open("iris");
+    expect(plain.querySelector("video")).toBeNull();
+  });
+
   it("links the address bar to the repository and discloses when it is private", () => {
     open("siting-optimizer");
     const address = screen.getByRole("link", { name: /github\.com\/NyXkim5\/DroneNexus/ });
