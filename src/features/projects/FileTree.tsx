@@ -39,7 +39,9 @@ function Leaf({ node, active, onOpen }: { node: TreeNode; active: boolean; onOpe
 
 // One row of the tree. Folders open and close; leaves open a project window.
 export function TreeItem({ node, depth, openSlug, onOpen }: ItemProps) {
-  const [open, setOpen] = useState(depth <= 1);
+  // Only the root starts open. The four folders wait for a click, so the page
+  // opens on the short list rather than all nineteen leaves.
+  const [open, setOpen] = useState(depth === 0);
   const children = node.nodes;
   if (!children) return <li><Leaf node={node} active={openSlug === node.slug} onOpen={onOpen} /></li>;
 

@@ -18,12 +18,15 @@ vi.mock("next/image", () => ({
 
 afterEach(cleanup);
 
+// Folders start closed, so every folder is opened before a leaf is clicked.
 function renderInstant() {
-  return render(
+  const result = render(
     <MotionConfig transition={{ duration: 0 }}>
       <ProjectsExplorer />
     </MotionConfig>,
   );
+  for (const folder of screen.getAllByRole("button", { expanded: false })) fireEvent.click(folder);
+  return result;
 }
 
 describe("ProjectsExplorer presence", () => {

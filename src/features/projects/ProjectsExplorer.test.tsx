@@ -20,6 +20,12 @@ vi.mock("next/image", () => ({
 
 afterEach(cleanup);
 
+// Folders start closed, so tests open every folder first to reach the leaves.
+function renderExpanded() {
+  render(<ProjectsExplorer />);
+  for (const folder of screen.getAllByRole("button", { expanded: false })) fireEvent.click(folder);
+}
+
 function leafButton(name: string): HTMLButtonElement {
   const button = screen.getByText(name).closest("button");
   if (!button) throw new Error(`no leaf button for ${name}`);
@@ -28,7 +34,7 @@ function leafButton(name: string): HTMLButtonElement {
 
 describe("ProjectsExplorer", () => {
   it("opens a project window from the tree and closes it with back", () => {
-    render(<ProjectsExplorer />);
+    renderExpanded();
     fireEvent.click(screen.getByText("Sensor siting optimizer"));
     expect(screen.getByRole("dialog")).toBeTruthy();
     fireEvent.click(screen.getByText(/back/i));
@@ -38,7 +44,7 @@ describe("ProjectsExplorer", () => {
   it("closes on Escape without letting the key reach page-level listeners", () => {
     const pageLevel = vi.fn();
     window.addEventListener("keydown", pageLevel);
-    render(<ProjectsExplorer />);
+    renderExpanded();
     fireEvent.click(screen.getByText("Bamboo nutrition app"));
     fireEvent.keyDown(window, { key: "Escape" });
     expect(screen.queryByRole("dialog")).toBeNull();
@@ -49,14 +55,14 @@ describe("ProjectsExplorer", () => {
   it("lets Escape through when no window is open", () => {
     const pageLevel = vi.fn();
     window.addEventListener("keydown", pageLevel);
-    render(<ProjectsExplorer />);
+    renderExpanded();
     fireEvent.keyDown(window, { key: "Escape" });
     expect(pageLevel).toHaveBeenCalledTimes(1);
     window.removeEventListener("keydown", pageLevel);
   });
 
   it("returns focus to the leaf that opened the window after Escape", () => {
-    render(<ProjectsExplorer />);
+    renderExpanded();
     const leaf = leafButton("Sensor siting optimizer");
     fireEvent.click(leaf);
     expect(document.activeElement).toBe(screen.getByLabelText("Back to projects"));
@@ -65,7 +71,7 @@ describe("ProjectsExplorer", () => {
   });
 
   it("returns focus to the leaf after the back control", () => {
-    render(<ProjectsExplorer />);
+    renderExpanded();
     const leaf = leafButton("Bamboo nutrition app");
     fireEvent.click(leaf);
     fireEvent.click(screen.getByLabelText("Back to projects"));
@@ -73,7 +79,7 @@ describe("ProjectsExplorer", () => {
   });
 
   it("moves focus to the new window when a second leaf opens over the first", () => {
-    render(<ProjectsExplorer />);
+    renderExpanded();
     fireEvent.click(leafButton("Bamboo nutrition app"));
     const second = leafButton("IRIS RFP platform");
     fireEvent.click(second);
@@ -86,7 +92,7 @@ describe("ProjectsExplorer", () => {
   // jsdom has no layout, so the below-md contract is checked by class: the
   // tree hides while a window is open and comes back when it closes.
   it("hides the tree below md only while a window is open", () => {
-    render(<ProjectsExplorer />);
+    renderExpanded();
     const tree = screen.getByText(/projects · click one/).parentElement;
     if (!tree) throw new Error("tree wrapper missing");
     expect(tree.className).not.toContain("max-md:hidden");
@@ -97,7 +103,7 @@ describe("ProjectsExplorer", () => {
   });
 
   it("enlarges the window to the full width and hides the tree from md up, then shrinks back", () => {
-    render(<ProjectsExplorer />);
+    renderExpanded();
     const tree = screen.getByText(/projects · click one/).parentElement;
     if (!tree) throw new Error("tree wrapper missing");
     fireEvent.click(leafButton("Sensor siting optimizer"));
@@ -113,5 +119,15 @@ describe("ProjectsExplorer", () => {
     fireEvent.click(screen.getByLabelText("Shrink the window"));
     expect(classes()).not.toContain("md:hidden");
     expect(wrapper.className).toContain("md:w-[min(52vw,680px)]");
+  });
+
+  it("opens on the four folders closed, with no leaf showing until one is clicked", () => {
+    render(<ProjectsExplorer />);
+    const folders = screen.getAllByRole("button", { expanded: false });
+    expect(folders.map((b) => b.textContent)).toEqual(["hardware/", "software/", "mobile/", "school contributions/"]);
+    expect(screen.queryByText("Sensor siting optimizer")).toBeNull();
+    expect(screen.getByRole("button", { expanded: true }).textContent).toBe("projects/");
+    fireEvent.click(folders[0]);
+    expect(screen.getByText("Sensor siting optimizer")).toBeTruthy();
   });
 });
