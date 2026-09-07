@@ -27,7 +27,7 @@ export function WorkPage() {
           Experience
         </h1>
       </header>
-      <section className="max-w-4xl px-5 md:px-8">
+      <section className="px-5 md:px-8">
         <Timeline roles={ROLES} education={EDUCATION} now={currentMonth(data.fetchedAt)} />
       </section>
       <ContributionGraph data={data} />

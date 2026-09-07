@@ -6,6 +6,7 @@ export type Role = {
   key: string;
   role: string;
   company: string;
+  short: string;
   start: string;
   end: string | null;
   meta: readonly string[];
@@ -23,6 +24,7 @@ export const ROLES: readonly Role[] = [
     key: "stealth",
     role: "Forward Deployed Engineer",
     company: "Stealth Startup",
+    short: "Stealth",
     start: "2026-08",
     end: null,
     meta: ["Washington DC-Baltimore Area", "Hybrid"],
@@ -32,6 +34,7 @@ export const ROLES: readonly Role[] = [
     key: "optum",
     role: "AI/ML Software Engineer",
     company: "Optum",
+    short: "Optum",
     start: "2026-02",
     end: null,
     meta: ["Full-time"],
@@ -42,6 +45,7 @@ export const ROLES: readonly Role[] = [
     key: "cactus",
     role: "Open Source Contributor",
     company: "Cactus (YC S25)",
+    short: "Cactus",
     start: "2025-12",
     end: "2026-04",
     meta: [],
@@ -53,6 +57,7 @@ export const ROLES: readonly Role[] = [
     key: "archv",
     role: "AI/ML Software Engineer",
     company: "Archv AI",
+    short: "Archv AI",
     start: "2025-08",
     end: "2026-07",
     meta: ["Irvine, California", "Hybrid", "Full-time"],
@@ -63,6 +68,7 @@ export const ROLES: readonly Role[] = [
     key: "medvanta",
     role: "Software Engineer",
     company: "MedVanta",
+    short: "MedVanta",
     start: "2024-05",
     end: "2025-07",
     meta: ["Full-time"],
@@ -99,7 +105,7 @@ function overlaps(a: Role, b: Role, now: string): boolean {
   return monthIndex(a.start) <= endIndex(b, now) && monthIndex(b.start) <= endIndex(a, now);
 }
 
-// First-fit lanes, so roles that overlap in time sit side by side on the rail.
+// First-fit lanes, so roles that overlap in time sit on separate rows of the axis.
 export function assignLanes(roles: readonly Role[], now: string): Map<string, number> {
   const lanes: Role[][] = [];
   const out = new Map<string, number>();
@@ -112,25 +118,44 @@ export function assignLanes(roles: readonly Role[], now: string): Map<string, nu
   return out;
 }
 
-export type RailSpan = { key: string; lane: number; rowStart: number; rowEnd: number; current: boolean };
-export type Rail = { spans: RailSpan[]; rows: number; lanes: number };
+export type AxisSpan = { key: string; lane: number; colStart: number; colEnd: number; current: boolean };
+export type AxisYear = { col: number; label: string };
+export type Axis = { spans: AxisSpan[]; cols: number; lanes: number; years: AxisYear[]; from: string };
 
-// Row 0 is the month of `now`, each row below it one month older. A span runs
-// from the month a role ended (or now) down to the month it started, which is
-// also the row its entry sits in.
-export function buildRail(roles: readonly Role[], now: string): Rail {
-  const top = monthIndex(now);
-  const lanes = assignLanes(roles, now);
+function clamp(n: number, lo: number, hi: number): number {
+  return Math.min(hi, Math.max(lo, n));
+}
+
+// One column per January after the first month, labelled with its year.
+function januaries(first: number, last: number): AxisYear[] {
+  const out: AxisYear[] = [];
+  for (let i = first + 1; i <= last; i++) {
+    if (i % 12 === 0) out.push({ col: i - first, label: String(i / 12) });
+  }
+  return out;
+}
+
+// Column 0 is the earliest start month and the last column is the month of
+// `now`, so time runs left to right. A span covers a role's start column
+// through its end column, or through the last column while it is current.
+export function buildAxis(roles: readonly Role[], now: string): Axis {
+  const last = monthIndex(now);
+  const first = roles.length ? Math.min(...roles.map((r) => monthIndex(r.start))) : last;
+  const cols = Math.max(1, last - first + 1);
+  const lanes = assignLanes(sortNewestFirst(roles), now);
   const spans = roles.map((role) => ({
     key: role.key,
     lane: lanes.get(role.key) ?? 0,
-    rowStart: Math.max(0, top - endIndex(role, now)),
-    rowEnd: Math.max(0, top - monthIndex(role.start)),
+    colStart: clamp(monthIndex(role.start) - first, 0, cols - 1),
+    colEnd: clamp(endIndex(role, now) - first, 0, cols - 1),
     current: role.end === null,
   }));
+  const [year, month] = [Math.floor(first / 12), (first % 12) + 1];
   return {
     spans,
-    rows: Math.max(0, ...spans.map((s) => s.rowEnd)) + 1,
+    cols,
     lanes: Math.max(0, ...spans.map((s) => s.lane)) + 1,
+    years: januaries(first, last),
+    from: `${year}-${String(month).padStart(2, "0")}`,
   };
 }

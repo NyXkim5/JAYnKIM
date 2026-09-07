@@ -15,10 +15,11 @@ afterEach(cleanup);
 const NOW = "2026-09";
 
 describe("Timeline", () => {
-  it("renders the roles newest first with education as the final entry", () => {
+  it("runs the cards oldest to newest left to right, education first as the earliest entry", () => {
     render(<Timeline roles={ROLES} education={EDUCATION} now={NOW} />);
     const headings = screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
-    expect(headings).toEqual([...ROLES.map((r) => r.role), EDUCATION.school]);
+    const oldestFirst = [...ROLES].reverse().map((r) => r.role);
+    expect(headings).toEqual([EDUCATION.school, ...oldestFirst]);
     expect(screen.getByText(`${EDUCATION.degree}, ${EDUCATION.field}`)).toBeTruthy();
   });
 
@@ -33,11 +34,20 @@ describe("Timeline", () => {
     expect(studyLinks.length).toBe(ROLES.filter((r) => r.study).length);
   });
 
-  it("brackets present on current roles only, once per breakpoint copy", () => {
+  it("brackets present on the current roles' cards and once at the axis end", () => {
     const { container } = render(<Timeline roles={ROLES} education={EDUCATION} now={NOW} />);
     const current = ROLES.filter((r) => r.end === null).length;
     expect(current).toBeGreaterThan(0);
-    expect(container.querySelectorAll("[data-present]").length).toBe(current * 2);
+    expect(container.querySelectorAll("ol [data-present]").length).toBe(current);
+    expect(container.querySelectorAll("[data-present]").length).toBe(current + 1);
+  });
+
+  it("draws one lane bar per role with its short label, plus the axis years", () => {
+    render(<Timeline roles={ROLES} education={EDUCATION} now={NOW} />);
+    for (const r of ROLES) expect(screen.getAllByText(r.short).length).toBeGreaterThan(0);
+    expect(screen.getByText("2025")).toBeTruthy();
+    expect(screen.getByText("2026")).toBeTruthy();
+    expect(screen.getByText("May 2024")).toBeTruthy();
   });
 
   it("renders the company, the mono meta, and the one-line summary for each role", () => {
