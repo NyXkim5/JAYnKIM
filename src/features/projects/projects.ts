@@ -128,7 +128,10 @@ export const PROJECTS: readonly Project[] = [
       { label: "Precision", evidenceId: "dronenexus.yolo.precision" },
       { label: "HUD tests", evidenceId: "overwatch.tests.passed" },
     ],
-    images: [{ src: "/projects/overwatch-tests.png", alt: "Terminal capture of the HUD unit test run, 125 passed" }],
+    images: [
+      { src: "/projects/webcam-live-detection.jpg", alt: "OVERWATCH live detection HUD on 2026-09-05, YOLOv11n selected, waiting for the camera detector on ws://localhost:8766" },
+      { src: "/projects/overwatch-tests.png", alt: "Terminal capture of the HUD unit test run, 125 passed" },
+    ],
     url: "https://github.com/NyXkim5/DroneNexus",
   },
   {

@@ -98,6 +98,11 @@ function Entry({ role }: { role: Role }) {
       <p style={TIMES} className="mt-0.5 text-base leading-snug">{role.company}</p>
       {role.meta.length > 0 && <p className={`${MONO} mt-2 text-white/55`}>{role.meta.join(" · ")}</p>}
       <p style={TIMES} className="mt-3 text-[15px] leading-relaxed">{role.summary}</p>
+      {role.note && (
+        <p style={TIMES} className="mt-2 text-[15px] leading-relaxed" title={role.note.evidenceId}>
+          {role.note.text}
+        </p>
+      )}
       <EntryLinks role={role} />
     </li>
   );

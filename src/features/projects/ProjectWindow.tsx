@@ -27,7 +27,7 @@ function Figure({ img }: { img: ProjectImage }) {
     <figure>
       <div className="relative aspect-video w-full bg-black">
         <div className="absolute inset-0 overflow-hidden">
-          <Image src={img.src} alt={img.alt} fill sizes="(max-width: 768px) 100vw, 680px" className="object-contain" />
+          <Image src={img.src} alt={img.alt} fill sizes="(max-width: 768px) 100vw, 680px" loading="eager" className="object-contain" />
         </div>
         <Corners />
       </div>

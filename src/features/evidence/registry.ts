@@ -387,6 +387,17 @@ export const EVIDENCE: readonly Evidence[] = [
     observedAt: "2026-09-06",
     public: true,
   },
+  {
+    id: "stealth.va.demos",
+    persona: ["work"],
+    value: "3",
+    unit: "demos with the VA, discovery RFP in progress",
+    repo: "Stealth Startup",
+    path: "n/a",
+    how: "Jay's statement, 2026-09-06. No public artifact exists.",
+    observedAt: "2026-09-06",
+    public: false,
+  },
 ];
 
 export function findEvidence(id: string): Evidence | undefined {

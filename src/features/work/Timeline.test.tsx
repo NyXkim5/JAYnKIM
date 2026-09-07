@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { studyHref } from "@/data/caseStudies";
+import { findEvidence } from "@/features/evidence/registry";
 import { EDUCATION, ROLES } from "./roles";
 import { Timeline } from "./Timeline";
 
@@ -50,12 +51,16 @@ describe("Timeline", () => {
     expect(screen.getByText("May 2024")).toBeTruthy();
   });
 
-  it("renders the company, the mono meta, and the one-line summary for each role", () => {
+  it("renders the company, the mono meta, the one-line summary, and any note for each role", () => {
     render(<Timeline roles={ROLES} education={EDUCATION} now={NOW} />);
     for (const r of ROLES) {
       expect(screen.getAllByText(r.company).length).toBeGreaterThan(0);
       expect(screen.getAllByText(r.summary).length).toBeGreaterThan(0);
       if (r.meta.length) expect(screen.getAllByText(r.meta.join(" · ")).length).toBeGreaterThan(0);
+      if (r.note) {
+        expect(findEvidence(r.note.evidenceId), r.key).toBeDefined();
+        expect(screen.getByText(r.note.text).getAttribute("title")).toBe(r.note.evidenceId);
+      }
     }
   });
 });

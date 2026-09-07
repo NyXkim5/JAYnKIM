@@ -11,6 +11,7 @@ export type Role = {
   end: string | null;
   meta: readonly string[];
   summary: string;
+  note?: { text: string; evidenceId: string };
   study?: string;
   projects?: boolean;
 };
@@ -29,6 +30,7 @@ export const ROLES: readonly Role[] = [
     end: null,
     meta: ["Washington DC-Baltimore Area", "Hybrid"],
     summary: "Technical strategy, proposal development, government systems architecture.",
+    note: { text: "3x demo with VA and discovery RFP in progress.", evidenceId: "stealth.va.demos" },
   },
   {
     key: "optum",

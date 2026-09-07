@@ -14,7 +14,7 @@ describe("timeline data", () => {
   });
 
   it("keeps every string clear of traction language", () => {
-    const strings = ROLES.flatMap((r) => [r.role, r.company, r.short, r.summary, ...r.meta]).concat(Object.values(EDUCATION));
+    const strings = ROLES.flatMap((r) => [r.role, r.company, r.short, r.summary, r.note?.text ?? "", ...r.meta]).concat(Object.values(EDUCATION));
     expect(strings.length).toBeGreaterThan(10);
     for (const s of strings) expect(s).not.toMatch(banned);
   });
