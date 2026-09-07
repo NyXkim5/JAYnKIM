@@ -6,38 +6,31 @@ import { cn } from "@/lib/utils";
 import { GlitchLabel } from "./GlitchLabel";
 import { PERSONAS, type Ground, type PersonaKey } from "./personas";
 
-export type TabSize = "sm" | "lg";
-
 type Props = {
   value: PersonaKey | null;
   onChange: (key: PersonaKey) => void;
   ground: Ground;
   asLinks?: boolean;
-  size?: TabSize;
 };
 
 // The current page is marked by pink brackets and full-strength text, no box.
 const BRACKET = "text-[#ff69b4]";
 
-// "lg" is the persona bar's size: 14px from md up, where there is room, and
-// the small size on phones so the four tabs still fit beside the wordmark.
-const SCALE: Record<TabSize, string> = {
-  sm: "text-[11px] tracking-[0.18em] px-1.5 py-0.5",
-  lg: "text-[11px] md:text-[14px] tracking-[0.18em] px-1.5 py-0.5 md:px-2",
-};
+// One size everywhere the switch appears, the landing included: 14px from md
+// up, 11px on phones so the four tabs still fit beside the wordmark.
+const TAB = "font-mono text-[11px] md:text-[14px] tracking-[0.18em] uppercase px-1.5 py-0.5 md:px-2 transition-colors";
 
-function tabClass(active: boolean, ground: Ground, size: TabSize): string {
-  const base = cn("font-mono uppercase transition-colors", SCALE[size]);
+function tabClass(active: boolean, ground: Ground): string {
   if (ground === "black") {
-    return cn(base, active ? "text-white" : "text-white/60 hover:text-white");
+    return cn(TAB, active ? "text-white" : "text-white/60 hover:text-white");
   }
-  return cn(base, active ? "text-black" : "text-black/60 hover:text-black");
+  return cn(TAB, active ? "text-black" : "text-black/60 hover:text-black");
 }
 
-export function PersonaSwitch({ value, onChange, ground, asLinks = false, size = "sm" }: Props) {
+export function PersonaSwitch({ value, onChange, ground, asLinks = false }: Props) {
   const [hover, setHover] = useState<PersonaKey | null>(null);
   return (
-    <div role="tablist" aria-label="Persona" className={cn("flex items-center", size === "lg" ? "gap-4" : "gap-2")}>
+    <div role="tablist" aria-label="Persona" className="flex items-center gap-2 md:gap-3">
       {PERSONAS.map((p) => {
         const active = p.key === value;
         const hoverProps = { onMouseEnter: () => setHover(p.key), onMouseLeave: () => setHover(null) };
@@ -53,13 +46,13 @@ export function PersonaSwitch({ value, onChange, ground, asLinks = false, size =
         );
         if (asLinks) {
           return (
-            <TransitionLink key={p.key} href={`/${p.key}`} role="tab" aria-selected={active} className={tabClass(active, ground, size)} {...hoverProps}>
+            <TransitionLink key={p.key} href={`/${p.key}`} role="tab" aria-selected={active} className={tabClass(active, ground)} {...hoverProps}>
               {label}
             </TransitionLink>
           );
         }
         return (
-          <button key={p.key} type="button" role="tab" aria-selected={active} onClick={() => onChange(p.key)} className={tabClass(active, ground, size)} {...hoverProps}>
+          <button key={p.key} type="button" role="tab" aria-selected={active} onClick={() => onChange(p.key)} className={tabClass(active, ground)} {...hoverProps}>
             {label}
           </button>
         );

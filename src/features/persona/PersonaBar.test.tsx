@@ -15,7 +15,7 @@ vi.mock("@/components/transitions/TransitionLink", () => ({
 afterEach(cleanup);
 
 describe("PersonaBar", () => {
-  it("renders the four tabs at the bar's larger size with no size control", () => {
+  it("renders the four tabs at the switch's one size with no size control", () => {
     render(<PersonaBar persona="work" />);
     const tabs = screen.getAllByRole("tab");
     expect(tabs).toHaveLength(4);

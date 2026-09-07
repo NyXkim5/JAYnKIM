@@ -7,8 +7,7 @@ import { usePageTransition } from "@/components/transitions/TransitionProvider";
 import { getPersona, type PersonaKey } from "./personas";
 import { PersonaSwitch } from "./PersonaSwitch";
 
-// The bar's tabs use the larger size (14px) from md up so they read at a glance.
-// The landing keeps the small size, where the tabs sit inside the composition.
+// The tabs are the same size here as on the landing, the switch owns it.
 export function PersonaBar({ persona }: { persona: PersonaKey }) {
   const { navigateTo } = usePageTransition();
   const p = getPersona(persona);
@@ -29,7 +28,7 @@ export function PersonaBar({ persona }: { persona: PersonaKey }) {
         Jay Kim
       </TransitionLink>
       <div className="flex items-center gap-6">
-        <PersonaSwitch value={persona} onChange={() => {}} ground={p.ground} asLinks size="lg" />
+        <PersonaSwitch value={persona} onChange={() => {}} ground={p.ground} asLinks />
       </div>
     </header>
   );
