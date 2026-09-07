@@ -54,8 +54,12 @@ export const metadata: Metadata = {
     title: "<> Jay Kim </>",
     description: "Software engineer specializing in AI/ML, full-stack development, and design.",
   },
+  // A pink wink. The SVG stays crisp where it is supported, the ICO covers the rest.
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
   },
 };
 
