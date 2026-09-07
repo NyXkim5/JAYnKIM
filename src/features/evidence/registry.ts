@@ -388,6 +388,17 @@ export const EVIDENCE: readonly Evidence[] = [
     public: true,
   },
   {
+    id: "dronenexus.siting.coverage",
+    persona: ["projects"],
+    value: "71.8%",
+    unit: "expected coverage, 4 of 36 candidate masts at 900 m on the ridge scenario",
+    repo: "NyXkim5/JAYnKIM",
+    path: "src/features/specimen/data/hardware.json",
+    how: "source.note expected_fraction=0.7176 from scripts/specimen/hardware.py, the same run scripts/figures/siting-coverage.py draws",
+    observedAt: "2026-09-06",
+    public: true,
+  },
+  {
     id: "stealth.va.demos",
     persona: ["work"],
     value: "3",
