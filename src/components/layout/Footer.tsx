@@ -23,7 +23,7 @@ export function Footer({ compact = false }: FooterProps) {
         GitHub
       </a>
       <a
-        href="https://www.linkedin.com/in/joonhyuknkim/"
+        href="https://www.linkedin.com/in/jaynkim/"
         target="_blank"
         rel="noopener noreferrer"
         className={linkCls}

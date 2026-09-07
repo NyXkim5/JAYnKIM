@@ -435,7 +435,7 @@ export default function ContactContent() {
                         </a>
 
                         <a
-                          href="https://www.linkedin.com/in/joonhyuknkim/"
+                          href="https://www.linkedin.com/in/jaynkim/"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-3 py-2 px-3 -mx-3 rounded transition-colors hover:bg-black/[0.03]"
@@ -444,8 +444,8 @@ export default function ContactContent() {
                             LinkedIn
                           </span>
                           <span className="text-[13px] group-hover:text-black transition-colors truncate" style={{ color: "#333", fontFamily: SERIF }}>
-                            <span className="sm:hidden">joonhyuknkim</span>
-                            <span className="hidden sm:inline">linkedin.com/in/joonhyuknkim</span>
+                            <span className="sm:hidden">jaynkim</span>
+                            <span className="hidden sm:inline">linkedin.com/in/jaynkim</span>
                           </span>
                           <span className="ml-auto text-[10px] opacity-0 group-hover:opacity-50 transition-opacity" style={{ color: "#333" }}>↗</span>
                         </a>

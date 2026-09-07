@@ -282,7 +282,7 @@ export default function TimelineContent() {
       <footer className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-neutral-200 px-5 md:px-8">
         <div className="flex items-center justify-center py-3 gap-5">
           <a href="https://github.com/NyXkim5" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] tracking-wider uppercase text-neutral-400 hover:text-black transition-colors">GitHub</a>
-          <a href="https://www.linkedin.com/in/joonhyuknkim/" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] tracking-wider uppercase text-neutral-400 hover:text-black transition-colors">LinkedIn</a>
+          <a href="https://www.linkedin.com/in/jaynkim/" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] tracking-wider uppercase text-neutral-400 hover:text-black transition-colors">LinkedIn</a>
           <a href="mailto:joonhyuknkim@gmail.com" className="font-mono text-[10px] tracking-wider uppercase text-neutral-400 hover:text-black transition-colors">Email</a>
         </div>
       </footer>

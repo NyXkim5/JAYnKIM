@@ -53,8 +53,18 @@ describe("ContributionGraph", () => {
     expect(getByText("github.contributions.total")).toBeTruthy();
     expect(getByText("github.contributions.commits")).toBeTruthy();
     expect(getByText("github.contributions.restricted")).toBeTruthy();
-    const link = getByRole("link", { name: "github.com/NyXkim5" });
+    const link = getByRole("link", { name: "github" });
     expect(link.getAttribute("href")).toBe("https://github.com/NyXkim5");
+  });
+
+  it("puts LinkedIn and an email button beside the GitHub link, each a plain word", () => {
+    const { getByRole, queryByRole } = render(<ContributionGraph data={fixture()} />);
+    const linkedin = getByRole("link", { name: "linkedin" });
+    expect(linkedin.getAttribute("href")).toBe("https://www.linkedin.com/in/jaynkim/");
+    expect(linkedin.getAttribute("target")).toBe("_blank");
+    const email = getByRole("button", { name: "email" });
+    expect(email.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(queryByRole("dialog")).toBeNull();
   });
 
   it("leaves the slots of a partial last week empty instead of inventing days", () => {

@@ -141,7 +141,7 @@ export default function HomeContent() {
                   </span>
                 </a>
                 <a
-                  href="https://www.linkedin.com/in/joonhyuknkim/"
+                  href="https://www.linkedin.com/in/jaynkim/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex justify-between items-baseline py-3 border-b border-border-light group"
@@ -150,7 +150,7 @@ export default function HomeContent() {
                     LinkedIn
                   </span>
                   <span className="text-sm text-text-black group-hover:text-text-mid transition-colors">
-                    joonhyuknkim &#8599;
+                    jaynkim &#8599;
                   </span>
                 </a>
               </Reveal>

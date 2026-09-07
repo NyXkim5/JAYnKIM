@@ -13,10 +13,13 @@ import {
   type ContributionDay,
   type Contributions,
 } from "./contributions";
+import { GITHUB_LABEL, LINKEDIN_LABEL, LINKEDIN_URL } from "@/data/contact";
+import { EmailPopup } from "@/features/contact/EmailPopup";
 import { ScrollToEnd } from "./ScrollToEnd";
 import { MONO } from "./style";
 
 const CELL = 14;
+const LINK = "text-white underline underline-offset-4 decoration-white/30 hover:decoration-white";
 const GAP = 4;
 const WEEKDAYS: Record<number, string> = { 1: "Mon", 3: "Wed", 5: "Fri" };
 
@@ -83,10 +86,18 @@ function Caption({ data }: { data: Contributions }) {
         <span>{CONTRIBUTIONS_EVIDENCE_ID}</span>
         <span>{COMMITS_EVIDENCE_ID}</span>
         <span>{RESTRICTED_EVIDENCE_ID}</span>
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-4 decoration-white/30 hover:decoration-white">
-          github.com/{data.login}
-        </a>
       </p>
+      {/* A div, not a p: the email button mounts its dialog here and a dialog
+          cannot legally live inside a paragraph. */}
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1 pt-1">
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={LINK}>
+          {GITHUB_LABEL}
+        </a>
+        <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className={LINK}>
+          {LINKEDIN_LABEL}
+        </a>
+        <EmailPopup className={`${LINK} uppercase`} />
+      </div>
     </div>
   );
 }

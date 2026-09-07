@@ -73,7 +73,7 @@ export default function RootLayout({
     knowsAbout: ["AI/ML", "Full-Stack Development", "Design Systems"],
     sameAs: [
       "https://github.com/NyXkim5",
-      "https://www.linkedin.com/in/joonhyuknkim/",
+      "https://www.linkedin.com/in/jaynkim/",
     ],
   };
 
