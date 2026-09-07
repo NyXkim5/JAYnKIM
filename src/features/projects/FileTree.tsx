@@ -15,14 +15,20 @@ type ItemProps = {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+// The DOM id of a leaf, so the explorer can hand focus back after a window closes.
+export function leafId(slug: string): string {
+  return `project-leaf-${slug}`;
+}
+
 function Leaf({ node, active, onOpen }: { node: TreeNode; active: boolean; onOpen: (slug: string) => void }) {
   return (
     <button
       type="button"
+      id={node.slug ? leafId(node.slug) : undefined}
       onClick={() => node.slug && onOpen(node.slug)}
       className={cn(
         "ml-[22px] flex items-center gap-2 py-1 font-mono text-[12px] tracking-wide transition-colors",
-        active ? "text-[#ff69b4]" : "text-white/70 hover:text-white",
+        active ? "text-[#ff69b4]" : "text-white/70 hover:text-white focus-visible:text-white",
       )}
     >
       <FileText className="size-4 shrink-0" />

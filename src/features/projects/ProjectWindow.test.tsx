@@ -44,6 +44,19 @@ describe("ProjectWindow", () => {
     expect(screen.queryByText(/case study/i)).toBeNull();
   });
 
+  // jsdom has no layout, so scroll ownership is checked by class: no height
+  // cap or inner scroll below md, both from md up.
+  it("caps height and scrolls inside the window only from md up", () => {
+    open("siting-optimizer");
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.className).toContain("md:max-h-[86vh]");
+    expect(dialog.className).not.toMatch(/(^|\s)max-h-/);
+    const body = dialog.lastElementChild;
+    if (!body) throw new Error("window body missing");
+    expect(body.className).toContain("md:overflow-y-auto");
+    expect(body.className).not.toMatch(/(^|\s)overflow-y-auto/);
+  });
+
   it("keeps the source link for public evidence and drops the old case study link", () => {
     open("role-index");
     expect(screen.getByText("Source").getAttribute("href")).toContain("github.com");

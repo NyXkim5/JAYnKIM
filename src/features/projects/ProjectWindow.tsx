@@ -94,7 +94,9 @@ function tabsFor(project: Project): readonly WindowTab[] {
 
 type Props = { project: Project; onBack: () => void };
 
-// A project's window: browser chrome on top, a scrolling body under it.
+// A project's window: browser chrome on top, the body under it. From md up
+// the window caps at 86vh and the body scrolls inside it. Below md the page
+// scrolls the whole window and the chrome sticks under the persona bar.
 // Motion lives in the explorer so the panel itself stays plain.
 export function ProjectWindow({ project, onBack }: Props) {
   const [tab, setTab] = useState<WindowTab>("overview");
@@ -104,10 +106,10 @@ export function ProjectWindow({ project, onBack }: Props) {
     <div
       role="dialog"
       aria-label={project.title}
-      className="flex max-h-[86vh] flex-col border border-white/15 bg-[#0a0a0a] text-white"
+      className="flex flex-col border border-white/15 bg-[#0a0a0a] text-white md:max-h-[86vh]"
     >
       <WindowChrome url={project.url} title={project.title} tabs={tabsFor(project)} active={tab} onTab={setTab} onBack={onBack} />
-      <div className="flex-1 overflow-y-auto px-5 py-6">
+      <div className="px-5 py-6 md:flex-1 md:overflow-y-auto md:overscroll-contain">
         {showCase && project.caseStudySlug ? <CaseTab slug={project.caseStudySlug} /> : <Overview project={project} />}
       </div>
     </div>

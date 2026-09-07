@@ -41,7 +41,7 @@ function TrafficLights({ onBack }: { onBack: () => void }) {
   // The whole cluster is the control so the target is wider than one dot.
   // Only the left dot lights up, which is the one that closes a window.
   return (
-    <button ref={backRef} type="button" onClick={onBack} aria-label="Back to projects" className="group flex items-center gap-2 outline-none">
+    <button ref={backRef} type="button" onClick={onBack} aria-label="Back to projects" className="group flex items-center gap-2 self-stretch outline-none">
       <span className={cn(dot, "bg-white/10 transition-colors", hot)} />
       <span className={cn(dot, "bg-white/5")} />
       <span className={cn(dot, "bg-white/5")} />
@@ -60,7 +60,7 @@ function AddressBar({ url, title }: { url?: string; title: string }) {
 }
 
 function Tab({ tab, active, onTab }: { tab: WindowTab; active: boolean; onTab: (t: WindowTab) => void }) {
-  const cls = "font-mono text-[11px] uppercase tracking-[0.18em] px-1.5 py-0.5 transition-colors outline-none";
+  const cls = "self-stretch font-mono text-[11px] uppercase tracking-[0.18em] px-1.5 transition-colors outline-none";
   return (
     <button
       type="button"
@@ -78,9 +78,11 @@ function Tab({ tab, active, onTab }: { tab: WindowTab; active: boolean; onTab: (
 
 // A dark Safari style title bar: traffic lights, a centred address field, and
 // a tab strip under it. The left dot closes the window and takes focus.
+// Below md the page scrolls the window, so the chrome sticks under the
+// persona bar and Back stays in reach. Controls stretch to their bar height.
 export function WindowChrome({ url, title, tabs, active, onTab, onBack }: Props) {
   return (
-    <div className="shrink-0 border-b border-white/15 bg-[#0a0a0a]">
+    <div className="shrink-0 border-b border-white/15 bg-[#0a0a0a] max-md:sticky max-md:top-12 max-md:z-20">
       <div className="relative flex h-10 items-center border-b border-white/15 px-4">
         <TrafficLights onBack={onBack} />
         <AddressBar url={url} title={title} />

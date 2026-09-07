@@ -76,3 +76,69 @@ describe("caseStudies content rules", () => {
     }
   });
 });
+
+type StringField = { path: string; text: string };
+
+// Collects every string leaf in a study so the prose rules apply to captions,
+// changelogs, and brand copy, not only the fields the panel renders today.
+function walkStrings(value: unknown, path: string, out: StringField[]): void {
+  if (typeof value === "string") {
+    out.push({ path, text: value });
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((v, i) => walkStrings(v, `${path}[${i}]`, out));
+    return;
+  }
+  if (value && typeof value === "object") {
+    for (const [k, v] of Object.entries(value)) walkStrings(v, path ? `${path}.${k}` : k, out);
+  }
+}
+
+function stringFields(study: (typeof caseStudies)[number]): StringField[] {
+  const out: StringField[] = [];
+  walkStrings(study, "", out);
+  return out;
+}
+
+describe("caseStudies prose rules", () => {
+  it("uses no em dash or en dash in any string field", () => {
+    // U+2012 figure dash through U+2015 horizontal bar, which covers en (U+2013) and em (U+2014).
+    const dash = /[‒-―]/;
+    for (const s of caseStudies) {
+      for (const { path, text } of stringFields(s)) {
+        expect(text, `${s.slug}: ${path}`).not.toMatch(dash);
+      }
+    }
+  });
+
+  it("never links to a placeholder url", () => {
+    for (const s of caseStudies) {
+      if (!s.link) continue;
+      expect(s.link.url, s.slug).not.toBe("#");
+      expect(s.link.url, s.slug).toMatch(/^https?:\/\//);
+    }
+  });
+
+  it("never claims traction in any string field", () => {
+    const banned = /\b(signed|customers?|pilots?|early users|first users|active users|paying)\b/i;
+    for (const s of caseStudies) {
+      for (const { path, text } of stringFields(s)) {
+        expect(text, `${s.slug}: ${path}`).not.toMatch(banned);
+      }
+    }
+  });
+
+  it("states the drone-dashboard test count from the registry, not the old 76+ figure", () => {
+    const study = findStudy("drone-dashboard");
+    if (!study) throw new Error("drone-dashboard study missing");
+    for (const { path, text } of stringFields(study)) {
+      expect(text, path).not.toContain("76+");
+    }
+    const collected = findEvidence("dronenexus.tests.collected");
+    const hud = findEvidence("overwatch.tests.passed");
+    if (!collected || !hud) throw new Error("drone-dashboard test evidence missing from registry");
+    expect(study.overview).toContain(collected.value);
+    expect(study.overview).toContain(hud.value);
+  });
+});

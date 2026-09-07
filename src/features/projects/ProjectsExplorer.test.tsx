@@ -20,6 +20,12 @@ vi.mock("next/image", () => ({
 
 afterEach(cleanup);
 
+function leafButton(name: string): HTMLButtonElement {
+  const button = screen.getByText(name).closest("button");
+  if (!button) throw new Error(`no leaf button for ${name}`);
+  return button;
+}
+
 describe("ProjectsExplorer", () => {
   it("opens a project window from the tree and closes it with back", () => {
     render(<ProjectsExplorer />);
@@ -47,5 +53,46 @@ describe("ProjectsExplorer", () => {
     fireEvent.keyDown(window, { key: "Escape" });
     expect(pageLevel).toHaveBeenCalledTimes(1);
     window.removeEventListener("keydown", pageLevel);
+  });
+
+  it("returns focus to the leaf that opened the window after Escape", () => {
+    render(<ProjectsExplorer />);
+    const leaf = leafButton("Sensor siting optimizer");
+    fireEvent.click(leaf);
+    expect(document.activeElement).toBe(screen.getByLabelText("Back to projects"));
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(document.activeElement).toBe(leaf);
+  });
+
+  it("returns focus to the leaf after the back control", () => {
+    render(<ProjectsExplorer />);
+    const leaf = leafButton("Bamboo nutrition app");
+    fireEvent.click(leaf);
+    fireEvent.click(screen.getByLabelText("Back to projects"));
+    expect(document.activeElement).toBe(leaf);
+  });
+
+  it("moves focus to the new window when a second leaf opens over the first", () => {
+    render(<ProjectsExplorer />);
+    fireEvent.click(leafButton("Bamboo nutrition app"));
+    const second = leafButton("IRIS RFP platform");
+    fireEvent.click(second);
+    expect(screen.getByRole("dialog").getAttribute("aria-label")).toBe("IRIS RFP platform");
+    expect(document.activeElement).toBe(screen.getByLabelText("Back to projects"));
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(document.activeElement).toBe(second);
+  });
+
+  // jsdom has no layout, so the below-md contract is checked by class: the
+  // tree hides while a window is open and comes back when it closes.
+  it("hides the tree below md only while a window is open", () => {
+    render(<ProjectsExplorer />);
+    const tree = screen.getByText(/projects · click one/).parentElement;
+    if (!tree) throw new Error("tree wrapper missing");
+    expect(tree.className).not.toContain("max-md:hidden");
+    fireEvent.click(leafButton("Bamboo nutrition app"));
+    expect(tree.className).toContain("max-md:hidden");
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(tree.className).not.toContain("max-md:hidden");
   });
 });

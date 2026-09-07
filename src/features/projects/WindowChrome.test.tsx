@@ -42,6 +42,17 @@ describe("WindowChrome", () => {
     expect(screen.getByText("bamboonutrition.app")).toBeTruthy();
   });
 
+  it("sticks under the persona bar below md and stretches controls to their bar", () => {
+    render(<WindowChrome {...base} tabs={["overview", "case"]} />);
+    const back = screen.getByLabelText("Back to projects");
+    const root = back.parentElement?.parentElement;
+    if (!root) throw new Error("chrome root missing");
+    expect(root.className).toContain("max-md:sticky");
+    expect(root.className).toContain("max-md:top-12");
+    expect(back.className).toContain("self-stretch");
+    for (const tab of screen.getAllByRole("tab")) expect(tab.className).toContain("self-stretch");
+  });
+
   it("falls back to the site path when there is no url", () => {
     expect(addressText(undefined, "IRIS RFP platform")).toBe("jaykim.studio/projects/iris-rfp-platform");
     expect(addressText("https://github.com/NyXkim5/DroneNexus", "x")).toBe("github.com/NyXkim5/DroneNexus");
