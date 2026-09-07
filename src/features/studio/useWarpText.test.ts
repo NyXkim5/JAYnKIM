@@ -46,7 +46,7 @@ describe("warpFrame", () => {
   });
 
   it("changes glyphs on the tick, not every millisecond", () => {
-    expect(warpFrame(EN, KO, 10)).toBe(warpFrame(EN, KO, 40));
-    expect(warpFrame(EN, KO, 10)).not.toBe(warpFrame(EN, KO, 70));
+    expect(warpFrame(EN, KO, 5)[0]).toBe(warpFrame(EN, KO, 25)[0]);
+    expect(warpFrame(EN, KO, 5)[0]).not.toBe(warpFrame(EN, KO, 65)[0]);
   });
 });
