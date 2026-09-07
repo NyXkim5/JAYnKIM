@@ -14,7 +14,7 @@ import { useLanguageHover } from "@/features/studio/useLanguageHover";
 const STUDIO_VIDEO = "/studio/studiovid.mp4";
 const NAME_EN = "Jay Kim";
 const NAME_KO = "김준혁";
-import { STUDIO_QUOTE } from "@/features/studio/quote";
+import { QUOTE_BY, STUDIO_QUOTE } from "@/features/studio/quote";
 const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
 const NAME_FACE = { fontFamily: '"Times New Roman", Times, var(--font-hangul-display), sans-serif' } as const;
 const SR_TEXT =
@@ -96,6 +96,7 @@ function StudioStage({
           </h1>
           <p className="mt-5 max-w-md text-[15px] leading-relaxed">{claim}</p>
           <p className="mt-6 max-w-md text-[15px] italic leading-relaxed opacity-70">&ldquo;{STUDIO_QUOTE}&rdquo;</p>
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.3em] opacity-60">{QUOTE_BY}</p>
         </div>
       </div>
       <video

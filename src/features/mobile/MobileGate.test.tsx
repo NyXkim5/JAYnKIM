@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import { STUDIO_QUOTE } from "@/features/studio/quote";
+import { QUOTE_BY, STUDIO_QUOTE } from "@/features/studio/quote";
 import { GATE_FOOTER, MobileGate } from "./MobileGate";
 
 afterEach(cleanup);
@@ -17,6 +17,7 @@ describe("MobileGate", () => {
     expect(container.querySelector("canvas")).toBeTruthy();
     expect(container.querySelector("video[data-horse]")).toBeTruthy();
     expect(screen.getByText(`“${STUDIO_QUOTE}”`)).toBeTruthy();
+    expect(screen.getByText(QUOTE_BY)).toBeTruthy();
     const footer = screen.getByText(GATE_FOOTER);
     expect(footer.className).toContain("text-[#ff69b4]");
     expect(footer.className).toContain("bottom-8");

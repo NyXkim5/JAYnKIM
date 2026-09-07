@@ -1,6 +1,6 @@
 import { HorseVideo } from "@/features/stealth/HorseVideo";
 import { StealthGrid } from "@/features/stealth/StealthGrid";
-import { STUDIO_QUOTE } from "@/features/studio/quote";
+import { QUOTE_BY, STUDIO_QUOTE } from "@/features/studio/quote";
 
 const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
 export const GATE_FOOTER = "for more go desktop";
@@ -17,6 +17,7 @@ export function MobileGate() {
         <p style={TIMES} className="mt-10 max-w-xs text-[17px] italic leading-relaxed text-white/80">
           &ldquo;{STUDIO_QUOTE}&rdquo;
         </p>
+        <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.3em] text-white/60">{QUOTE_BY}</p>
       </main>
       <p className="absolute inset-x-0 bottom-8 z-10 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-[#ff69b4]">
         {GATE_FOOTER}
