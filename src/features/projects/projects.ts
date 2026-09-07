@@ -29,6 +29,8 @@ export type Project = {
   caseStudySlug?: string;
   // A real address the window's URL bar can show: a live site or the repo.
   url?: string;
+  // True when that url is a private GitHub repository. The window says so.
+  privateRepo?: boolean;
 };
 
 export type TreeNode = { name: string; slug?: string; nodes?: TreeNode[] };
@@ -62,6 +64,7 @@ export const PROJECTS: readonly Project[] = [
     ],
     caseStudySlug: "drone-dashboard",
     url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
   },
   {
     slug: "siting-optimizer",
@@ -78,6 +81,7 @@ export const PROJECTS: readonly Project[] = [
     images: [{ src: "/projects/siting-coverage.png", alt: "48 by 48 coverage probability grid with four chosen sensor sites in pink" }],
     caseStudySlug: "drone-dashboard",
     url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
   },
   {
     slug: "drone-detector",
@@ -98,6 +102,7 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/detector-confusion.png", alt: "Normalized confusion matrix" },
     ],
     url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
   },
   {
     slug: "latency-benchmark",
@@ -115,6 +120,7 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/latency-benchmark.png", alt: "Mean, p50 and p95 latency for the baseline, fine-tuned and ONNX detectors, ONNX lowest in every group" },
     ],
     url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
   },
   {
     slug: "webcam-detection",
@@ -133,6 +139,7 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/overwatch-tests.png", alt: "Terminal capture of the HUD unit test run, 125 passed" },
     ],
     url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
   },
   {
     slug: "sonicfly-regression",
@@ -154,6 +161,7 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/sonicfly-eval.png", alt: "Acoustic bearing and range evaluation plots from the upstream SonicFly repository" },
     ],
     url: "https://github.com/NyXkim5/pan",
+    privateRepo: true,
   },
   {
     slug: "msp-encoder",
@@ -172,6 +180,7 @@ export const PROJECTS: readonly Project[] = [
     ],
     caseStudySlug: "drone-dashboard",
     url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
   },
   {
     slug: "archv-ink",
@@ -190,6 +199,7 @@ export const PROJECTS: readonly Project[] = [
     ],
     caseStudySlug: "archv",
     url: "https://github.com/NyXkim5/archv-mock-service",
+    privateRepo: true,
   },
   {
     slug: "iris",
@@ -207,6 +217,7 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/iris-isolation.png", alt: "Seventy-seven tenant isolation route cases grouped by URL surface, and test functions per proof layer" },
     ],
     url: "https://github.com/NyXkim5/IrisEvaluationMVP",
+    privateRepo: true,
   },
   {
     slug: "metis",
@@ -223,6 +234,7 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/metis-sources.png", alt: "Curated source registry entries per tier, enabled filled and disabled hollow, the seven state-controlled entries in pink" },
     ],
     url: "https://github.com/NyXkim5/singularity",
+    privateRepo: true,
   },
   {
     slug: "va-gov-bdd",
@@ -258,6 +270,7 @@ export const PROJECTS: readonly Project[] = [
     ],
     caseStudySlug: "cactus",
     url: "https://github.com/NyXkim5/hermes",
+    privateRepo: true,
   },
   {
     slug: "bamboo",

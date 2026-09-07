@@ -57,6 +57,19 @@ describe("ProjectWindow", () => {
     expect(body.className).not.toMatch(/(^|\s)overflow-y-auto/);
   });
 
+  it("links the address bar to the repository and discloses when it is private", () => {
+    open("siting-optimizer");
+    const address = screen.getByRole("link", { name: /github\.com\/NyXkim5\/DroneNexus/ });
+    expect(address.getAttribute("href")).toBe("https://github.com/NyXkim5/DroneNexus");
+    expect(address.textContent).toContain("private");
+    expect(screen.getByText(/access: the repository is private/i)).toBeTruthy();
+    cleanup();
+    open("role-index");
+    const publicAddress = screen.getByRole("link", { name: /github\.com\/NyXkim5\/summer-2027-role-index/ });
+    expect(publicAddress.textContent).not.toContain("private");
+    expect(screen.queryByText(/access: the repository is private/i)).toBeNull();
+  });
+
   it("keeps the source link for public evidence and drops the old case study link", () => {
     open("role-index");
     expect(screen.getByText("Source").getAttribute("href")).toContain("github.com");

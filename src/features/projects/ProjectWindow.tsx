@@ -75,6 +75,11 @@ function Overview({ project }: { project: Project }) {
       {project.images.map((img) => <Figure key={img.src} img={img} />)}
       {project.specs.length > 0 && <div>{project.specs.map((s) => <SpecRow key={s.evidenceId} spec={s} />)}</div>}
       <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">caveat: {project.caveat}</p>
+      {project.privateRepo && (
+        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">
+          access: the repository is private. The address bar links to it, GitHub asks for access.
+        </p>
+      )}
       <Links project={project} />
     </div>
   );
@@ -118,6 +123,7 @@ export function ProjectWindow({ project, onBack, enlarged = false, onEnlarge }: 
         onBack={onBack}
         enlarged={enlarged}
         onEnlarge={onEnlarge}
+        isPrivate={project.privateRepo === true}
       />
       <div className="px-5 py-6 md:flex-1 md:overflow-y-auto md:overscroll-contain">
         {showCase && project.caseStudySlug ? <CaseTab slug={project.caseStudySlug} /> : <Overview project={project} />}

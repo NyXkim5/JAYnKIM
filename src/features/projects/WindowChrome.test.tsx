@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { addressText, WindowChrome } from "./WindowChrome";
+import { addressText, PRIVATE_NOTE, WindowChrome } from "./WindowChrome";
 
 afterEach(cleanup);
 
@@ -60,9 +60,28 @@ describe("WindowChrome", () => {
     expect(screen.getByLabelText("Shrink the window").getAttribute("aria-pressed")).toBe("true");
   });
 
-  it("shows the url without protocol and trailing slash", () => {
+  it("shows the url without protocol and trailing slash, as a link that opens in a new tab", () => {
     render(<WindowChrome {...base} tabs={["overview"]} url="https://bamboonutrition.app/" />);
     expect(screen.getByText("bamboonutrition.app")).toBeTruthy();
+    const link = screen.getByRole("link");
+    expect(link.getAttribute("href")).toBe("https://bamboonutrition.app/");
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
+    expect(screen.queryByText("private")).toBeNull();
+  });
+
+  it("keeps a private repository linked and says that it is private", () => {
+    render(<WindowChrome {...base} tabs={["overview"]} url="https://github.com/NyXkim5/DroneNexus" isPrivate />);
+    const link = screen.getByRole("link");
+    expect(link.getAttribute("href")).toBe("https://github.com/NyXkim5/DroneNexus");
+    expect(link.getAttribute("title")).toBe(PRIVATE_NOTE);
+    expect(screen.getByText("private")).toBeTruthy();
+  });
+
+  it("renders no link when the project has no url", () => {
+    render(<WindowChrome {...base} tabs={["overview"]} />);
+    expect(screen.queryByRole("link")).toBeNull();
+    expect(screen.getByText("jaykim.studio/projects/bamboo-nutrition-app")).toBeTruthy();
   });
 
   it("sticks under the persona bar below md and stretches controls to their bar", () => {
