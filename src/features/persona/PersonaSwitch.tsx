@@ -19,11 +19,11 @@ type Props = {
 // The current page is marked by pink brackets and full-strength text, no box.
 const BRACKET = "text-[#ff69b4]";
 
-// "lg" is the reader-chosen size from the bar's toggle, for people who find
-// the 11px mono labels too small to read.
+// "lg" is the persona bar's size: 13px from md up, where there is room, and
+// the small size on phones so the four tabs still fit beside the wordmark.
 const SCALE: Record<TabSize, string> = {
   sm: "text-[11px] tracking-[0.18em] px-1.5 py-0.5",
-  lg: "text-[15px] tracking-[0.16em] px-2 py-1",
+  lg: "text-[11px] md:text-[13px] tracking-[0.18em] px-1.5 py-0.5 md:px-2",
 };
 
 function tabClass(active: boolean, ground: Ground, size: TabSize): string {
