@@ -13,12 +13,15 @@ type Props = {
   asLinks?: boolean;
 };
 
+// The current page is marked by pink brackets and full-strength text, no box.
+const BRACKET = "text-[#ff69b4]";
+
 function tabClass(active: boolean, ground: Ground): string {
   const base = "font-mono text-[11px] tracking-[0.18em] uppercase px-1.5 py-0.5 transition-colors";
   if (ground === "black") {
-    return cn(base, active ? "bg-white text-black" : "text-white/60 hover:text-white");
+    return cn(base, active ? "text-white" : "text-white/60 hover:text-white");
   }
-  return cn(base, active ? "bg-black text-white" : "text-black/60 hover:text-black");
+  return cn(base, active ? "text-black" : "text-black/60 hover:text-black");
 }
 
 export function PersonaSwitch({ value, onChange, ground, asLinks = false }: Props) {
@@ -31,7 +34,9 @@ export function PersonaSwitch({ value, onChange, ground, asLinks = false }: Prop
         // Brackets mark the current page only.
         const label = active ? (
           <>
-            [<GlitchLabel text={p.short} active={hover === p.key} />]
+            <span className={BRACKET}>[</span>
+            <GlitchLabel text={p.short} active={hover === p.key} />
+            <span className={BRACKET}>]</span>
           </>
         ) : (
           <GlitchLabel text={p.short} active={hover === p.key} />
