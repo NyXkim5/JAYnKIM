@@ -44,6 +44,22 @@ describe("WindowChrome", () => {
     expect(back.innerHTML).not.toContain("opacity-0");
   });
 
+  it("offers Enlarge only when the explorer can act on it, and flips to Shrink once enlarged", () => {
+    render(<WindowChrome {...base} tabs={["overview"]} />);
+    expect(screen.queryByLabelText(/the window$/)).toBeNull();
+    cleanup();
+    const onEnlarge = vi.fn();
+    render(<WindowChrome {...base} tabs={["overview"]} onEnlarge={onEnlarge} />);
+    const enlarge = screen.getByLabelText("Enlarge the window");
+    expect(enlarge.getAttribute("aria-pressed")).toBe("false");
+    expect(enlarge.className).toContain("max-md:hidden");
+    fireEvent.click(enlarge);
+    expect(onEnlarge).toHaveBeenCalledTimes(1);
+    cleanup();
+    render(<WindowChrome {...base} tabs={["overview"]} onEnlarge={onEnlarge} enlarged />);
+    expect(screen.getByLabelText("Shrink the window").getAttribute("aria-pressed")).toBe("true");
+  });
+
   it("shows the url without protocol and trailing slash, as a link that opens in a new tab", () => {
     render(<WindowChrome {...base} tabs={["overview"]} url="https://bamboonutrition.app/" />);
     expect(screen.getByText("bamboonutrition.app")).toBeTruthy();

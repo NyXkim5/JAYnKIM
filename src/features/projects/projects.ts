@@ -128,15 +128,15 @@ export const PROJECTS: readonly Project[] = [
     folder: "hardware",
     status: "HARDWARE",
     claim: "A laptop webcam feeding YOLO and a live HUD over a WebSocket, twenty frames at about 20 fps.",
-    caveat: "Real capture, host CPU. The full engagement path needs SITL or a vehicle and is out of scope for the demo.",
+    caveat: "Host CPU. The two frames ran a recorded clip (Pexels, Joseph Redfield) through the same detector and HUD in place of the webcam on 2026-09-06, with the drone fine-tune. The full engagement path needs SITL or a vehicle and is out of scope for the demo.",
     specs: [
       { label: "Latency", evidenceId: "dronenexus.yolo.latency" },
       { label: "Precision", evidenceId: "dronenexus.yolo.precision" },
       { label: "HUD tests", evidenceId: "overwatch.tests.passed" },
     ],
     images: [
-      { src: "/projects/webcam-live-detection.jpg", alt: "OVERWATCH live detection HUD on 2026-09-05, YOLOv11n selected, waiting for the camera detector on ws://localhost:8766" },
-      { src: "/projects/overwatch-tests.png", alt: "Terminal capture of the HUD unit test run, 125 passed" },
+      { src: "/projects/webcam-drone-detect-1.jpg", alt: "OVERWATCH live detection HUD, LIVE, a quadcopter boxed as drone with its confidence, inference time and source resolution in the performance panel" },
+      { src: "/projects/webcam-drone-detect-2.jpg", alt: "A later frame of the same clip, the box tracking the drone as it banks past the palm trees" },
     ],
     url: "https://github.com/NyXkim5/DroneNexus",
     privateRepo: true,

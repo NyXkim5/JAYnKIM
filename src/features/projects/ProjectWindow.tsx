@@ -27,7 +27,7 @@ function Figure({ img }: { img: ProjectImage }) {
     <figure>
       <div className="relative aspect-video w-full bg-black">
         <div className="absolute inset-0 overflow-hidden">
-          <Image src={img.src} alt={img.alt} fill sizes="(max-width: 768px) 100vw, 680px" loading="eager" className="object-contain" />
+          <Image src={img.src} alt={img.alt} fill sizes="(max-width: 768px) 100vw, 1100px" loading="eager" className="object-contain" />
         </div>
         <Corners />
       </div>
@@ -97,13 +97,14 @@ function tabsFor(project: Project): readonly WindowTab[] {
   return project.caseStudySlug ? ["overview", "case"] : ["overview"];
 }
 
-type Props = { project: Project; onBack: () => void };
+type Props = { project: Project; onBack: () => void; enlarged?: boolean; onEnlarge?: () => void };
 
 // A project's window: browser chrome on top, the body under it. From md up
 // the window caps at 86vh and the body scrolls inside it. Below md the page
 // scrolls the whole window and the chrome sticks under the persona bar.
-// Motion lives in the explorer so the panel itself stays plain.
-export function ProjectWindow({ project, onBack }: Props) {
+// Motion and the enlarged layout live in the explorer, so the panel itself
+// stays plain.
+export function ProjectWindow({ project, onBack, enlarged = false, onEnlarge }: Props) {
   const [tab, setTab] = useState<WindowTab>("overview");
   const showCase = tab === "case" && project.caseStudySlug !== undefined;
 
@@ -121,6 +122,8 @@ export function ProjectWindow({ project, onBack }: Props) {
         onTab={setTab}
         onBack={onBack}
         isPrivate={project.privateRepo === true}
+        enlarged={enlarged}
+        onEnlarge={onEnlarge}
       />
       <div className="px-5 py-6 md:flex-1 md:overflow-y-auto md:overscroll-contain">
         {showCase && project.caseStudySlug ? <CaseTab slug={project.caseStudySlug} /> : <Overview project={project} />}

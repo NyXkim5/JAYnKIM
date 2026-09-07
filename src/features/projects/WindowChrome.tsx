@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ArrowLeft, Lock } from "lucide-react";
+import { ArrowLeft, Lock, Maximize2, Minimize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type WindowTab = "overview" | "case";
@@ -14,6 +14,8 @@ type Props = {
   onTab: (t: WindowTab) => void;
   onBack: () => void;
   isPrivate?: boolean;
+  enlarged?: boolean;
+  onEnlarge?: () => void;
 };
 
 const TAB_LABEL: Record<WindowTab, string> = { overview: "overview", case: "case study" };
@@ -48,7 +50,26 @@ function BackControl({ onBack }: { onBack: () => void }) {
   );
 }
 
-const ADDRESS = "absolute left-1/2 top-1/2 flex w-[min(48%,400px)] -translate-x-1/2 -translate-y-1/2 items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1";
+// Enlarge swaps the side-by-side layout for the window alone at full width.
+// Below md the window already fills the page, so the control hides there.
+function EnlargeControl({ enlarged, onEnlarge }: { enlarged: boolean; onEnlarge: () => void }) {
+  const Icon = enlarged ? Minimize2 : Maximize2;
+  const label = enlarged ? "Shrink" : "Enlarge";
+  return (
+    <button
+      type="button"
+      onClick={onEnlarge}
+      aria-pressed={enlarged}
+      aria-label={`${label} the window`}
+      className="group ml-auto flex items-center gap-2 self-stretch outline-none max-md:hidden"
+    >
+      <Icon aria-hidden size={14} strokeWidth={1.75} className="text-white/70 transition-colors group-hover:text-[#ff69b4] group-focus-visible:text-[#ff69b4]" />
+      <span className="font-mono text-[13px] uppercase tracking-[0.2em] text-white/85 transition-colors group-hover:text-white group-focus-visible:text-white">{label}</span>
+    </button>
+  );
+}
+
+const ADDRESS = "absolute left-1/2 top-1/2 flex w-[min(44%,400px)] -translate-x-1/2 -translate-y-1/2 items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1";
 export const PRIVATE_NOTE = "Private repository. The link opens GitHub, which asks for access.";
 
 // With a url the address is a real link. A private repository is still
@@ -96,15 +117,16 @@ function Tab({ tab, active, onTab }: { tab: WindowTab; active: boolean; onTab: (
 }
 
 // A dark Safari style title bar: Back at the left, a centred address field
-// that links out, and a tab strip under it. Below md the page scrolls the
-// window, so the chrome sticks under the persona bar and Back stays in
-// reach. Controls stretch to their bar height.
-export function WindowChrome({ url, title, tabs, active, onTab, onBack, isPrivate = false }: Props) {
+// that links out, Enlarge at the right, and a tab strip under it. Below md
+// the page scrolls the window, so the chrome sticks under the persona bar
+// and Back stays in reach. Controls stretch to their bar height.
+export function WindowChrome({ url, title, tabs, active, onTab, onBack, isPrivate = false, enlarged = false, onEnlarge }: Props) {
   return (
     <div className="shrink-0 border-b border-white/15 bg-[#0a0a0a] max-md:sticky max-md:top-12 max-md:z-20">
       <div className="relative flex h-10 items-center border-b border-white/15 px-4">
         <BackControl onBack={onBack} />
         <AddressBar url={url} title={title} isPrivate={isPrivate} />
+        {onEnlarge && <EnlargeControl enlarged={enlarged} onEnlarge={onEnlarge} />}
       </div>
       <div role="tablist" aria-label={`${title} tabs`} className="flex h-8 items-center gap-2 px-4">
         {tabs.map((t) => <Tab key={t} tab={t} active={t === active} onTab={onTab} />)}
