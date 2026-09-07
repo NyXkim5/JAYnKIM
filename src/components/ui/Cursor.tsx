@@ -93,7 +93,7 @@ export function Cursor() {
         <div
           key={`trail-${i}`}
           ref={(el) => { trailRefs.current[i] = el; }}
-          className="pointer-events-none fixed top-0 left-0 z-[9997] -translate-x-1/2 -translate-y-1/2 mix-blend-difference rounded-full bg-white/40"
+          className="pointer-events-none fixed top-0 left-0 z-[9997] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ff69b4]/50"
           style={{
             width: 4 - i * 0.4,
             height: 4 - i * 0.4,
@@ -104,17 +104,30 @@ export function Cursor() {
         />
       ))}
 
-      {/* Center dot — crosshair style */}
+      {/* A plain pink arrow with the tip on the pointer, and a name tag under
+          it, the way a collaborator's cursor is drawn in a shared canvas. The
+          dark hairline keeps it readable on the white pages. */}
       <div
         ref={dotRef}
-        className="pointer-events-none fixed top-0 left-0 z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
+        data-cursor
+        className="pointer-events-none fixed top-0 left-0 z-[9999]"
         style={{ willChange: "transform" }}
       >
-        {/* X crosshair */}
-        <svg width="20" height="20" viewBox="0 0 20 20" className="block">
-          <line x1="4" y1="4" x2="16" y2="16" stroke="white" strokeWidth="1.5" />
-          <line x1="16" y1="4" x2="4" y2="16" stroke="white" strokeWidth="1.5" />
+        <svg width="22" height="22" viewBox="0 0 22 22" className="block" aria-hidden="true">
+          <path
+            d="M3 2 L3 18.5 L7.3 14.4 L10.4 21 L13 19.8 L9.9 13.3 L16 13.3 Z"
+            fill="#ff69b4"
+            stroke="#0a0a0a"
+            strokeWidth="1.2"
+            strokeLinejoin="round"
+          />
         </svg>
+        <span
+          data-cursor-tag
+          className="absolute left-[14px] top-[22px] whitespace-nowrap bg-[#ff69b4] px-1.5 py-0.5 font-mono text-[10px] uppercase leading-none tracking-[0.18em] text-[#0a0a0a]"
+        >
+          user
+        </span>
       </div>
 
     </>
