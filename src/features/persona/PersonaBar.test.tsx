@@ -19,7 +19,7 @@ describe("PersonaBar", () => {
     render(<PersonaBar persona="work" />);
     const tabs = screen.getAllByRole("tab");
     expect(tabs).toHaveLength(4);
-    for (const t of tabs) expect(t.className).toContain("md:text-[13px]");
+    for (const t of tabs) expect(t.className).toContain("md:text-[14px]");
     expect(screen.queryByRole("button")).toBeNull();
   });
 

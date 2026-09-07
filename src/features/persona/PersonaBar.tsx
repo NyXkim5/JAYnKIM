@@ -7,7 +7,7 @@ import { usePageTransition } from "@/components/transitions/TransitionProvider";
 import { getPersona, type PersonaKey } from "./personas";
 import { PersonaSwitch } from "./PersonaSwitch";
 
-// The bar's tabs use the larger size from md up so they read at a glance.
+// The bar's tabs use the larger size (14px) from md up so they read at a glance.
 // The landing keeps the small size, where the tabs sit inside the composition.
 export function PersonaBar({ persona }: { persona: PersonaKey }) {
   const { navigateTo } = usePageTransition();
