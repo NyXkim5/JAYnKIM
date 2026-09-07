@@ -1,5 +1,14 @@
 import { TransitionLink } from "@/components/transitions/TransitionLink";
 import { studyHref } from "@/data/caseStudies";
+import { projectForStudy, projectHref } from "@/features/projects/projects";
+
+// Case studies live inside the project windows. A role's link opens that
+// window on its case study tab; only a study with no project falls back to
+// the old page.
+export function caseHref(studySlug: string): string {
+  const project = projectForStudy(studySlug);
+  return project ? projectHref(project.slug, "case") : studyHref(studySlug);
+}
 import { buildAxis, formatMonth, sortNewestFirst, type Axis, type AxisSpan, type Education, type Role } from "./roles";
 import { ScrollToEnd } from "./ScrollToEnd";
 import { MONO, PINK, TIMES } from "./style";
@@ -79,7 +88,7 @@ function EntryLinks({ role }: { role: Role }) {
   const link = "underline underline-offset-4 decoration-white/30 hover:decoration-white";
   return (
     <p className={`${MONO} mt-4 flex gap-5`}>
-      {role.study && <TransitionLink href={studyHref(role.study)} className={link}>Case study</TransitionLink>}
+      {role.study && <TransitionLink href={caseHref(role.study)} className={link}>Case study</TransitionLink>}
       {role.projects && <TransitionLink href="/projects" className={link}>Projects</TransitionLink>}
     </p>
   );

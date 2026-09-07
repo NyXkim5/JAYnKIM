@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { PersonaBar } from "@/features/persona/PersonaBar";
 import { cn } from "@/lib/utils";
 import { leafId, TreeItem } from "./FileTree";
 import { MapGrid } from "./MapGrid";
 import { ProjectWindow } from "./ProjectWindow";
+import type { WindowTab } from "./WindowChrome";
 import { findProject, projectTree, PROJECTS } from "./projects";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -49,7 +51,12 @@ function useReturnFocus(openSlug: string | null) {
 // shows the window at once with no scroll box inside a scroll. Back or Esc
 // closes the window and the tree comes back.
 export function ProjectsExplorer() {
-  const [openSlug, setOpenSlug] = useState<string | null>(null);
+  // ?open=<slug>&tab=case opens straight onto a window, which is how the Work
+  // page and the old case study addresses reach a study.
+  const params = useSearchParams();
+  const asked = params?.get("open") ?? null;
+  const [openSlug, setOpenSlug] = useState<string | null>(asked && findProject(asked) ? asked : null);
+  const initialTab: WindowTab = params?.get("tab") === "case" ? "case" : "overview";
   const [enlarged, setEnlarged] = useState(false);
   const tree = useMemo(() => projectTree(), []);
   const project = openSlug ? findProject(openSlug) : undefined;
@@ -70,7 +77,9 @@ export function ProjectsExplorer() {
             <TreeItem node={tree} depth={0} openSlug={openSlug} onOpen={setOpenSlug} />
           </ul>
         </motion.div>
-        <AnimatePresence mode="popLayout">
+        {/* initial={false}: a window opened from the address shows at once,
+            only windows opened by a click slide in. */}
+        <AnimatePresence mode="popLayout" initial={false}>
           {project && (
             <motion.div
               key={project.slug}
@@ -81,7 +90,7 @@ export function ProjectsExplorer() {
               transition={SLIDE}
               className={cn("w-[min(92vw,680px)] shrink-0", enlarged ? "md:w-[min(92vw,1100px)]" : "md:w-[min(52vw,680px)]")}
             >
-              <ProjectWindow project={project} onBack={close} enlarged={enlarged} onEnlarge={() => setEnlarged((v) => !v)} />
+              <ProjectWindow project={project} onBack={close} enlarged={enlarged} onEnlarge={() => setEnlarged((v) => !v)} initialTab={initialTab} />
             </motion.div>
           )}
         </AnimatePresence>

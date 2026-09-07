@@ -4,6 +4,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { studyHref } from "@/data/caseStudies";
 import { findEvidence } from "@/features/evidence/registry";
+import { projectForStudy } from "@/features/projects/projects";
 import { EDUCATION, ROLES } from "./roles";
 import { Timeline } from "./Timeline";
 
@@ -24,14 +25,18 @@ describe("Timeline", () => {
     expect(screen.getByText(`${EDUCATION.degree}, ${EDUCATION.field}`)).toBeTruthy();
   });
 
-  it("links every role that has a case study to studyHref, and Cactus to Projects", () => {
+  it("opens every role's case study inside its project window on the Projects page, and Cactus to Projects", () => {
     render(<Timeline roles={ROLES} education={EDUCATION} now={NOW} />);
     const hrefs = screen.getAllByRole("link").map((a) => a.getAttribute("href"));
     for (const r of ROLES) {
-      if (r.study) expect(hrefs, r.key).toContain(studyHref(r.study));
+      if (!r.study) continue;
+      const project = projectForStudy(r.study);
+      expect(project, `${r.key} has no project carrying its case study`).toBeDefined();
+      expect(hrefs, r.key).toContain(`/projects?open=${project?.slug}&tab=case`);
+      expect(hrefs, r.key).not.toContain(studyHref(r.study));
     }
     expect(hrefs).toContain("/projects");
-    const studyLinks = hrefs.filter((h) => ROLES.some((r) => r.study && studyHref(r.study) === h));
+    const studyLinks = hrefs.filter((h) => h?.includes("&tab=case"));
     expect(studyLinks.length).toBe(ROLES.filter((r) => r.study).length);
   });
 

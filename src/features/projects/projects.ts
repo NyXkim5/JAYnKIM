@@ -281,6 +281,32 @@ export const PROJECTS: readonly Project[] = [
     privateRepo: true,
   },
   {
+    slug: "optum-rfp",
+    title: "Optum RFP automation platform",
+    folder: "software",
+    status: "SHIPPED",
+    claim: "One platform that parses incoming RFPs into answerable questions and puts every team that touches a response in the same place.",
+    caveat: "Employer work at Optum, no public code and no screens. Parsing accuracy is treated as ongoing engineering, not a launch milestone.",
+    specs: [{ label: "Volume", evidenceId: "optum.rfp.volume" }],
+    images: [],
+    caseStudySlug: "optum",
+  },
+  {
+    slug: "medvanta",
+    title: "MedVanta clinical operations",
+    folder: "software",
+    status: "SHIPPED",
+    claim: "Patient intake in three steps, routed to the right orthopaedic specialist, on a HIPAA-compliant backend with encryption at rest and immutable audit logs.",
+    caveat: "Employer work at MedVanta, no public code. The screens are from the shipped product.",
+    specs: [],
+    images: [
+      { src: "/medvanta-hero.png", alt: "VantaStat, quick access to orthopaedic specialists for pain and injury" },
+      { src: "/medvanta-intake.webp", alt: "The three-step intake: describe the injury, upload photos, connect" },
+      { src: "/medvanta-app.webp", alt: "The patient-facing app and the practice dashboard side by side" },
+    ],
+    caseStudySlug: "medvanta",
+  },
+  {
     slug: "bamboo",
     title: "Bamboo nutrition app",
     folder: "mobile",
@@ -313,6 +339,19 @@ export const PROJECTS: readonly Project[] = [
   },
   ...SCHOOL,
 ];
+
+// The project whose window carries a given case study, if one does.
+export function projectForStudy(studySlug: string): Project | undefined {
+  return PROJECTS.find((p) => p.caseStudySlug === studySlug);
+}
+
+// Deep link that opens a project's window on the Projects page, on the case
+// study tab when asked. Case studies live in these windows, nowhere else.
+export function projectHref(slug: string, tab: "overview" | "case" = "overview"): string {
+  const params = new URLSearchParams({ open: slug });
+  if (tab === "case") params.set("tab", "case");
+  return `/projects?${params.toString()}`;
+}
 
 export function findProject(slug: string): Project | undefined {
   return PROJECTS.find((p) => p.slug === slug);

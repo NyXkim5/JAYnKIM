@@ -121,15 +121,16 @@ function tabsFor(project: Project): readonly WindowTab[] {
   return project.caseStudySlug ? ["overview", "case"] : ["overview"];
 }
 
-type Props = { project: Project; onBack: () => void; enlarged?: boolean; onEnlarge?: () => void };
+type Props = { project: Project; onBack: () => void; enlarged?: boolean; onEnlarge?: () => void; initialTab?: WindowTab };
 
 // A project's window: browser chrome on top, the body under it. From md up
 // the window caps at 86vh and the body scrolls inside it. Below md the page
 // scrolls the whole window and the chrome sticks under the persona bar.
 // Motion and the enlarged layout live in the explorer, so the panel itself
 // stays plain.
-export function ProjectWindow({ project, onBack, enlarged = false, onEnlarge }: Props) {
-  const [tab, setTab] = useState<WindowTab>("overview");
+export function ProjectWindow({ project, onBack, enlarged = false, onEnlarge, initialTab = "overview" }: Props) {
+  // A deep link may ask for the case tab, but only a project with a study has one.
+  const [tab, setTab] = useState<WindowTab>(initialTab === "case" && project.caseStudySlug ? "case" : "overview");
   const showCase = tab === "case" && project.caseStudySlug !== undefined;
 
   return (

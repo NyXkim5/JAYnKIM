@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
+import { LINKEDIN_LABEL, LINKEDIN_URL } from "@/data/contact";
 import { QUOTE_BY, STUDIO_QUOTE } from "@/features/studio/quote";
 import { GATE_FOOTER, MobileGate } from "./MobileGate";
 
@@ -20,12 +21,16 @@ describe("MobileGate", () => {
     expect(screen.getByText(QUOTE_BY)).toBeTruthy();
     const footer = screen.getByText(GATE_FOOTER);
     expect(footer.className).toContain("text-[#ff69b4]");
-    expect(footer.className).toContain("bottom-8");
+    expect(footer.parentElement?.className).toContain("bottom-8");
   });
 
-  it("shows nothing else: no navigation, no headings, no links", () => {
+  it("shows nothing else but a LinkedIn link under the desktop pointer", () => {
     const { container } = render(<MobileGate />);
-    expect(container.querySelector("a")).toBeNull();
+    const links = container.querySelectorAll("a");
+    expect(links).toHaveLength(1);
+    expect(links[0].getAttribute("href")).toBe(LINKEDIN_URL);
+    expect(links[0].textContent).toBe(LINKEDIN_LABEL);
+    expect(screen.getByText(GATE_FOOTER).parentElement).toBe(links[0].parentElement);
     expect(container.querySelector("h1, h2, h3")).toBeNull();
     expect(container.querySelector("[role='tablist']")).toBeNull();
   });

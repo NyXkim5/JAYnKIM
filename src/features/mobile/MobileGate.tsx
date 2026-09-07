@@ -1,3 +1,4 @@
+import { LINKEDIN_LABEL, LINKEDIN_URL } from "@/data/contact";
 import { HorseVideo } from "@/features/stealth/HorseVideo";
 import { StealthGrid } from "@/features/stealth/StealthGrid";
 import { QUOTE_BY, STUDIO_QUOTE } from "@/features/studio/quote";
@@ -19,9 +20,12 @@ export function MobileGate() {
         </p>
         <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.3em] text-white/60">{QUOTE_BY}</p>
       </main>
-      <p className="absolute inset-x-0 bottom-8 z-10 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-[#ff69b4]">
-        {GATE_FOOTER}
-      </p>
+      <div className="absolute inset-x-0 bottom-8 z-10 space-y-3 text-center font-mono text-[11px] uppercase tracking-[0.3em]">
+        <p className="text-[#ff69b4]">{GATE_FOOTER}</p>
+        <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="inline-block text-white/70 underline underline-offset-4 decoration-white/30 hover:text-white">
+          {LINKEDIN_LABEL}
+        </a>
+      </div>
     </div>
   );
 }

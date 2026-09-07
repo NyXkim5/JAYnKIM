@@ -9,6 +9,9 @@ type StackGroup = CaseStudy["stack"][number];
 type Figure = CaseStudy["images"][number];
 type Reflections = NonNullable<CaseStudy["reflections"]>;
 type Architecture = NonNullable<CaseStudy["architecture"]>;
+type Brand = NonNullable<CaseStudy["brandPhilosophy"]>;
+type Versions = NonNullable<CaseStudy["versionImages"]>;
+type Clip = NonNullable<CaseStudy["video"]>;
 
 const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
 const LABEL = "font-mono text-[11px] uppercase tracking-[0.18em]";
@@ -169,6 +172,86 @@ function FigureBox({ img }: { img: Figure }) {
   );
 }
 
+// The design language: the type pairing, the palette as swatches with their
+// use, and the principles the visual work followed.
+function DesignLanguage({ brand }: { brand: Brand }) {
+  return (
+    <div className="space-y-6">
+      <p className="max-w-2xl text-[15px] leading-relaxed" style={TIMES}>{brand.intro}</p>
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="border border-white/15 p-4">
+          <p className={`${LABEL} text-white/50`}>heading type</p>
+          <p className="mt-2 text-2xl font-bold leading-tight" style={TIMES}>{brand.typography.heading}</p>
+        </div>
+        <div className="border border-white/15 p-4">
+          <p className={`${LABEL} text-white/50`}>body type</p>
+          <p className="mt-2 text-[15px] leading-relaxed">{brand.typography.body}</p>
+        </div>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+        {brand.palette.map((c) => (
+          <div key={c.hex} className="flex items-start gap-3 border-t border-white/10 pt-3">
+            <span aria-hidden className="mt-0.5 size-8 shrink-0 border border-white/20" style={{ backgroundColor: c.hex }} />
+            <div>
+              <p className="font-mono text-[12px] text-white">{c.name}</p>
+              <p className="font-mono text-[11px] uppercase tracking-wide text-white/50">{c.hex}</p>
+              <p className="mt-1 text-[13px] leading-snug text-white/80" style={TIMES}>{c.usage}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <ul className="space-y-2">
+        {brand.principles.map((p, i) => (
+          <li key={p} className="grid grid-cols-[3rem_1fr] gap-3 border-t border-white/10 pt-2">
+            <span className="font-mono text-[12px] tracking-wide text-[#ff69b4]">{String(i + 1).padStart(2, "0")}</span>
+            <p className="text-[14px] leading-relaxed" style={TIMES}>{p}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// Two builds side by side with what changed between them.
+function VersionsBlock({ v }: { v: Versions }) {
+  return (
+    <div className="space-y-5">
+      <div className="grid gap-6 md:grid-cols-2">
+        {([["v1", v.v1], ["v2", v.v2]] as const).map(([tag, img]) => (
+          <figure key={tag} className="relative">
+            <p className={`${LABEL} mb-2 text-[#ff69b4]`}>{tag}</p>
+            <div className="relative aspect-video w-full overflow-hidden bg-black">
+              <Image src={img.src} alt={img.caption} fill sizes="(max-width: 768px) 100vw, 540px" className="object-contain" />
+            </div>
+            <figcaption className={`${LABEL} mt-2 tracking-[0.14em] text-white/50`}>{img.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <ul className="space-y-2">
+        {v.changelog.map((line) => (
+          <li key={line} className="grid grid-cols-[1.5rem_1fr] gap-2 border-t border-white/10 pt-2">
+            <span className="font-mono text-[12px] text-[#ff69b4]">+</span>
+            <p className="text-[14px] leading-relaxed" style={TIMES}>{line}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// A clip from the study, controls on, never autoplaying.
+function ClipBox({ clip }: { clip: Clip }) {
+  return (
+    <figure className="relative">
+      <div className="relative aspect-video w-full overflow-hidden bg-black">
+        <video className="absolute inset-0 h-full w-full" controls playsInline preload="metadata" src={clip.src} aria-label={clip.caption} />
+      </div>
+      <Corners />
+      <figcaption className={`${LABEL} mt-2 tracking-[0.14em] text-white/50`}>{clip.caption}</figcaption>
+    </figure>
+  );
+}
+
 function ArchitectureBlock({ arch }: { arch: Architecture }) {
   return (
     <div className="space-y-5">
@@ -218,9 +301,12 @@ function buildSections(study: CaseStudy): { label: string; node: ReactNode }[] {
   const all: ({ label: string; node: ReactNode } | null)[] = [
     { label: "approach", node: <Approach items={study.approach} /> },
     study.designDecisions.length > 0 ? { label: "design decisions", node: <Decisions items={study.designDecisions} /> } : null,
+    study.brandPhilosophy ? { label: "design language", node: <DesignLanguage brand={study.brandPhilosophy} /> } : null,
     study.impact.some((r) => findEvidence(r.evidenceId)) ? { label: "impact", node: <div>{study.impact.map((r) => <ImpactRow key={r.evidenceId} row={r} />)}</div> } : null,
     study.architecture ? { label: "architecture", node: <ArchitectureBlock arch={study.architecture} /> } : null,
     study.images.length > 0 ? { label: "figures", node: <div className="space-y-6">{study.images.map((img) => <FigureBox key={img.src} img={img} />)}</div> } : null,
+    study.versionImages ? { label: "versions", node: <VersionsBlock v={study.versionImages} /> } : null,
+    study.video ? { label: "clip", node: <ClipBox clip={study.video} /> } : null,
     study.stack.length > 0 ? { label: "stack", node: <Stack groups={study.stack} /> } : null,
     study.reflections ? { label: "reflections", node: <ReflectionsBlock r={study.reflections} /> } : null,
   ];
