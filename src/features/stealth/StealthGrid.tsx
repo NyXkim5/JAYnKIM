@@ -9,6 +9,8 @@ import {
   dimAlpha,
   focusAlpha,
   focusPulse,
+  LABEL_W,
+  labelBox,
   MAJOR,
   phaseAt,
   pull,
@@ -91,7 +93,9 @@ export function StealthGrid() {
     let size = { w: 0, h: 0 };
     let focus: Focus | null = null;
     let lastCycle = -1;
-    let lastStage: Stage | null = null;
+    // undefined means "not yet compared this cycle", so a new point always
+    // refreshes the label even if the stage name happens to repeat.
+    let lastStage: Stage | null | undefined = undefined;
     let frame = 0;
     const start = performance.now();
 
@@ -112,6 +116,7 @@ export function StealthGrid() {
       if (cycle !== lastCycle) {
         focus = chooseFocus(size.w, size.h, Math.random, focus ?? undefined);
         lastCycle = cycle;
+        lastStage = undefined;
       }
       const stage = stageFor(phase);
       if (stage !== lastStage) {
@@ -148,18 +153,20 @@ export function StealthGrid() {
 // left when the point sits in the right half of the screen.
 function FocusLabel({ overlay }: { overlay: Overlay }) {
   const { focus, stage } = overlay;
-  const right = typeof window !== "undefined" && focus.x > window.innerWidth / 2;
+  const width = typeof window !== "undefined" ? window.innerWidth : 0;
+  const box = labelBox(focus.x, focus.y, width);
+  const right = focus.x > width / 2;
   const shown = stage === "fading" ? "opacity-0" : "opacity-100";
   return (
     <div
       data-focus-label
-      className={`absolute font-mono transition-opacity duration-700 ${shown} ${right ? "-translate-x-full text-right" : ""}`}
-      style={{ left: focus.x + (right ? -18 : 18), top: focus.y - 8 }}
+      className={`absolute font-mono transition-opacity duration-700 ${shown} ${right ? "text-right" : ""}`}
+      style={{ left: box.x0, top: box.y0, width: LABEL_W }}
     >
       <p className="text-[11px] uppercase tracking-[0.22em]" style={{ color: PINK }}>
         {coordsLabel(focus)}
       </p>
-      <p className={`mt-1 max-w-[16rem] text-[12px] leading-relaxed text-white/75 transition-opacity duration-500 ${stage === "coords" ? "opacity-0" : "opacity-100"}`}>
+      <p className={`mt-1 text-[12px] leading-relaxed text-white/75 transition-opacity duration-500 ${stage === "coords" ? "opacity-0" : "opacity-100"}`}>
         {focus.saying}
       </p>
     </div>

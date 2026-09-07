@@ -4,8 +4,12 @@ import {
   BASE_ALPHA,
   MAJOR,
   breath,
+  CENTER_H,
+  CENTER_W,
   chooseFocus,
+  clearOfCenter,
   coordsLabel,
+  labelBox,
   CYCLE_MS,
   cycleIndex,
   dimAlpha,
@@ -78,17 +82,41 @@ describe("stealth grid cycle", () => {
     expect(SPACING).toBeGreaterThanOrEqual(80);
   });
 
-  it("chooses a focus inside the safe margins with a fresh saying, and labels it with four digits", () => {
-    const seq = [0, 0.999, 0.5];
-    let i = 0;
-    const random = () => seq[i++ % seq.length];
-    const first = chooseFocus(1000, 800, random);
-    expect(first.x).toBeGreaterThanOrEqual(180);
-    expect(first.y).toBeLessThanOrEqual(640);
+  it("chooses a focus with a fresh saying and labels it with four digits", () => {
+    let seed = 7;
+    const random = () => {
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280;
+    };
+    const first = chooseFocus(1440, 900, random);
     expect(SAYINGS).toContain(first.saying);
-    const second = chooseFocus(1000, 800, () => 0.1, first);
+    const second = chooseFocus(1440, 900, random, first);
     expect(second.saying).not.toBe(first.saying);
     expect(coordsLabel({ x: 412.4, y: 33, saying: "" })).toBe("0412 · 0033");
+  });
+
+  it("keeps the point, its marker and its label off the statement in the middle", () => {
+    expect(clearOfCenter(720, 450, 1440, 900)).toBe(false);
+    expect(clearOfCenter(400, 450, 1440, 900)).toBe(false);
+    expect(clearOfCenter(1000, 320, 1440, 900)).toBe(false);
+    expect(clearOfCenter(300, 150, 1440, 900)).toBe(true);
+    expect(clearOfCenter(1200, 780, 1440, 900)).toBe(true);
+    const center = { x0: 1440 / 2 - CENTER_W / 2, y0: 900 / 2 - CENTER_H / 2, x1: 1440 / 2 + CENTER_W / 2, y1: 900 / 2 + CENTER_H / 2 };
+    let seed = 1;
+    const random = () => {
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280;
+    };
+    for (const [w, h] of [[1440, 900], [390, 844], [1920, 1080]] as const) {
+      for (let i = 0; i < 200; i++) {
+        const f = chooseFocus(w, h, random);
+        expect(clearOfCenter(f.x, f.y, w, h), `${w}x${h}: ${f.x},${f.y}`).toBe(true);
+      }
+    }
+    const label = labelBox(1200, 700, 1440);
+    expect(label.x1).toBe(1200 - 18);
+    expect(labelBox(300, 150, 1440).x0).toBe(318);
+    expect(center.x1 - center.x0).toBe(CENTER_W);
   });
 
   it("derives the label stage and the cycle number from time alone", () => {

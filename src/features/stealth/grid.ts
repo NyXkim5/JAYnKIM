@@ -74,11 +74,55 @@ export function focusAlpha(k: number, pulse: number): number {
   return Math.min(0.85, BASE_ALPHA * (1 + 5 * k) * pulse);
 }
 
+// The statement sits in the middle of the screen. Nothing the grid picks may
+// land on it: not the point, not its marker, not the label beside it.
+export const CENTER_W = 720;
+export const CENTER_H = 280;
+export const LABEL_W = 280;
+export const LABEL_H = 48;
+export const LABEL_GAP = 18;
+export const LABEL_RISE = 8;
+export const MARKER_MARGIN = 24;
+
+type Box = { x0: number; y0: number; x1: number; y1: number };
+
+function centerBox(width: number, height: number): Box {
+  const w = Math.min(CENTER_W, width);
+  return { x0: width / 2 - w / 2, y0: height / 2 - CENTER_H / 2, x1: width / 2 + w / 2, y1: height / 2 + CENTER_H / 2 };
+}
+
+// Where the label sits for a point: to the right of it, or to the left when
+// the point is in the right half of the screen. The component uses the same
+// offsets, so this box is the real footprint.
+export function labelBox(x: number, y: number, width: number): Box {
+  const x0 = x > width / 2 ? x - LABEL_GAP - LABEL_W : x + LABEL_GAP;
+  return { x0, y0: y - LABEL_RISE, x1: x0 + LABEL_W, y1: y - LABEL_RISE + LABEL_H };
+}
+
+function overlaps(a: Box, b: Box): boolean {
+  return a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
+}
+
+export function clearOfCenter(x: number, y: number, width: number, height: number): boolean {
+  const center = centerBox(width, height);
+  const marker = { x0: x - MARKER_MARGIN, y0: y - MARKER_MARGIN, x1: x + MARKER_MARGIN, y1: y + MARKER_MARGIN };
+  return !overlaps(marker, center) && !overlaps(labelBox(x, y, width), center);
+}
+
+function candidate(width: number, height: number, random: () => number): [number, number] {
+  return [width * (0.14 + 0.72 * random()), height * (0.16 + 0.68 * random())];
+}
+
+// Draws points until one keeps clear of the statement, then falls back to the
+// top left band, which is always clear. The saying never repeats the last one.
 export function chooseFocus(width: number, height: number, random: () => number, previous?: Focus): Focus {
-  const x = width * (0.18 + 0.64 * random());
-  const y = height * (0.2 + 0.6 * random());
   const pool = SAYINGS.filter((s) => s !== previous?.saying);
-  return { x, y, saying: pool[Math.floor(random() * pool.length)] ?? SAYINGS[0] };
+  const saying = pool[Math.floor(random() * pool.length)] ?? SAYINGS[0];
+  for (let i = 0; i < 60; i++) {
+    const [x, y] = candidate(width, height, random);
+    if (clearOfCenter(x, y, width, height)) return { x, y, saying };
+  }
+  return { x: width * 0.2, y: height * 0.14, saying };
 }
 
 export type Stage = "coords" | "saying" | "fading";
