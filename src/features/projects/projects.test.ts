@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { PROJECTS, FOLDERS, findProject, projectTree } from "./projects";
+import { PROJECTS, FOLDERS, FOLDER_LABELS, findProject, projectTree } from "./projects";
 import { findEvidence } from "@/features/evidence/registry";
 import { findStudy } from "@/data/caseStudies";
 
@@ -45,7 +45,7 @@ describe("projects", () => {
 
   it("builds a tree with every folder populated and every leaf findable", () => {
     const tree = projectTree();
-    expect(tree.nodes?.map((n) => n.name)).toEqual([...FOLDERS]);
+    expect(tree.nodes?.map((n) => n.name)).toEqual(FOLDERS.map((f) => FOLDER_LABELS[f]));
     for (const folder of tree.nodes ?? []) {
       expect(folder.nodes?.length ?? 0).toBeGreaterThan(0);
       for (const leaf of folder.nodes ?? []) expect(findProject(leaf.slug ?? "")).toBeDefined();

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { TransitionLink } from "@/components/transitions/TransitionLink";
-import { studyHref } from "@/data/caseStudies";
+import { findStudy } from "@/data/caseStudies";
 import { findEvidence, sourceHref } from "@/features/evidence/registry";
+import { CaseStudyPanel } from "./CaseStudyPanel";
 import type { Project, ProjectImage, ProjectSpec } from "./projects";
+import { WindowChrome, type WindowTab } from "./WindowChrome";
 
 const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
 
@@ -23,11 +24,13 @@ function Corners() {
 
 function Figure({ img }: { img: ProjectImage }) {
   return (
-    <figure className="relative">
-      <div className="relative aspect-video w-full overflow-hidden bg-black">
-        <Image src={img.src} alt={img.alt} fill sizes="(max-width: 768px) 100vw, 680px" className="object-contain" />
+    <figure>
+      <div className="relative aspect-video w-full bg-black">
+        <div className="absolute inset-0 overflow-hidden">
+          <Image src={img.src} alt={img.alt} fill sizes="(max-width: 768px) 100vw, 680px" className="object-contain" />
+        </div>
+        <Corners />
       </div>
-      <Corners />
       <figcaption className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">{img.alt}</figcaption>
     </figure>
   );
@@ -49,53 +52,63 @@ function SpecRow({ spec }: { spec: ProjectSpec }) {
 
 function Links({ project }: { project: Project }) {
   const first = project.specs[0] && findEvidence(project.specs[0].evidenceId);
+  if (!first || !first.public) return null;
   const cls = "font-mono text-[11px] uppercase tracking-[0.18em] text-white underline underline-offset-4 hover:text-[#ff69b4]";
   return (
     <div className="flex flex-wrap gap-6 pt-2">
-      {project.caseStudySlug && <TransitionLink href={studyHref(project.caseStudySlug)} className={cls}>Case study</TransitionLink>}
-      {first && first.public && (
-        <a href={sourceHref(first)} target="_blank" rel="noopener noreferrer" className={cls}>Source</a>
-      )}
+      <a href={sourceHref(first)} target="_blank" rel="noopener noreferrer" className={cls}>Source</a>
     </div>
   );
 }
 
+// The overview tab: status, title, claim, figures, spec rows, caveat, links.
+function Overview({ project }: { project: Project }) {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ff69b4]">{project.status}</span>
+        <h2 id="project-title" className="text-3xl font-bold uppercase leading-none tracking-tight md:text-4xl" style={TIMES}>
+          {project.title}
+        </h2>
+      </div>
+      <p className="max-w-xl text-[15px] leading-relaxed" style={TIMES}>{project.claim}</p>
+      {project.images.map((img) => <Figure key={img.src} img={img} />)}
+      {project.specs.length > 0 && <div>{project.specs.map((s) => <SpecRow key={s.evidenceId} spec={s} />)}</div>}
+      <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">caveat: {project.caveat}</p>
+      <Links project={project} />
+    </div>
+  );
+}
+
+function CaseTab({ slug }: { slug: string }) {
+  const study = findStudy(slug);
+  if (!study) {
+    return <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">case study not found: {slug}</p>;
+  }
+  return <CaseStudyPanel study={study} />;
+}
+
+function tabsFor(project: Project): readonly WindowTab[] {
+  return project.caseStudySlug ? ["overview", "case"] : ["overview"];
+}
+
 type Props = { project: Project; onBack: () => void };
 
-// A project's window: a bordered panel that scrolls inside, closes on back.
+// A project's window: browser chrome on top, a scrolling body under it.
 // Motion lives in the explorer so the panel itself stays plain.
 export function ProjectWindow({ project, onBack }: Props) {
-  const backRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    backRef.current?.focus();
-  }, []);
+  const [tab, setTab] = useState<WindowTab>("overview");
+  const showCase = tab === "case" && project.caseStudySlug !== undefined;
 
   return (
     <div
       role="dialog"
-      aria-labelledby="project-title"
+      aria-label={project.title}
       className="flex max-h-[86vh] flex-col border border-white/15 bg-[#0a0a0a] text-white"
     >
-      <header className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-3">
-        <button
-          ref={backRef}
-          type="button"
-          onClick={onBack}
-          className="font-mono text-[11px] uppercase tracking-[0.18em] text-white outline-none hover:text-[#ff69b4] focus-visible:text-[#ff69b4]"
-        >
-          <span className="text-[#ff69b4]">[</span>← back<span className="text-[#ff69b4]">]</span>
-        </button>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ff69b4]">{project.status}</span>
-      </header>
-      <div className="flex-1 space-y-6 overflow-y-auto px-5 py-6">
-        <h2 id="project-title" className="text-3xl font-bold uppercase leading-none tracking-tight md:text-4xl" style={TIMES}>
-          {project.title}
-        </h2>
-        <p className="max-w-xl text-[15px] leading-relaxed" style={TIMES}>{project.claim}</p>
-        {project.images.map((img) => <Figure key={img.src} img={img} />)}
-        {project.specs.length > 0 && <div>{project.specs.map((s) => <SpecRow key={s.evidenceId} spec={s} />)}</div>}
-        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">caveat: {project.caveat}</p>
-        <Links project={project} />
+      <WindowChrome url={project.url} title={project.title} tabs={tabsFor(project)} active={tab} onTab={setTab} onBack={onBack} />
+      <div className="flex-1 overflow-y-auto px-5 py-6">
+        {showCase && project.caseStudySlug ? <CaseTab slug={project.caseStudySlug} /> : <Overview project={project} />}
       </div>
     </div>
   );

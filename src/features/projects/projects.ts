@@ -2,6 +2,8 @@
 // number reaches the screen only if a file backs it. Images are Jay's own
 // captures or renders from his own code; sources are named in the caveat.
 
+import { SCHOOL } from "./school";
+
 export type ProjectStatus =
   | "SIMULATED"
   | "HARDWARE"
@@ -9,7 +11,8 @@ export type ProjectStatus =
   | "CODE"
   | "THIRD-PARTY"
   | "SHIPPED"
-  | "LIVE DATA";
+  | "LIVE DATA"
+  | "COMMUNITY";
 
 export type ProjectImage = { src: string; alt: string };
 export type ProjectSpec = { label: string; evidenceId: string };
@@ -24,11 +27,19 @@ export type Project = {
   specs: ProjectSpec[];
   images: ProjectImage[];
   caseStudySlug?: string;
+  // A real address the window's URL bar can show: a live site or the repo.
+  url?: string;
 };
 
 export type TreeNode = { name: string; slug?: string; nodes?: TreeNode[] };
 
-export const FOLDERS = ["hardware", "software", "mobile", "data"] as const;
+export const FOLDERS = ["hardware", "software", "mobile", "school"] as const;
+export const FOLDER_LABELS: Record<(typeof FOLDERS)[number], string> = {
+  hardware: "hardware",
+  software: "software",
+  mobile: "mobile",
+  school: "school contributions",
+};
 
 export const PROJECTS: readonly Project[] = [
   {
@@ -50,6 +61,7 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/overwatch-map.jpg", alt: "Full map view with coverage percentage and areas of interest" },
     ],
     caseStudySlug: "drone-dashboard",
+    url: "https://github.com/NyXkim5/DroneNexus",
   },
   {
     slug: "siting-optimizer",
@@ -65,6 +77,7 @@ export const PROJECTS: readonly Project[] = [
     ],
     images: [{ src: "/projects/siting-coverage.png", alt: "48 by 48 coverage probability grid with four chosen sensor sites in pink" }],
     caseStudySlug: "drone-dashboard",
+    url: "https://github.com/NyXkim5/DroneNexus",
   },
   {
     slug: "drone-detector",
@@ -84,6 +97,7 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/detector-pr-curve.png", alt: "Precision recall curve" },
       { src: "/projects/detector-confusion.png", alt: "Normalized confusion matrix" },
     ],
+    url: "https://github.com/NyXkim5/DroneNexus",
   },
   {
     slug: "latency-benchmark",
@@ -94,10 +108,13 @@ export const PROJECTS: readonly Project[] = [
     caveat: "Measured on an M1 Max CPU, not on edge hardware. The doc says so in its first line.",
     specs: [
       { label: "Latency", evidenceId: "dronenexus.yolo.latency" },
+      { label: "p95", evidenceId: "dronenexus.latency.onnx.p95" },
       { label: "mAP50", evidenceId: "dronenexus.yolo.map50" },
-      { label: "Tests collected", evidenceId: "dronenexus.tests.collected" },
     ],
-    images: [],
+    images: [
+      { src: "/projects/latency-benchmark.png", alt: "Mean, p50 and p95 latency for the baseline, fine-tuned and ONNX detectors, ONNX lowest in every group" },
+    ],
+    url: "https://github.com/NyXkim5/DroneNexus",
   },
   {
     slug: "webcam-detection",
@@ -112,6 +129,7 @@ export const PROJECTS: readonly Project[] = [
       { label: "HUD tests", evidenceId: "overwatch.tests.passed" },
     ],
     images: [{ src: "/projects/overwatch-tests.png", alt: "Terminal capture of the HUD unit test run, 125 passed" }],
+    url: "https://github.com/NyXkim5/DroneNexus",
   },
   {
     slug: "sonicfly-regression",
@@ -122,20 +140,25 @@ export const PROJECTS: readonly Project[] = [
     caveat: "Duke University's code and figures. My contribution is the defect analysis, the patch, and the benchmark harness.",
     specs: [{ label: "Range RMSE", evidenceId: "sonicfly.bearing.rmse" }],
     images: [{ src: "/projects/sonicfly-eval.png", alt: "Acoustic bearing and range evaluation plots from the SonicFly repository" }],
+    url: "https://github.com/generalroboticslab/SonicFly",
   },
   {
     slug: "msp-encoder",
     title: "Betaflight MSP encoder",
     folder: "hardware",
     status: "CODE",
-    claim: "A from-scratch MultiWii Serial Protocol v1 and v2 byte encoder and decoder with checksums, tested without hardware.",
-    caveat: "Pure protocol code, referenced against the Betaflight spec. No board attached.",
+    claim: "A from-scratch MultiWii Serial Protocol v1 byte encoder and decoder with XOR checksums, tested without hardware.",
+    caveat: "Pure protocol code, referenced against the Betaflight spec. v1 frames only, no v2 path exists. No board attached.",
     specs: [
       { label: "Test files", evidenceId: "dronenexus.tests.files" },
       { label: "Core lines", evidenceId: "dronenexus.core.lines" },
+      { label: "Arm frame", evidenceId: "dronenexus.msp.arm_frame.bytes" },
     ],
-    images: [],
+    images: [
+      { src: "/projects/msp-frame.png", alt: "Twenty-two labelled bytes of one MSP v1 arm frame from the encoder, header, size, code, eight RC channels and the XOR checksum" },
+    ],
     caseStudySlug: "drone-dashboard",
+    url: "https://github.com/NyXkim5/DroneNexus",
   },
   {
     slug: "archv-ink",
@@ -149,8 +172,11 @@ export const PROJECTS: readonly Project[] = [
       { label: "False anchors", evidenceId: "archvbrain.eval.falseAnchors" },
       { label: "Gold rows", evidenceId: "archvbrain.eval.goldRows" },
     ],
-    images: [],
+    images: [
+      { src: "/projects/archv-eval.png", alt: "Nineteen eval cases against four verification flags, every false anchor cell empty, and the totals block beside it" },
+    ],
     caseStudySlug: "archv",
+    url: "https://github.com/NyXkim5/archv-mock-service",
   },
   {
     slug: "iris",
@@ -162,8 +188,12 @@ export const PROJECTS: readonly Project[] = [
     specs: [
       { label: "Isolation suite", evidenceId: "iris.tenant.suiteLines" },
       { label: "Gold fixtures", evidenceId: "iris.gold.fixtures" },
+      { label: "Route cases", evidenceId: "iris.isolation.route_cases" },
     ],
-    images: [],
+    images: [
+      { src: "/projects/iris-isolation.png", alt: "Seventy-seven tenant isolation route cases grouped by URL surface, and test functions per proof layer" },
+    ],
+    url: "https://github.com/NyXkim5/IrisEvaluationMVP",
   },
   {
     slug: "metis",
@@ -172,8 +202,14 @@ export const PROJECTS: readonly Project[] = [
     status: "CODE",
     claim: "A brief-quality judge that prints its projected dollar cost before it runs and can never block a draft.",
     caveat: "Judge is advisory and off by default. Retrieval is tool-calling over typed queries, not embeddings.",
-    specs: [{ label: "Sources enabled", evidenceId: "metis.sources.enabled" }],
-    images: [],
+    specs: [
+      { label: "Sources enabled", evidenceId: "metis.sources.enabled" },
+      { label: "State-controlled", evidenceId: "metis.sources.state_controlled" },
+    ],
+    images: [
+      { src: "/projects/metis-sources.png", alt: "Curated source registry entries per tier, enabled filled and disabled hollow, the seven state-controlled entries in pink" },
+    ],
+    url: "https://github.com/NyXkim5/singularity",
   },
   {
     slug: "va-gov-bdd",
@@ -185,6 +221,7 @@ export const PROJECTS: readonly Project[] = [
     specs: [],
     images: [],
     caseStudySlug: "va-gov-mvp",
+    url: "https://va-gov-mvp-v1.vercel.app",
   },
   {
     slug: "cactus-analytics",
@@ -194,8 +231,11 @@ export const PROJECTS: readonly Project[] = [
     claim: "Event ingestion and growth analytics with materialized views over raw queries.",
     caveat: "Employer work. No repository on disk, so no numbers are shown.",
     specs: [],
-    images: [],
+    images: [
+      { src: "/projects/cactus-site.jpg", alt: "cactuscompute.com landing page, on-device AI with cloud fallback" },
+    ],
     caseStudySlug: "cactus",
+    url: "https://cactuscompute.com",
   },
   {
     slug: "bamboo",
@@ -209,18 +249,26 @@ export const PROJECTS: readonly Project[] = [
       { label: "Test files", evidenceId: "bamboo.tests.files" },
       { label: "Last gate", evidenceId: "bamboo.gate.passing" },
     ],
-    images: [],
+    images: [
+      { src: "/projects/bamboo-site.jpg", alt: "bamboonutrition.app landing page with the phone mockup and calorie ring" },
+      { src: "/projects/bamboo-site-2.jpg", alt: "Three things your current app cannot do, from the Bamboo site" },
+    ],
+    url: "https://bamboonutrition.app/",
   },
   {
     slug: "role-index",
     title: "Summer 2027 role index",
-    folder: "data",
+    folder: "school",
     status: "LIVE DATA",
-    claim: "A hand-curated index of early-career roles, refreshed daily by a GitHub Action.",
+    claim: "An open source job hunting index for students: hand-curated early-career roles, refreshed daily by a GitHub Action.",
     caveat: "Public repository. The README still says 372; the live count is in stats.json.",
     specs: [{ label: "Live rows", evidenceId: "roleindex.rows.live" }],
-    images: [],
+    images: [
+      { src: "/projects/role-index-repo.jpg", alt: "README of the Summer 2027 role index repository on GitHub" },
+    ],
+    url: "https://github.com/NyXkim5/summer-2027-role-index",
   },
+  ...SCHOOL,
 ];
 
 export function findProject(slug: string): Project | undefined {
@@ -231,7 +279,7 @@ export function projectTree(): TreeNode {
   return {
     name: "projects",
     nodes: FOLDERS.map((folder) => ({
-      name: folder,
+      name: FOLDER_LABELS[folder],
       nodes: PROJECTS.filter((p) => p.folder === folder).map((p) => ({ name: p.title, slug: p.slug })),
     })),
   };
