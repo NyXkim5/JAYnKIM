@@ -37,6 +37,29 @@ describe("WindowChrome", () => {
     expect(onBack).toHaveBeenCalledTimes(1);
   });
 
+  it("keeps the Back label visible at rest instead of on hover only", () => {
+    render(<WindowChrome {...base} tabs={["overview"]} />);
+    const back = screen.getByLabelText("Back to projects");
+    expect(back.textContent).toBe("Back");
+    expect(back.innerHTML).not.toContain("opacity-0");
+  });
+
+  it("offers Enlarge only when the explorer can act on it, and flips to Shrink once enlarged", () => {
+    render(<WindowChrome {...base} tabs={["overview"]} />);
+    expect(screen.queryByLabelText(/the window$/)).toBeNull();
+    cleanup();
+    const onEnlarge = vi.fn();
+    render(<WindowChrome {...base} tabs={["overview"]} onEnlarge={onEnlarge} />);
+    const enlarge = screen.getByLabelText("Enlarge the window");
+    expect(enlarge.getAttribute("aria-pressed")).toBe("false");
+    expect(enlarge.className).toContain("max-md:hidden");
+    fireEvent.click(enlarge);
+    expect(onEnlarge).toHaveBeenCalledTimes(1);
+    cleanup();
+    render(<WindowChrome {...base} tabs={["overview"]} onEnlarge={onEnlarge} enlarged />);
+    expect(screen.getByLabelText("Shrink the window").getAttribute("aria-pressed")).toBe("true");
+  });
+
   it("shows the url without protocol and trailing slash", () => {
     render(<WindowChrome {...base} tabs={["overview"]} url="https://bamboonutrition.app/" />);
     expect(screen.getByText("bamboonutrition.app")).toBeTruthy();
