@@ -89,6 +89,19 @@ describe("stepNodes", () => {
     expect(Math.hypot(n.x - n.baseX, n.y - n.baseY)).toBeLessThan(before);
   });
 
+  it("never overshoots home on the way back, so nothing bounces", () => {
+    const [n] = initNodes(1, 1, half);
+    n.x = 30;
+    n.y = -20;
+    for (let i = 0; i < 120; i++) {
+      stepNodes([n], still(), 1 / 60);
+      expect(n.x).toBeGreaterThanOrEqual(0);
+      expect(n.y).toBeLessThanOrEqual(0);
+    }
+    expect(n.x).toBe(0);
+    expect(n.y).toBe(0);
+  });
+
   it("pushes a node away from a nearby cursor", () => {
     const [n] = initNodes(1, 1, half);
     stepNodes([n], { x: 40, y: 0, speed: 0, radius: MOUSE_RADIUS }, 1 / 60);

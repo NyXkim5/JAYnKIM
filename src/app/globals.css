@@ -39,26 +39,6 @@ body {
   color: #fff;
 }
 
-/* Studio name: a slow letterform warp while it scrambles between scripts */
-@keyframes text-warp {
-  0% {
-    transform: skewX(0) scaleY(1);
-    letter-spacing: 0;
-  }
-  35% {
-    transform: skewX(-4deg) scaleY(1.05);
-    letter-spacing: 0.03em;
-  }
-  70% {
-    transform: skewX(2deg) scaleY(0.97);
-    letter-spacing: -0.01em;
-  }
-  100% {
-    transform: skewX(0) scaleY(1);
-    letter-spacing: 0;
-  }
-}
-
 /* Persona tab: the last three letters jitter with a pink split while glitching */
 @keyframes tab-glitch {
   0% {

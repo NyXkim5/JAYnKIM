@@ -27,8 +27,10 @@ export const SPACING = 55;
 export const OFFSCREEN = -1000;
 export const MOUSE_RADIUS = 220;
 export const HIT_RADIUS = 16;
+// Heavy damping plus a home-crossing clamp: nodes glide back with no bounce.
 const SPRING_K = 18;
-const DAMPING = 0.82;
+const DAMPING = 0.45;
+const PUSH_BASE = 2400;
 const MAX_CONN_DIST = 75;
 const HIGHLIGHT_DIST = 90;
 
@@ -88,22 +90,35 @@ function repel(n: GridNode, mouse: Mouse, dt: number): void {
   const dy = mouse.y - n.y;
   const dist = Math.hypot(dx, dy);
   if (dist >= mouse.radius || dist === 0) return;
-  const force = (1 - dist / mouse.radius) * (1500 + mouse.speed * 150);
+  const force = (1 - dist / mouse.radius) * (PUSH_BASE + mouse.speed * 150);
   const angle = Math.atan2(dy, dx);
   n.vx -= Math.cos(angle) * force * dt;
   n.vy -= Math.sin(angle) * force * dt;
 }
 
+// Settles one axis: if the step would carry the node past home, land on home.
+function settle(pos: number, vel: number, base: number, dt: number): [number, number] {
+  const next = pos + vel * dt * 60;
+  const crossed = (pos - base) * (next - base) < 0;
+  return crossed ? [base, 0] : [next, vel];
+}
+
 export function stepNodes(nodes: GridNode[], mouse: Mouse, dt: number): void {
   for (const n of nodes) {
     n.pulse += dt * 3;
+    const pushed = Math.hypot(mouse.x - n.x, mouse.y - n.y) < mouse.radius;
     repel(n, mouse, dt);
     n.vx += (n.baseX - n.x) * SPRING_K * dt;
     n.vy += (n.baseY - n.y) * SPRING_K * dt;
     n.vx *= DAMPING;
     n.vy *= DAMPING;
-    n.x += n.vx * dt * 60;
-    n.y += n.vy * dt * 60;
+    if (pushed) {
+      n.x += n.vx * dt * 60;
+      n.y += n.vy * dt * 60;
+      continue;
+    }
+    [n.x, n.vx] = settle(n.x, n.vx, n.baseX, dt);
+    [n.y, n.vy] = settle(n.y, n.vy, n.baseY, dt);
   }
 }
 
