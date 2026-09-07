@@ -365,6 +365,28 @@ export const EVIDENCE: readonly Evidence[] = [
     observedAt: "2026-09-06",
     public: true,
   },
+  {
+    id: "github.contributions.commits",
+    persona: ["work"],
+    value: "208",
+    unit: "commits in public repos in the last year, refreshed daily",
+    repo: "NyXkim5/JAYnKIM",
+    path: "src/features/work/data/contributions.json",
+    how: "contributionsCollection.totalCommitContributions, public repositories only, refreshed daily by .github/workflows/contributions.yml",
+    observedAt: "2026-09-06",
+    public: true,
+  },
+  {
+    id: "github.contributions.restricted",
+    persona: ["work"],
+    value: "1,859",
+    unit: "contributions in private repos in the last year, refreshed daily",
+    repo: "NyXkim5/JAYnKIM",
+    path: "src/features/work/data/contributions.json",
+    how: "contributionsCollection.restrictedContributionsCount, GitHub gives no type breakdown for private activity, refreshed daily by .github/workflows/contributions.yml",
+    observedAt: "2026-09-06",
+    public: true,
+  },
 ];
 
 export function findEvidence(id: string): Evidence | undefined {

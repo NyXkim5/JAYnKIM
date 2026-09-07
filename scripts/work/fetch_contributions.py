@@ -32,6 +32,7 @@ query($login: String!) {
   user(login: $login) {
     contributionsCollection {
       totalCommitContributions
+      restrictedContributionsCount
       contributionCalendar {
         totalContributions
         weeks { contributionDays { date contributionCount } }
@@ -93,11 +94,14 @@ def shape(payload: dict, fetched_at: datetime) -> dict:
         [{"date": d["date"], "count": d["contributionCount"]} for d in w["contributionDays"]]
         for w in calendar["weeks"]
     ]
+    # `commits` counts commits in public repositories only. GitHub folds every
+    # private-repository contribution into `restricted` without a type.
     return {
         "login": LOGIN,
         "fetchedAt": fetched_at.astimezone(LOS_ANGELES).isoformat(timespec="seconds"),
         "total": calendar["totalContributions"],
         "commits": collection["totalCommitContributions"],
+        "restricted": collection["restrictedContributionsCount"],
         "weeks": weeks,
     }
 

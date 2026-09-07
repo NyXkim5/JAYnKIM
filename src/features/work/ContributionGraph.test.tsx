@@ -27,6 +27,7 @@ function fixture(): Contributions {
     fetchedAt: "2026-09-06T09:00:00-07:00",
     total: 1234,
     commits: 200,
+    restricted: 987,
     weeks: weeksFrom(Date.UTC(2025, 8, 7), 53, (i) => i % 9),
   };
 }
@@ -43,11 +44,15 @@ describe("ContributionGraph", () => {
     expect(cells[1].getAttribute("title")).toBe("1 contribution on 2025-09-08");
   });
 
-  it("shows the total, the updated date, the evidence id, and the GitHub link", () => {
+  it("shows the total, the commit and private counts, the updated date, the evidence ids, and the GitHub link", () => {
     const { getByText, getByRole } = render(<ContributionGraph data={fixture()} />);
     expect(getByText("1,234")).toBeTruthy();
+    expect(getByText("200")).toBeTruthy();
+    expect(getByText("987")).toBeTruthy();
     expect(getByText("updated 2026-09-06")).toBeTruthy();
     expect(getByText("github.contributions.total")).toBeTruthy();
+    expect(getByText("github.contributions.commits")).toBeTruthy();
+    expect(getByText("github.contributions.restricted")).toBeTruthy();
     const link = getByRole("link", { name: "github.com/NyXkim5" });
     expect(link.getAttribute("href")).toBe("https://github.com/NyXkim5");
   });

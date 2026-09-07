@@ -37,7 +37,7 @@ function AxisHeader({ axis }: { axis: Axis }) {
           {y.label}
         </span>
       ))}
-      <span className="absolute right-0 text-black">
+      <span className="absolute left-full -translate-x-1/2 text-black">
         <Present />
       </span>
     </div>
@@ -127,8 +127,10 @@ export function Timeline({ roles, education, now }: { roles: readonly Role[]; ed
   const axis = buildAxis(roles, now);
   return (
     <div>
-      <AxisHeader axis={axis} />
-      <Lanes axis={axis} roles={roles} />
+      <div className="mr-10 md:mr-24">
+        <AxisHeader axis={axis} />
+        <Lanes axis={axis} roles={roles} />
+      </div>
       <ScrollToEnd className="mt-10 overflow-x-auto pb-4">
         <ol className="flex gap-6 md:gap-8">
           <EducationEntry education={education} />

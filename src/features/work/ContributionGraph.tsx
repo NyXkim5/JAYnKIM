@@ -1,4 +1,5 @@
 import {
+  COMMITS_EVIDENCE_ID,
   CONTRIBUTIONS_EVIDENCE_ID,
   formatCount,
   GITHUB_URL,
@@ -7,6 +8,7 @@ import {
   maxCount,
   monthLabels,
   padWeek,
+  RESTRICTED_EVIDENCE_ID,
   updatedDate,
   type ContributionDay,
   type Contributions,
@@ -14,8 +16,8 @@ import {
 import { ScrollToEnd } from "./ScrollToEnd";
 import { MONO } from "./style";
 
-const CELL = 11;
-const GAP = 3;
+const CELL = 14;
+const GAP = 4;
 const WEEKDAYS: Record<number, string> = { 1: "Mon", 3: "Wed", 5: "Fri" };
 
 function cellTitle(day: ContributionDay): string {
@@ -41,12 +43,16 @@ function Labels({ weeks }: { weeks: ContributionDay[][] }) {
   return (
     <>
       {monthLabels(weeks).map((m) => (
-        <span key={m.col} className={`${MONO} whitespace-nowrap leading-none text-black/55`} style={{ gridColumn: m.col + 2, gridRow: 1 }}>
+        <span key={m.col} className={`${MONO} whitespace-nowrap text-left leading-none text-black/55`} style={{ gridColumn: m.col + 2, gridRow: 1 }}>
           {m.label}
         </span>
       ))}
       {[1, 3, 5].map((row) => (
-        <span key={row} className="sticky left-0 bg-white pr-1 text-right font-mono text-[10px] uppercase leading-[11px] tracking-[0.1em] text-black/55" style={{ gridColumn: 1, gridRow: row + 2 }}>
+        <span
+          key={row}
+          className="sticky left-0 bg-white pr-1.5 text-right font-mono text-[11px] uppercase tracking-[0.1em] text-black/55"
+          style={{ gridColumn: 1, gridRow: row + 2, lineHeight: `${CELL}px` }}
+        >
           {WEEKDAYS[row]}
         </span>
       ))}
@@ -54,17 +60,29 @@ function Labels({ weeks }: { weeks: ContributionDay[][] }) {
   );
 }
 
+function Stat({ value, label }: { value: number; label: string }) {
+  return (
+    <span>
+      <span className="text-[15px] text-black">{formatCount(value)}</span> {label}
+    </span>
+  );
+}
+
+// Three numbers, three registry ids. `commits` is public repositories only,
+// GitHub reports private activity as one restricted count without a type.
 function Caption({ data }: { data: Contributions }) {
   return (
-    <div className={`${MONO} mt-5 space-y-2 text-black/55`}>
-      <p className="flex flex-wrap gap-x-6 gap-y-1">
-        <span>
-          <span className="text-black">{formatCount(data.total)}</span> contributions in the last year
-        </span>
-        <span>updated {updatedDate(data.fetchedAt)}</span>
+    <div className={`${MONO} mt-6 space-y-2 text-black/55`}>
+      <p className="flex flex-wrap justify-center gap-x-6 gap-y-1">
+        <Stat value={data.total} label="contributions in the last year" />
+        <Stat value={data.commits} label="commits in public repos" />
+        <Stat value={data.restricted} label="in private repos" />
       </p>
-      <p className="flex flex-wrap gap-x-6 gap-y-1">
+      <p className="flex flex-wrap justify-center gap-x-6 gap-y-1">
+        <span>updated {updatedDate(data.fetchedAt)}</span>
         <span>{CONTRIBUTIONS_EVIDENCE_ID}</span>
+        <span>{COMMITS_EVIDENCE_ID}</span>
+        <span>{RESTRICTED_EVIDENCE_ID}</span>
         <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="text-black underline underline-offset-4 decoration-black/30 hover:decoration-black">
           github.com/{data.login}
         </a>
@@ -74,18 +92,19 @@ function Caption({ data }: { data: Contributions }) {
 }
 
 // GitHub's 53 by 7 heat grid on white, five pink steps, most recent week on the
-// right. The data is the committed JSON, never a browser fetch.
+// right, centred under the timeline. The data is the committed JSON, never a
+// browser fetch.
 export function ContributionGraph({ data }: { data: Contributions }) {
   const cols = data.weeks.length;
   return (
-    <section id={CONTRIBUTIONS_EVIDENCE_ID} className="max-w-4xl px-5 pb-20 pt-24 md:px-8">
+    <section id={CONTRIBUTIONS_EVIDENCE_ID} className="mx-auto max-w-6xl px-5 pb-24 pt-24 text-center md:px-8">
       <h2 className={`${MONO} text-black/55`}>GitHub</h2>
-      <ScrollToEnd className="mt-6 overflow-x-auto pb-2">
+      <ScrollToEnd className="mt-8 overflow-x-auto pb-2">
         <div
           role="img"
-          aria-label={`${formatCount(data.total)} GitHub contributions in the last year`}
-          className="inline-grid pr-6"
-          style={{ gridTemplateColumns: `2.25rem repeat(${cols}, ${CELL}px)`, gridTemplateRows: `1rem repeat(7, ${CELL}px)`, gap: GAP }}
+          aria-label={`${formatCount(data.total)} GitHub contributions in the last year, ${formatCount(data.commits)} commits in public repos`}
+          className="inline-grid pr-6 text-left"
+          style={{ gridTemplateColumns: `2.5rem repeat(${cols}, ${CELL}px)`, gridTemplateRows: `1rem repeat(7, ${CELL}px)`, gap: GAP }}
         >
           <Labels weeks={data.weeks} />
           <Cells weeks={data.weeks} />

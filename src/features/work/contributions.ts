@@ -9,11 +9,14 @@ export type Contributions = {
   fetchedAt: string;
   total: number;
   commits: number;
+  restricted: number;
   weeks: ContributionDay[][];
 };
 
 export const GITHUB_URL = "https://github.com/NyXkim5";
 export const CONTRIBUTIONS_EVIDENCE_ID = "github.contributions.total";
+export const COMMITS_EVIDENCE_ID = "github.contributions.commits";
+export const RESTRICTED_EVIDENCE_ID = "github.contributions.restricted";
 
 // White ground for zero, then #ff69b4 at 25, 50, 75 and 100 percent over white.
 export const LEVEL_COLORS = ["#ebebeb", "#ffdaec", "#ffb4da", "#ff8fc7", "#ff69b4"] as const;
