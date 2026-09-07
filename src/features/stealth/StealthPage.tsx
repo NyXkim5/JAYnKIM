@@ -1,4 +1,5 @@
 import { PersonaBar } from "@/features/persona/PersonaBar";
+import { StealthGrid } from "./StealthGrid";
 
 export const STEALTH_STATEMENT =
   "Make every battlefield an American battlefield. Manifest destiny did not stop at California, it will wrap this world as many times as we choose to.";
@@ -22,13 +23,15 @@ function Caret() {
   );
 }
 
-// The Stealth tab: the statement in the middle of a black screen, a blank line,
-// then the closer with WARD glowing and the caret blinking after the period.
+// The Stealth tab: a breathing grid behind, the statement in the middle of a
+// black screen, a blank line, then the closer with WARD glowing and the caret
+// blinking after the period.
 export function StealthPage() {
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#0a0a0a] px-6 pt-12 text-white">
+      <StealthGrid />
       <PersonaBar persona="stealth" />
-      <div className="max-w-2xl text-center font-mono text-[15px] leading-relaxed tracking-[0.04em] text-[#ff69b4] md:text-[19px]">
+      <div className="relative z-10 max-w-2xl text-center font-mono text-[15px] leading-relaxed tracking-[0.04em] text-[#ff69b4] md:text-[19px]">
         <p>{STEALTH_STATEMENT}</p>
         <p className="mt-[1.6em]">
           {STEALTH_CLOSER_BEFORE}
