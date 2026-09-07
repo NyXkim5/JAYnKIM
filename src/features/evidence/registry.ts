@@ -354,6 +354,17 @@ export const EVIDENCE: readonly Evidence[] = [
     observedAt: "2026-09-05",
     public: false,
   },
+  {
+    id: "github.contributions.total",
+    persona: ["work"],
+    value: "2,084",
+    unit: "GitHub contributions in the last year, refreshed daily",
+    repo: "NyXkim5/JAYnKIM",
+    path: "src/features/work/data/contributions.json",
+    how: "contributionCalendar.totalContributions, refreshed daily by .github/workflows/contributions.yml",
+    observedAt: "2026-09-06",
+    public: true,
+  },
 ];
 
 export function findEvidence(id: string): Evidence | undefined {

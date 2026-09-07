@@ -1,0 +1,42 @@
+# Refreshes src/features/work/data/contributions.json once a day at 9 am
+# America/Los_Angeles. GitHub cron runs in UTC only, so both 16:00 (PDT) and
+# 17:00 (PST) are scheduled and scripts/work/fetch_contributions.py exits
+# early unless the current Los Angeles hour is 9.
+#
+# GITHUB_TOKEN can normally read a public contribution calendar. If the API
+# refuses it, or the total comes back lower than the profile shows, add a
+# repository secret CONTRIB_TOKEN holding a personal access token with the
+# read:user scope. The fetch step prefers CONTRIB_TOKEN whenever it is present.
+name: contributions
+
+on:
+  schedule:
+    - cron: "0 16 * * *"
+    - cron: "0 17 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the contribution calendar
+        env:
+          GH_TOKEN: ${{ secrets.CONTRIB_TOKEN || secrets.GITHUB_TOKEN }}
+        run: python3 scripts/work/fetch_contributions.py
+
+      - name: Commit the JSON if it changed
+        run: |
+          git add src/features/work/data/contributions.json
+          if git diff --cached --quiet; then
+            echo "contributions.json unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Refresh GitHub contributions"
+          git push

@@ -164,21 +164,15 @@ export default function CaseStudyContent({ slug }: { slug: string }) {
                 transition={{ delay: 0.3 }}
                 className="mt-6"
               >
-                {study.link.url === "#" ? (
-                  <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-wider text-text-light border border-border-light px-4 py-2">
-                    {study.link.label}
-                  </span>
-                ) : (
-                  <a
-                    href={study.link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 font-mono text-[11px] tracking-wider text-text-dark hover:text-text-black border border-border-light px-4 py-2 hover:bg-bg-light transition-colors"
-                  >
-                    {study.link.label}
-                    <span>&#8599;</span>
-                  </a>
-                )}
+                <a
+                  href={study.link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-mono text-[11px] tracking-wider text-text-dark hover:text-text-black border border-border-light px-4 py-2 hover:bg-bg-light transition-colors"
+                >
+                  {study.link.label}
+                  <span>&#8599;</span>
+                </a>
               </motion.div>
             )}
           </section>
