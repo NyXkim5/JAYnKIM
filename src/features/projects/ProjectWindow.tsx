@@ -2,13 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { TransitionLink } from "@/components/transitions/TransitionLink";
 import { studyHref } from "@/data/caseStudies";
 import { findEvidence, sourceHref } from "@/features/evidence/registry";
 import type { Project, ProjectImage, ProjectSpec } from "./projects";
 
-const EASE = [0.22, 1, 0.36, 1] as const;
 const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
 
 function Corners() {
@@ -27,7 +25,7 @@ function Figure({ img }: { img: ProjectImage }) {
   return (
     <figure className="relative">
       <div className="relative aspect-video w-full overflow-hidden bg-black">
-        <Image src={img.src} alt={img.alt} fill sizes="(max-width: 768px) 100vw, 720px" className="object-contain" />
+        <Image src={img.src} alt={img.alt} fill sizes="(max-width: 768px) 100vw, 680px" className="object-contain" />
       </div>
       <Corners />
       <figcaption className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">{img.alt}</figcaption>
@@ -64,7 +62,8 @@ function Links({ project }: { project: Project }) {
 
 type Props = { project: Project; onBack: () => void };
 
-// A project opened as a window over the tree: scrolls inside, closes on back.
+// A project's window: a bordered panel that scrolls inside, closes on back.
+// Motion lives in the explorer so the panel itself stays plain.
 export function ProjectWindow({ project, onBack }: Props) {
   const backRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -72,18 +71,18 @@ export function ProjectWindow({ project, onBack }: Props) {
   }, []);
 
   return (
-    <motion.div
+    <div
       role="dialog"
-      aria-modal="true"
       aria-labelledby="project-title"
-      initial={{ opacity: 0, scale: 0.96, y: 12 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.98, y: 8 }}
-      transition={{ duration: 0.28, ease: EASE }}
-      className="fixed left-1/2 top-1/2 z-50 flex max-h-[86vh] w-[min(92vw,760px)] -translate-x-1/2 -translate-y-1/2 flex-col border border-white/15 bg-[#0a0a0a] text-white"
+      className="flex max-h-[86vh] flex-col border border-white/15 bg-[#0a0a0a] text-white"
     >
       <header className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-3">
-        <button ref={backRef} type="button" onClick={onBack} className="font-mono text-[11px] uppercase tracking-[0.18em] text-white outline-none hover:text-[#ff69b4] focus-visible:text-[#ff69b4]">
+        <button
+          ref={backRef}
+          type="button"
+          onClick={onBack}
+          className="font-mono text-[11px] uppercase tracking-[0.18em] text-white outline-none hover:text-[#ff69b4] focus-visible:text-[#ff69b4]"
+        >
           <span className="text-[#ff69b4]">[</span>← back<span className="text-[#ff69b4]">]</span>
         </button>
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ff69b4]">{project.status}</span>
@@ -98,6 +97,6 @@ export function ProjectWindow({ project, onBack }: Props) {
         <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">caveat: {project.caveat}</p>
         <Links project={project} />
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -1,9 +1,8 @@
 "use client";
 
-import { useRef, useCallback, useMemo, createElement } from "react";
+import { useRef, useCallback, useMemo, useState, createElement } from "react";
 import { motion } from "framer-motion";
-import { getPersona, STUDIO } from "@/features/persona/personas";
-import { readStoredView } from "@/features/persona/usePersona";
+import { GridReveal } from "./GridReveal";
 
 // ─── Types ──────────────────────────────────────────────────────────
 type EffectProps = {
@@ -47,8 +46,7 @@ const WHITE_PERSONA = /^\/(design|work)(\/|$)/;
 
 function getEffect(route: string): React.ComponentType<EffectProps> {
   if (route === "/") return HorizontalBlinds;
-  if (BLACK_PERSONA.test(route)) return PixelGrid;
-  if (WHITE_PERSONA.test(route)) return BlocksScatter;
+  if (BLACK_PERSONA.test(route) || WHITE_PERSONA.test(route)) return TileGrid;
   if (route === "/lab") return PixelGrid;
   if (route === "/contact") return AsciiScramble;
   if (route.startsWith("/writing")) return LineWipe;
@@ -59,13 +57,16 @@ function getEffect(route: string): React.ComponentType<EffectProps> {
 
 function getOverlayColor(route: string): string {
   if (WHITE_PERSONA.test(route)) return "#ffffff";
-  if (route === "/") {
-    const storage = typeof window === "undefined" ? null : window.localStorage;
-    const view = readStoredView(storage);
-    if (view === STUDIO) return "#0a0a0a";
-    return getPersona(view).ground === "black" ? "#0a0a0a" : "#ffffff";
-  }
   return "#0a0a0a";
+}
+
+// 0. Tile Grid — the four discipline pages
+// The page dissolves into a grid of tiles, then the tiles lift one by one.
+function TileGrid({ phase, color, onCoverDone, onRevealDone }: EffectProps) {
+  const onDone = usePhaseCallback(onCoverDone, onRevealDone);
+  const [seed] = useState(() => Date.now());
+  const ground = color === "#ffffff" ? "white" : "black";
+  return <GridReveal phase={phase} ground={ground} seed={seed} onDone={onDone} />;
 }
 
 // ═════════════════════════════════════════════════════════════════════

@@ -40,7 +40,7 @@ export function GridReveal({ phase, ground, seed, onDone }: Props) {
     <div
       key={phase}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-40 grid"
+      className="pointer-events-auto fixed inset-0 z-[9999] grid"
       style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`, gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)` }}
     >
       {delays.map((d, i) => (

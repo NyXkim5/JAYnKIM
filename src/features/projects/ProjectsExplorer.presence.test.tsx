@@ -27,13 +27,13 @@ function renderInstant() {
 }
 
 describe("ProjectsExplorer presence", () => {
-  it("unmounts the window and backdrop after back", async () => {
+  it("unmounts the window after back and keeps the tree", async () => {
     renderInstant();
     fireEvent.click(screen.getByText("Bamboo nutrition app"));
     expect(screen.getByRole("dialog")).toBeTruthy();
     fireEvent.click(screen.getByText(/back/i));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull(), { timeout: 3000 });
-    expect(document.querySelector(".backdrop-blur-sm")).toBeNull();
+    expect(screen.getByText("Bamboo nutrition app")).toBeTruthy();
   });
 
   it("opens a second project after the first one closed", async () => {

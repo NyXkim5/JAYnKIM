@@ -7,6 +7,9 @@ import { TreeItem } from "./FileTree";
 import { ProjectWindow } from "./ProjectWindow";
 import { findProject, projectTree, PROJECTS } from "./projects";
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+const SLIDE = { duration: 0.45, ease: EASE } as const;
+
 function useEscape(onEscape: () => void, active: boolean) {
   useEffect(() => {
     if (!active) return;
@@ -21,8 +24,9 @@ function useEscape(onEscape: () => void, active: boolean) {
   }, [onEscape, active]);
 }
 
-// The Projects tab: a file tree centred on black. A leaf opens its project as
-// a window; back or Esc returns to the tree with the same folders open.
+// The Projects tab. The tree sits centred on black. Opening a project slides
+// the tree left and the window in from the right, so the pair stays centred.
+// Back or Esc closes the window and the tree slides back to the middle.
 export function ProjectsExplorer() {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const tree = useMemo(() => projectTree(), []);
@@ -33,29 +37,31 @@ export function ProjectsExplorer() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] pt-12 text-white">
       <PersonaBar persona="projects" />
-      <section className="flex min-h-[calc(100vh-3rem)] flex-col items-center justify-center px-5 py-16">
-        <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
-          {PROJECTS.length} projects · click one to open it
-        </p>
-        <ul className="w-[min(92vw,520px)]">
-          <TreeItem node={tree} depth={0} openSlug={openSlug} onOpen={setOpenSlug} />
-        </ul>
+      <section className="flex min-h-[calc(100vh-3rem)] flex-col items-center justify-center gap-10 px-5 py-16 md:flex-row md:items-center md:gap-16">
+        <motion.div layout transition={SLIDE} className="w-[min(92vw,400px)] shrink-0">
+          <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+            {PROJECTS.length} projects · click one to open it
+          </p>
+          <ul>
+            <TreeItem node={tree} depth={0} openSlug={openSlug} onOpen={setOpenSlug} />
+          </ul>
+        </motion.div>
+        <AnimatePresence mode="popLayout">
+          {project && (
+            <motion.div
+              key={project.slug}
+              layout
+              initial={{ opacity: 0, x: 48, scale: 0.98 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 48, scale: 0.98 }}
+              transition={SLIDE}
+              className="w-[min(92vw,680px)] shrink-0 md:w-[min(52vw,680px)]"
+            >
+              <ProjectWindow project={project} onBack={close} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </section>
-      {/* Presence needs keyed motion children directly under it, never a fragment. */}
-      <AnimatePresence>
-        {project && (
-          <motion.div
-            key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={close}
-            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
-          />
-        )}
-        {project && <ProjectWindow key={project.slug} project={project} onBack={close} />}
-      </AnimatePresence>
     </main>
   );
 }
