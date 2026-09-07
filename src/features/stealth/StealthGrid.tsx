@@ -7,6 +7,7 @@ import {
   coordsLabel,
   cycleIndex,
   dimAlpha,
+  DURATIONS,
   focusAlpha,
   focusPulse,
   LABEL_W,
@@ -81,7 +82,9 @@ function drawMarker(ctx: CanvasRenderingContext2D, focus: Focus, k: number) {
 // the grid dims, the point gets its coordinates and one line about warfare,
 // then it all lets go and the grid breathes again before choosing the next
 // point. With reduced motion the grid is drawn once, still.
-export function StealthGrid() {
+// `quiet` keeps the grid breathing and never picks a point, for screens that
+// only want the backdrop.
+export function StealthGrid({ quiet = false }: { quiet?: boolean } = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [overlay, setOverlay] = useState<Overlay | null>(null);
 
@@ -111,6 +114,11 @@ export function StealthGrid() {
     // and the label follows the phase, so skipped frames cannot strand a state.
     const tick = (now: number) => {
       const elapsed = now - start;
+      if (quiet) {
+        drawGrid(ctx, size.w, size.h, null, 0, "breathe", (elapsed % DURATIONS.breathe) / DURATIONS.breathe, elapsed);
+        frame = requestAnimationFrame(tick);
+        return;
+      }
       const { phase, t } = phaseAt(elapsed);
       const cycle = cycleIndex(elapsed);
       if (cycle !== lastCycle) {
@@ -138,7 +146,7 @@ export function StealthGrid() {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [quiet]);
 
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">

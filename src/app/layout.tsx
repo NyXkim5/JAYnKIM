@@ -7,6 +7,7 @@ import { TransitionProvider } from "@/components/transitions/TransitionProvider"
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { ReducedMotionWrapper } from "@/components/ui/ReducedMotionWrapper";
 import { BASE_URL } from "@/data/config";
+import { MobileGate } from "@/features/mobile/MobileGate";
 
 const Cursor = dynamic(() => import("@/components/ui/Cursor").then((m) => m.Cursor));
 const ClickSoundProvider = dynamic(() => import("@/components/ui/ClickSound").then((m) => m.ClickSoundProvider));
@@ -100,7 +101,8 @@ export default function RootLayout({
             <KeyboardNav />
             <KonamiCode />
             <ErrorBoundary>
-              <div id="main-content" className="min-h-screen flex flex-col">{children}</div>
+              <div id="main-content" className="min-h-screen flex flex-col max-md:hidden">{children}</div>
+              <MobileGate />
             </ErrorBoundary>
           </TransitionProvider>
         </ReducedMotionWrapper>

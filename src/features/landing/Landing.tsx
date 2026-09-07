@@ -14,7 +14,7 @@ import { useLanguageHover } from "@/features/studio/useLanguageHover";
 const STUDIO_VIDEO = "/studio/studiovid.mp4";
 const NAME_EN = "Jay Kim";
 const NAME_KO = "김준혁";
-const STUDIO_QUOTE = "Irregular thinking leads to irregular designs.";
+import { STUDIO_QUOTE } from "@/features/studio/quote";
 const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
 const NAME_FACE = { fontFamily: '"Times New Roman", Times, var(--font-hangul-display), sans-serif' } as const;
 const SR_TEXT =
