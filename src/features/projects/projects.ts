@@ -133,7 +133,7 @@ export const PROJECTS: readonly Project[] = [
   },
   {
     slug: "sonicfly-regression",
-    title: "SonicFly bearing regression",
+    title: "Pan acoustic drone tracker",
     folder: "hardware",
     status: "THIRD-PARTY",
     claim: "Duke's released Kalman filter carried a covariance that did not match its own reported error. I found it, patched it, then built Pan, a private derivative with a real-flight regression gate that showed the fancier filters lose on real data.",
@@ -235,7 +235,7 @@ export const PROJECTS: readonly Project[] = [
   },
   {
     slug: "cactus-analytics",
-    title: "Cactus on-device inference bindings",
+    title: "Hermes on-device inference",
     folder: "software",
     status: "CODE",
     claim: "Fixes to Cactus's Flutter and Swift bindings, then Hermes, a private derivative with the first Dart test suite, a benchmark harness, and generation that no longer blocks the calling isolate.",
