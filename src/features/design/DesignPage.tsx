@@ -40,6 +40,9 @@ export function DesignPage() {
       />
       <p className="absolute inset-x-0 bottom-8 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-[#ff69b4]">
         in progress
+        <span aria-hidden data-dots className="in-progress-dots">
+          {" . . ."}
+        </span>
       </p>
     </main>
   );

@@ -26,12 +26,17 @@ describe("DesignPage", () => {
     expect(screen.getByTestId("bar")).toBeTruthy();
   });
 
-  it("says in progress in pink at the foot of the screen", () => {
-    render(<DesignPage />);
-    const label = screen.getByText("in progress");
+  it("says in progress in pink at the foot of the screen, with dots that count up", () => {
+    const { container } = render(<DesignPage />);
+    const label = screen.getByText(/in progress/);
     expect(label.className).toContain("text-[#ff69b4]");
     expect(label.className).toContain("bottom-8");
     expect(label.className).toContain("text-center");
+    const dots = container.querySelector("[data-dots]");
+    if (!dots) throw new Error("dots missing");
+    expect(dots.getAttribute("aria-hidden")).toBe("true");
+    expect(dots.className).toContain("in-progress-dots");
+    expect(dots.textContent).toBe(" . . .");
   });
 
   it("ships the video file it points at", () => {

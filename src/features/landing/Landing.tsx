@@ -16,7 +16,7 @@ const NAME_EN = "Jay Kim";
 const NAME_KO = "김준혁";
 const STUDIO_QUOTE = "Irregular thinking leads to irregular designs.";
 const TIMES = { fontFamily: '"Times New Roman", Times, serif' } as const;
-const NAME_FACE = { fontFamily: '"Times New Roman", Times, var(--font-hangul-serif), serif' } as const;
+const NAME_FACE = { fontFamily: '"Times New Roman", Times, var(--font-hangul-display), sans-serif' } as const;
 const SR_TEXT =
   "Studio. A short looping film fills the right half of the screen. Press 1 to 4 to open a discipline.";
 
@@ -50,8 +50,10 @@ const STUDIO_MARKS: EvidenceMark[] = EVIDENCE.map((e) => ({
 function LandingHeader() {
   return (
     <header className="absolute left-5 right-5 top-5 z-10 flex items-start justify-between md:left-8 md:right-8 md:top-6">
-      <span className="font-mono text-[13px] font-bold tracking-[0.2em] uppercase text-white">Studio</span>
-      <div className="rounded bg-black/30 px-2 py-1 backdrop-blur-sm">
+      <span className="font-mono text-[13px] font-bold tracking-[0.2em] uppercase text-white">
+        <span className="text-[#ff69b4]">[</span>Studio<span className="text-[#ff69b4]">]</span>
+      </span>
+      <div>
         <PersonaSwitch value={null} onChange={() => undefined} ground="black" asLinks />
       </div>
     </header>

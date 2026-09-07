@@ -88,3 +88,20 @@ img {
   0%, 50% { opacity: 1; }
   50.01%, 100% { opacity: 0; }
 }
+
+/* Design page: the dots after "in progress" count up one, two, three and reset. */
+@keyframes ellipsis {
+  from { width: 0; }
+  to { width: 6ch; }
+}
+.in-progress-dots {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: nowrap;
+  width: 0;
+  animation: ellipsis 1.8s steps(3, start) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .in-progress-dots { animation: none; width: 6ch; }
+}

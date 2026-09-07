@@ -2,13 +2,14 @@
 
 import { useRef, useCallback, useMemo, useState, createElement } from "react";
 import { motion } from "framer-motion";
-import { GridReveal } from "./GridReveal";
+import { GlitchReveal } from "./GlitchReveal";
 import { getPersona, isPersonaKey } from "@/features/persona/personas";
 
 // ─── Types ──────────────────────────────────────────────────────────
 type EffectProps = {
   phase: "cover" | "reveal";
   color: string;
+  target: string;
   onCoverDone: () => void;
   onRevealDone: () => void;
 };
@@ -51,7 +52,7 @@ function personaGround(route: string): "black" | "white" | null {
 
 function getEffect(route: string): React.ComponentType<EffectProps> {
   if (route === "/") return HorizontalBlinds;
-  if (personaGround(route)) return TileGrid;
+  if (personaGround(route)) return BlockGlitch;
   if (route === "/lab") return PixelGrid;
   if (route === "/contact") return AsciiScramble;
   if (route.startsWith("/writing")) return LineWipe;
@@ -65,13 +66,16 @@ function getOverlayColor(route: string): string {
   return "#0a0a0a";
 }
 
-// 0. Tile Grid — the four discipline pages
-// The page dissolves into a grid of tiles, then the tiles lift one by one.
-function TileGrid({ phase, color, onCoverDone, onRevealDone }: EffectProps) {
+// 0. Block Glitch — the four discipline pages
+// Strips of the next page's ground tear in over the old view, then tear back
+// out block by block, some stuttering, so the new page shows through.
+function BlockGlitch({ phase, color, target, onCoverDone, onRevealDone }: EffectProps) {
   const onDone = usePhaseCallback(onCoverDone, onRevealDone);
   const [seed] = useState(() => Date.now());
   const ground = color === "#ffffff" ? "white" : "black";
-  return <GridReveal phase={phase} ground={ground} seed={seed} onDone={onDone} />;
+  const key = target.split("/")[1] ?? "";
+  const label = isPersonaKey(key) ? getPersona(key).short : undefined;
+  return <GlitchReveal phase={phase} ground={ground} seed={seed} onDone={onDone} label={label} />;
 }
 
 // ═════════════════════════════════════════════════════════════════════
@@ -372,6 +376,7 @@ export function TransitionOverlay({
   return createElement(getEffect(target), {
     phase,
     color: getOverlayColor(target),
+    target,
     onCoverDone,
     onRevealDone,
   });
