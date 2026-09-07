@@ -17,10 +17,10 @@ const data: Contributions = contributions;
 export function WorkPage() {
   const persona = getPersona("work");
   return (
-    <main className="min-h-screen bg-white pt-12 text-black">
+    <main className="min-h-screen bg-[#0a0a0a] pt-12 text-white">
       <PersonaBar persona="work" />
       <header className="max-w-4xl px-5 pb-14 pt-16 md:px-8">
-        <p className={`${MONO} text-black/55`}>
+        <p className={`${MONO} text-white/55`}>
           {String(persona.index).padStart(2, "0")} / {persona.label}
         </p>
         <h1 style={TIMES} className="mt-4 text-4xl font-bold leading-tight md:text-5xl">

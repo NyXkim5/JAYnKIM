@@ -35,7 +35,7 @@ export const PERSONAS: readonly Persona[] = [
     key: "work",
     label: "Work",
     short: "WORK",
-    ground: "white",
+    ground: "black",
     index: 3,
     claim: "I measure whether my AI is lying before I let it answer.",
     live: true,

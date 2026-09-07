@@ -20,7 +20,7 @@ describe("personas", () => {
     expect(getPersona("projects").ground).toBe("black");
     expect(getPersona("stealth").ground).toBe("black");
     expect(getPersona("design").ground).toBe("white");
-    expect(getPersona("work").ground).toBe("white");
+    expect(getPersona("work").ground).toBe("black");
   });
 
   it("marks only projects and work live in this phase", () => {

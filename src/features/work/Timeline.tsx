@@ -4,7 +4,7 @@ import { buildAxis, formatMonth, sortNewestFirst, type Axis, type AxisSpan, type
 import { ScrollToEnd } from "./ScrollToEnd";
 import { MONO, PINK, TIMES } from "./style";
 
-const CARD = "relative w-60 shrink-0 border-t border-black/15 pt-4 md:w-auto md:min-w-44 md:flex-1";
+const CARD = "relative w-60 shrink-0 border-t border-white/15 pt-4 md:w-auto md:min-w-44 md:flex-1";
 
 function pct(n: number, of: number): string {
   return `${(n / of) * 100}%`;
@@ -30,14 +30,14 @@ function DateLabel({ role, className = "" }: { role: Role; className?: string })
 // a pink hairline at every January and at the present edge.
 function AxisHeader({ axis }: { axis: Axis }) {
   return (
-    <div className={`${MONO} relative h-5 text-black/55`}>
+    <div className={`${MONO} relative h-5 text-white/55`}>
       <span className="absolute left-0 hidden md:inline">{formatMonth(axis.from)}</span>
       {axis.years.map((y) => (
         <span key={y.col} className="absolute -translate-x-1/2" style={{ left: pct(y.col, axis.cols) }}>
           {y.label}
         </span>
       ))}
-      <span className="absolute left-full -translate-x-1/2 text-black">
+      <span className="absolute left-full -translate-x-1/2 text-white">
         <Present />
       </span>
     </div>
@@ -46,11 +46,10 @@ function AxisHeader({ axis }: { axis: Axis }) {
 
 function LaneBar({ span, axis, label }: { span: AxisSpan; axis: Axis; label: string }) {
   const style = { left: pct(span.colStart, axis.cols), width: pct(span.colEnd - span.colStart + 1, axis.cols) };
-  const anchor = span.current ? "right-0 text-right" : "left-0";
   return (
     <div aria-hidden className="absolute bottom-0 h-6" style={style}>
-      <span className={`absolute bottom-1.5 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.14em] text-black/55 ${anchor}`}>{label}</span>
-      <div className="absolute bottom-0 left-0 h-px w-full bg-black" />
+      <span className="absolute bottom-1.5 left-0 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.14em] text-white/55">{label}</span>
+      <div className="absolute bottom-0 left-0 h-px w-full bg-white" />
       <div className="absolute bottom-0 left-0 h-2 w-px" style={{ backgroundColor: PINK }} />
     </div>
   );
@@ -60,7 +59,7 @@ function Lanes({ axis, roles }: { axis: Axis; roles: readonly Role[] }) {
   const labels = new Map(roles.map((r) => [r.key, r.short]));
   const ticks = [...axis.years.map((y) => pct(y.col, axis.cols)), "100%"];
   return (
-    <div className="relative mt-2 border-t border-black/15">
+    <div className="relative mt-2 border-t border-white/15">
       {ticks.map((left) => (
         <div key={left} aria-hidden className="absolute inset-y-0 w-px -translate-x-full" style={{ left, backgroundColor: PINK }} />
       ))}
@@ -77,7 +76,7 @@ function Lanes({ axis, roles }: { axis: Axis; roles: readonly Role[] }) {
 
 function EntryLinks({ role }: { role: Role }) {
   if (!role.study && !role.projects) return null;
-  const link = "underline underline-offset-4 decoration-black/30 hover:decoration-black";
+  const link = "underline underline-offset-4 decoration-white/30 hover:decoration-white";
   return (
     <p className={`${MONO} mt-4 flex gap-5`}>
       {role.study && <TransitionLink href={studyHref(role.study)} className={link}>Case study</TransitionLink>}
@@ -94,10 +93,10 @@ function Entry({ role }: { role: Role }) {
   return (
     <li className={CARD}>
       <Tick />
-      <DateLabel role={role} className="text-black/70" />
+      <DateLabel role={role} className="text-white/70" />
       <h3 style={TIMES} className="mt-3 text-xl font-bold leading-tight">{role.role}</h3>
       <p style={TIMES} className="mt-0.5 text-base leading-snug">{role.company}</p>
-      {role.meta.length > 0 && <p className={`${MONO} mt-2 text-black/55`}>{role.meta.join(" · ")}</p>}
+      {role.meta.length > 0 && <p className={`${MONO} mt-2 text-white/55`}>{role.meta.join(" · ")}</p>}
       <p style={TIMES} className="mt-3 text-[15px] leading-relaxed">{role.summary}</p>
       <EntryLinks role={role} />
     </li>
@@ -108,7 +107,7 @@ function EducationEntry({ education }: { education: Education }) {
   return (
     <li className={CARD}>
       <Tick />
-      <p className={`${MONO} text-black/70`}>Education</p>
+      <p className={`${MONO} text-white/70`}>Education</p>
       <h3 style={TIMES} className="mt-3 text-xl font-bold leading-tight">{education.school}</h3>
       <p style={TIMES} className="mt-0.5 text-base leading-snug">
         {education.degree}, {education.field}

@@ -3,6 +3,7 @@
 import { useRef, useCallback, useMemo, useState, createElement } from "react";
 import { motion } from "framer-motion";
 import { GridReveal } from "./GridReveal";
+import { getPersona, isPersonaKey } from "@/features/persona/personas";
 
 // ─── Types ──────────────────────────────────────────────────────────
 type EffectProps = {
@@ -41,12 +42,16 @@ const EASE = [0.76, 0, 0.24, 1] as const;
 
 // ─── Route → Effect map ─────────────────────────────────────────────
 
-const BLACK_PERSONA = /^\/(projects|stealth)(\/|$)/;
-const WHITE_PERSONA = /^\/(design|work)(\/|$)/;
+// The four discipline routes take their ground from the persona definition,
+// so a persona that changes colour never needs a change here.
+function personaGround(route: string): "black" | "white" | null {
+  const key = route.split("/")[1] ?? "";
+  return isPersonaKey(key) ? getPersona(key).ground : null;
+}
 
 function getEffect(route: string): React.ComponentType<EffectProps> {
   if (route === "/") return HorizontalBlinds;
-  if (BLACK_PERSONA.test(route) || WHITE_PERSONA.test(route)) return TileGrid;
+  if (personaGround(route)) return TileGrid;
   if (route === "/lab") return PixelGrid;
   if (route === "/contact") return AsciiScramble;
   if (route.startsWith("/writing")) return LineWipe;
@@ -56,7 +61,7 @@ function getEffect(route: string): React.ComponentType<EffectProps> {
 }
 
 function getOverlayColor(route: string): string {
-  if (WHITE_PERSONA.test(route)) return "#ffffff";
+  if (personaGround(route) === "white") return "#ffffff";
   return "#0a0a0a";
 }
 

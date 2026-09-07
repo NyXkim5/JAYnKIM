@@ -18,8 +18,8 @@ export const CONTRIBUTIONS_EVIDENCE_ID = "github.contributions.total";
 export const COMMITS_EVIDENCE_ID = "github.contributions.commits";
 export const RESTRICTED_EVIDENCE_ID = "github.contributions.restricted";
 
-// White ground for zero, then #ff69b4 at 25, 50, 75 and 100 percent over white.
-export const LEVEL_COLORS = ["#ebebeb", "#ffdaec", "#ffb4da", "#ff8fc7", "#ff69b4"] as const;
+// Near-black for zero, then #ff69b4 at 30, 55, 80 and 100 percent over #0a0a0a.
+export const LEVEL_COLORS = ["#1a1a1a", "#54273d", "#913e68", "#ce5692", "#ff69b4"] as const;
 export type Level = 0 | 1 | 2 | 3 | 4;
 
 export function levelFor(count: number, max: number): Level {

@@ -43,14 +43,14 @@ function Labels({ weeks }: { weeks: ContributionDay[][] }) {
   return (
     <>
       {monthLabels(weeks).map((m) => (
-        <span key={m.col} className={`${MONO} whitespace-nowrap text-left leading-none text-black/55`} style={{ gridColumn: m.col + 2, gridRow: 1 }}>
+        <span key={m.col} className={`${MONO} whitespace-nowrap text-left leading-none text-white/55`} style={{ gridColumn: m.col + 2, gridRow: 1 }}>
           {m.label}
         </span>
       ))}
       {[1, 3, 5].map((row) => (
         <span
           key={row}
-          className="sticky left-0 bg-white pr-1.5 text-right font-mono text-[11px] uppercase tracking-[0.1em] text-black/55"
+          className="sticky left-0 bg-[#0a0a0a] pr-1.5 text-right font-mono text-[11px] uppercase tracking-[0.1em] text-white/55"
           style={{ gridColumn: 1, gridRow: row + 2, lineHeight: `${CELL}px` }}
         >
           {WEEKDAYS[row]}
@@ -63,7 +63,7 @@ function Labels({ weeks }: { weeks: ContributionDay[][] }) {
 function Stat({ value, label }: { value: number; label: string }) {
   return (
     <span>
-      <span className="text-[15px] text-black">{formatCount(value)}</span> {label}
+      <span className="text-[15px] text-white">{formatCount(value)}</span> {label}
     </span>
   );
 }
@@ -72,7 +72,7 @@ function Stat({ value, label }: { value: number; label: string }) {
 // GitHub reports private activity as one restricted count without a type.
 function Caption({ data }: { data: Contributions }) {
   return (
-    <div className={`${MONO} mt-6 space-y-2 text-black/55`}>
+    <div className={`${MONO} mt-6 space-y-2 text-white/55`}>
       <p className="flex flex-wrap justify-center gap-x-6 gap-y-1">
         <Stat value={data.total} label="contributions in the last year" />
         <Stat value={data.commits} label="commits in public repos" />
@@ -83,7 +83,7 @@ function Caption({ data }: { data: Contributions }) {
         <span>{CONTRIBUTIONS_EVIDENCE_ID}</span>
         <span>{COMMITS_EVIDENCE_ID}</span>
         <span>{RESTRICTED_EVIDENCE_ID}</span>
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="text-black underline underline-offset-4 decoration-black/30 hover:decoration-black">
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-4 decoration-white/30 hover:decoration-white">
           github.com/{data.login}
         </a>
       </p>
@@ -98,7 +98,7 @@ export function ContributionGraph({ data }: { data: Contributions }) {
   const cols = data.weeks.length;
   return (
     <section id={CONTRIBUTIONS_EVIDENCE_ID} className="mx-auto max-w-6xl px-5 pb-24 pt-24 text-center md:px-8">
-      <h2 className={`${MONO} text-black/55`}>GitHub</h2>
+      <h2 className={`${MONO} text-white/55`}>GitHub</h2>
       <ScrollToEnd className="mt-8 overflow-x-auto pb-2">
         <div
           role="img"
