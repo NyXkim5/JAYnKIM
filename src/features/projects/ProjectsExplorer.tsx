@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { PersonaBar } from "@/features/persona/PersonaBar";
 import { TreeItem } from "./FileTree";
+import { MapGrid } from "./MapGrid";
 import { ProjectWindow } from "./ProjectWindow";
 import { findProject, projectTree, PROJECTS } from "./projects";
 
@@ -35,9 +36,10 @@ export function ProjectsExplorer() {
   useEscape(close, project !== undefined);
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] pt-12 text-white">
+    <main className="relative min-h-screen bg-[#0a0a0a] pt-12 text-white">
+      <MapGrid className="fixed inset-0 z-0 h-full w-full" />
       <PersonaBar persona="projects" />
-      <section className="flex min-h-[calc(100vh-3rem)] flex-col items-center justify-center gap-10 px-5 py-16 md:flex-row md:items-center md:gap-16">
+      <section className="relative z-10 flex min-h-[calc(100vh-3rem)] flex-col items-center justify-center gap-10 px-5 py-16 md:flex-row md:items-center md:gap-16">
         <motion.div layout transition={SLIDE} className="w-[min(92vw,400px)] shrink-0">
           <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
             {PROJECTS.length} projects · click one to open it
