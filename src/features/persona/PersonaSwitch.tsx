@@ -28,10 +28,13 @@ export function PersonaSwitch({ value, onChange, ground, asLinks = false }: Prop
       {PERSONAS.map((p) => {
         const active = p.key === value;
         const hoverProps = { onMouseEnter: () => setHover(p.key), onMouseLeave: () => setHover(null) };
-        const label = (
+        // Brackets mark the current page only.
+        const label = active ? (
           <>
             [<GlitchLabel text={p.short} active={hover === p.key} />]
           </>
+        ) : (
+          <GlitchLabel text={p.short} active={hover === p.key} />
         );
         if (asLinks) {
           return (

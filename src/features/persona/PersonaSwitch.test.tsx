@@ -12,14 +12,15 @@ describe("PersonaSwitch", () => {
     const tabs = screen.getAllByRole("tab");
     expect(tabs).toHaveLength(4);
     expect(tabs[1].getAttribute("aria-selected")).toBe("true");
-    expect(tabs[0].textContent).toBe("[HARDWARE]");
+    expect(tabs[0].textContent).toBe("HARDWARE");
+    expect(tabs[1].textContent).toBe("[SOFTWARE]");
   });
 
   it("calls onChange with the key when a tab is clicked", () => {
     const onChange = vi.fn();
     render(<PersonaSwitch value="hardware" onChange={onChange} ground="black" />);
     const product = screen.getAllByRole("tab")[2];
-    expect(product.textContent).toBe("[PRODUCT]");
+    expect(product.textContent).toBe("PRODUCT");
     fireEvent.click(product);
     expect(onChange).toHaveBeenCalledWith("product");
   });
