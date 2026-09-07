@@ -44,13 +44,11 @@ function useReturnFocus(openSlug: string | null) {
 
 // The Projects tab. The tree sits centred on black. From md up, opening a
 // project slides the tree left and the window in from the right, so the pair
-// stays centred. Enlarge hides the tree and gives the window the full width.
-// Below md the window replaces the tree and the page scrolls it, so a tap
-// shows the window at once with no scroll box inside a scroll. Back or Esc
-// closes the window and the tree comes back.
+// stays centred. Below md the window replaces the tree and the page scrolls
+// it, so a tap shows the window at once with no scroll box inside a scroll.
+// Back or Esc closes the window and the tree comes back.
 export function ProjectsExplorer() {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
-  const [enlarged, setEnlarged] = useState(false);
   const tree = useMemo(() => projectTree(), []);
   const project = openSlug ? findProject(openSlug) : undefined;
   const close = () => setOpenSlug(null);
@@ -62,7 +60,7 @@ export function ProjectsExplorer() {
       <MapGrid className="fixed inset-0 z-0 h-full w-full" />
       <PersonaBar persona="projects" />
       <section className="relative z-10 flex min-h-[calc(100vh-3rem)] flex-col items-center justify-center gap-10 px-5 py-16 md:flex-row md:items-center md:gap-16">
-        <motion.div layout transition={SLIDE} className={cn("w-[min(92vw,400px)] shrink-0", project && "max-md:hidden", project && enlarged && "md:hidden")}>
+        <motion.div layout transition={SLIDE} className={cn("w-[min(92vw,400px)] shrink-0", project && "max-md:hidden")}>
           <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
             {PROJECTS.length} projects · click one to open it
           </p>
@@ -79,9 +77,9 @@ export function ProjectsExplorer() {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 48, scale: 0.98 }}
               transition={SLIDE}
-              className={cn("w-[min(92vw,680px)] shrink-0", enlarged ? "md:w-[min(92vw,1100px)]" : "md:w-[min(52vw,680px)]")}
+              className="w-[min(92vw,680px)] shrink-0 md:w-[min(52vw,680px)]"
             >
-              <ProjectWindow project={project} onBack={close} enlarged={enlarged} onEnlarge={() => setEnlarged((v) => !v)} />
+              <ProjectWindow project={project} onBack={close} />
             </motion.div>
           )}
         </AnimatePresence>

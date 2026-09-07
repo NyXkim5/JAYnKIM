@@ -95,23 +95,4 @@ describe("ProjectsExplorer", () => {
     fireEvent.keyDown(window, { key: "Escape" });
     expect(tree.className).not.toContain("max-md:hidden");
   });
-
-  it("enlarges the window to the full width and hides the tree from md up, then shrinks back", () => {
-    render(<ProjectsExplorer />);
-    const tree = screen.getByText(/projects · click one/).parentElement;
-    if (!tree) throw new Error("tree wrapper missing");
-    fireEvent.click(leafButton("Sensor siting optimizer"));
-    const wrapper = screen.getByRole("dialog").parentElement;
-    if (!wrapper) throw new Error("window wrapper missing");
-    expect(wrapper.className).toContain("md:w-[min(52vw,680px)]");
-    // "max-md:hidden" also contains the substring, so check the exact token.
-    const classes = () => tree.className.split(/\s+/);
-    expect(classes()).not.toContain("md:hidden");
-    fireEvent.click(screen.getByLabelText("Enlarge the window"));
-    expect(classes()).toContain("md:hidden");
-    expect(wrapper.className).toContain("md:w-[min(92vw,1100px)]");
-    fireEvent.click(screen.getByLabelText("Shrink the window"));
-    expect(classes()).not.toContain("md:hidden");
-    expect(wrapper.className).toContain("md:w-[min(52vw,680px)]");
-  });
 });
