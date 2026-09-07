@@ -9,6 +9,7 @@ import {
   dimAlpha,
   focusAlpha,
   focusPulse,
+  MAJOR,
   phaseAt,
   pull,
   SPACING,
@@ -21,18 +22,26 @@ import {
 const PINK = "#ff69b4";
 type Overlay = { focus: Focus; stage: Stage };
 
+// The same lattice as the Projects backdrop: lines from the top-left corner on
+// the shared cell, snapped to the half pixel, every fourth line drawn a second
+// time so it reads as the major line there too.
 function strokeGrid(ctx: CanvasRenderingContext2D, w: number, h: number, style: string | CanvasGradient) {
   ctx.strokeStyle = style;
-  ctx.beginPath();
-  for (let x = SPACING; x < w; x += SPACING) {
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, h);
+  for (const pass of ["minor", "major"] as const) {
+    ctx.beginPath();
+    for (let c = 0; c * SPACING <= w; c++) {
+      if ((c % MAJOR === 0) !== (pass === "major")) continue;
+      ctx.moveTo(c * SPACING + 0.5, 0);
+      ctx.lineTo(c * SPACING + 0.5, h);
+    }
+    for (let r = 0; r * SPACING <= h; r++) {
+      if ((r % MAJOR === 0) !== (pass === "major")) continue;
+      ctx.moveTo(0, r * SPACING + 0.5);
+      ctx.lineTo(w, r * SPACING + 0.5);
+    }
+    ctx.stroke();
+    if (pass === "major") ctx.stroke();
   }
-  for (let y = SPACING; y < h; y += SPACING) {
-    ctx.moveTo(0, y);
-    ctx.lineTo(w, y);
-  }
-  ctx.stroke();
 }
 
 // Two passes over the same straight lines: a dim pass for the whole grid, then

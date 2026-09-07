@@ -1,12 +1,17 @@
 // Pure timing and brightness for the Stealth grid. The canvas component only
 // draws what these functions return, so the cycle can be tested without a DOM.
 
+import { CELL, MAJOR_EVERY } from "@/features/projects/gridBackdrop";
+
 export type Phase = "breathe" | "converge" | "hold" | "release";
 
 export const ORDER: readonly Phase[] = ["breathe", "converge", "hold", "release"];
 export const DURATIONS: Record<Phase, number> = { breathe: 4200, converge: 1500, hold: 2800, release: 1100 };
 export const CYCLE_MS = ORDER.reduce((sum, p) => sum + DURATIONS[p], 0);
-export const SPACING = 96;
+// One grid for the whole site: the same cell, origin and major-line cadence
+// as the Projects backdrop, so the pages never disagree about spacing.
+export const SPACING = CELL;
+export const MAJOR = MAJOR_EVERY;
 export const BASE_ALPHA = 0.11;
 
 // Short lines about warfare. Jay's voice, no figures, nothing attributed.

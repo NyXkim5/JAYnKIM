@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
+import { CELL, MAJOR_EVERY } from "@/features/projects/gridBackdrop";
 import {
   BASE_ALPHA,
+  MAJOR,
   breath,
   chooseFocus,
   coordsLabel,
@@ -68,6 +70,11 @@ describe("stealth grid cycle", () => {
       expect(focusPulse(ms)).toBeGreaterThanOrEqual(0.6);
       expect(focusPulse(ms)).toBeLessThanOrEqual(1);
     }
+  });
+
+  it("shares its cell and major-line cadence with the Projects backdrop", () => {
+    expect(SPACING).toBe(CELL);
+    expect(MAJOR).toBe(MAJOR_EVERY);
     expect(SPACING).toBeGreaterThanOrEqual(80);
   });
 
