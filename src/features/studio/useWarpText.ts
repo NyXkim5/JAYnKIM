@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 // Digits, symbols, and Korean jamo. Compact glyphs that read as one voice in
 // a handwriting face, so the sweep looks composed instead of noisy.
 export const WARP_POOL = "0123456789#%&*+=/<>[]{}~^ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ";
-export const WARP_DURATION = 1400;
-const TICK = 110;
-const LEAD = 180;
+export const WARP_DURATION = 700;
+const TICK = 60;
+const LEAD = 90;
 const WIDTH_PHASE = 0.4;
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));

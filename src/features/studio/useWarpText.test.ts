@@ -21,13 +21,13 @@ describe("warpFrame", () => {
   });
 
   it("eases the slot count toward the target length", () => {
-    const lengths = [0, 200, 400, 560, 700].map((t) => warpFrame(EN, KO, t).length);
+    const lengths = [0, 100, 200, 280, 350].map((t) => warpFrame(EN, KO, t).length);
     for (let i = 1; i < lengths.length; i++) expect(lengths[i]).toBeLessThanOrEqual(lengths[i - 1]);
     expect(lengths[lengths.length - 1]).toBe(KO.length);
   });
 
   it("resolves characters from left to right", () => {
-    const mid = warpFrame(KO, EN, 800);
+    const mid = warpFrame(KO, EN, 400);
     const resolved = [...mid].map((ch, i) => ch === EN[i]);
     const firstUnresolved = resolved.indexOf(false);
     expect(resolved[0]).toBe(true);
@@ -35,7 +35,7 @@ describe("warpFrame", () => {
   });
 
   it("keeps spaces as spaces and only emits pool or target glyphs", () => {
-    for (const t of [0, 300, 600, 900, 1200]) {
+    for (const t of [0, 150, 300, 450, 600]) {
       const frame = warpFrame(KO, EN, t);
       for (let i = 0; i < frame.length; i++) {
         const ch = frame[i];
@@ -46,7 +46,7 @@ describe("warpFrame", () => {
   });
 
   it("changes glyphs on the tick, not every millisecond", () => {
-    expect(warpFrame(EN, KO, 10)).toBe(warpFrame(EN, KO, 50));
-    expect(warpFrame(EN, KO, 10)).not.toBe(warpFrame(EN, KO, 130));
+    expect(warpFrame(EN, KO, 10)).toBe(warpFrame(EN, KO, 40));
+    expect(warpFrame(EN, KO, 10)).not.toBe(warpFrame(EN, KO, 70));
   });
 });
