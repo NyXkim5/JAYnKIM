@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import { STEALTH_STATEMENT, StealthPage } from "./StealthPage";
+import { STEALTH_CLOSER_BEFORE, STEALTH_CLOSER_WORD, STEALTH_STATEMENT, StealthPage } from "./StealthPage";
 
 vi.mock("@/features/persona/PersonaBar", () => ({ PersonaBar: () => <header data-testid="bar" /> }));
 
@@ -17,12 +17,28 @@ describe("StealthPage", () => {
     expect(main?.className).toContain("justify-center");
     expect(main?.className).toContain("bg-[#0a0a0a]");
     const statement = screen.getByText(STEALTH_STATEMENT);
-    expect(statement.className).toContain("text-[#ff69b4]");
-    expect(statement.className).toContain("text-center");
+    expect(statement.parentElement?.className).toContain("text-[#ff69b4]");
+    expect(statement.parentElement?.className).toContain("text-center");
     expect(screen.getByTestId("bar")).toBeTruthy();
   });
 
-  it("ends with a blinking pink caret that screen readers skip and reduced motion stills", () => {
+  it("follows a blank line with the closer, WARD glowing, and the caret after the period", () => {
+    const { container } = render(<StealthPage />);
+    const glow = container.querySelector("[data-glow]");
+    if (!(glow instanceof HTMLElement)) throw new Error("glow missing");
+    expect(glow.textContent).toBe(STEALTH_CLOSER_WORD);
+    expect(glow.style.textShadow).toContain("#ff69b4");
+    const closer = glow.parentElement;
+    if (!closer) throw new Error("closer missing");
+    expect(closer.className).toMatch(/\bmt-/);
+    expect(closer.textContent).toBe(`${STEALTH_CLOSER_BEFORE}${STEALTH_CLOSER_WORD}.`);
+    const caret = container.querySelector("[data-caret]");
+    if (!caret) throw new Error("caret missing");
+    expect(caret.parentElement).toBe(closer);
+    expect(closer.lastElementChild).toBe(caret);
+  });
+
+  it("blinks a pink caret that screen readers skip and reduced motion stills", () => {
     const { container } = render(<StealthPage />);
     const caret = container.querySelector("[data-caret]");
     if (!caret) throw new Error("caret missing");
@@ -30,10 +46,9 @@ describe("StealthPage", () => {
     expect(caret.className).toContain("bg-[#ff69b4]");
     expect(caret.className).toContain("animate-[caret_");
     expect(caret.className).toContain("motion-reduce:animate-none");
-    expect(caret.parentElement?.textContent).toBe(STEALTH_STATEMENT);
   });
 
-  it("keeps the statement clear of traction language", () => {
-    expect(STEALTH_STATEMENT).not.toMatch(banned);
+  it("keeps both lines clear of traction language", () => {
+    expect(`${STEALTH_STATEMENT} ${STEALTH_CLOSER_BEFORE}${STEALTH_CLOSER_WORD}`).not.toMatch(banned);
   });
 });
