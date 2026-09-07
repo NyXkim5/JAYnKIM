@@ -3,7 +3,7 @@ import { HorseVideo } from "./HorseVideo";
 import { StealthGrid } from "./StealthGrid";
 
 export const STEALTH_STATEMENT =
-  "Make every battlefield an American battlefield. Manifest destiny did not stop at California, it will wrap this world as many times as we choose to.";
+  "Make every battlefield an American battlefield. Manifest destiny did not stop at California. It stopped where we stopped looking.";
 export const STEALTH_CLOSER_BEFORE = "Let the world be lit with ";
 export const STEALTH_CLOSER_WORD = "WARD";
 
