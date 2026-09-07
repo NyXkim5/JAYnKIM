@@ -1,14 +1,18 @@
 import { describe, expect, it } from "vitest";
 import {
-  BREATH_MS,
+  BASE_ALPHA,
   FADE_IN_MS,
   FADE_OUT_MS,
   LIFE_MS,
   MAX_BLIPS,
+  PULSES,
   SPAWN_MIN_MS,
   blipAlpha,
-  breath,
   cellLabel,
+  glowAt,
+  pulseBreath,
+  pulseCentre,
+  segmentAlpha,
   spawnBlip,
   stepBlips,
   type Blip,
@@ -19,15 +23,71 @@ const seq = (values: number[]) => {
   return () => values[i++ % values.length];
 };
 
-describe("breath", () => {
-  it("stays inside 0..1 and repeats every BREATH_MS", () => {
-    for (let t = 0; t < BREATH_MS * 2; t += 97) {
-      const v = breath(t);
-      expect(v).toBeGreaterThanOrEqual(0);
-      expect(v).toBeLessThanOrEqual(1);
-      expect(breath(t + BREATH_MS)).toBeCloseTo(v, 6);
+const W = 1600;
+const H = 1000;
+
+describe("pulses", () => {
+  it("drift but stay inside the canvas", () => {
+    for (const p of PULSES) {
+      for (let t = 0; t < 200000; t += 1370) {
+        const c = pulseCentre(p, t, W, H);
+        expect(c.x).toBeGreaterThan(0);
+        expect(c.x).toBeLessThan(W);
+        expect(c.y).toBeGreaterThan(0);
+        expect(c.y).toBeLessThan(H);
+      }
     }
-    expect(breath(BREATH_MS / 4)).toBeCloseTo(1, 6);
+  });
+
+  it("swell between 0 and 1 and do not all peak together", () => {
+    const peaks = PULSES.map((p) => {
+      let best = 0;
+      let at = 0;
+      for (let t = 0; t < p.breathMs; t += 10) {
+        const v = pulseBreath(p, t);
+        expect(v).toBeGreaterThanOrEqual(0);
+        expect(v).toBeLessThanOrEqual(1);
+        if (v > best) {
+          best = v;
+          at = t;
+        }
+      }
+      return at / p.breathMs;
+    });
+    expect(new Set(peaks.map((x) => x.toFixed(1))).size).toBe(PULSES.length);
+  });
+});
+
+describe("glowAt", () => {
+  it("is brightest at a pulse centre at its peak and falls off with distance", () => {
+    const p = PULSES[0];
+    const t = ((Math.PI / 2 - p.phase) / (Math.PI * 2)) * p.breathMs;
+    const c = pulseCentre(p, t, W, H);
+    const centre = glowAt(c.x, c.y, t, W, H);
+    const near = glowAt(c.x + 120, c.y, t, W, H);
+    const far = glowAt(c.x + 400, c.y, t, W, H);
+    expect(centre).toBeCloseTo(1, 3);
+    expect(near).toBeLessThan(centre);
+    expect(far).toBeLessThan(near);
+    expect(far).toBeLessThan(0.25);
+  });
+
+  it("changes over time at a fixed point, so the grid visibly breathes", () => {
+    const p = PULSES[0];
+    const c = pulseCentre(p, 0, W, H);
+    const bright = glowAt(c.x, c.y, ((Math.PI / 2 - p.phase) / (Math.PI * 2)) * p.breathMs, W, H);
+    const dim = glowAt(c.x, c.y, ((-Math.PI / 2 - p.phase) / (Math.PI * 2)) * p.breathMs, W, H);
+    expect(bright - dim).toBeGreaterThan(0.5);
+  });
+});
+
+describe("segmentAlpha", () => {
+  it("never drops below the base and majors are brighter than minors", () => {
+    const minor = segmentAlpha(10, 10, 12345, W, H, false);
+    const major = segmentAlpha(10, 10, 12345, W, H, true);
+    expect(minor).toBeGreaterThanOrEqual(BASE_ALPHA);
+    expect(major).toBeGreaterThan(minor);
+    expect(major).toBeLessThanOrEqual(1);
   });
 });
 
