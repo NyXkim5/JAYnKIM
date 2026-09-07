@@ -38,7 +38,7 @@ def main() -> int:
         str(rows * COLS - 1): str(totals["falseAnchors"]),
     }
     snapshot = {
-        "persona": "software",
+        "persona": "work",
         "cols": COLS,
         "rows": rows,
         "values": values,

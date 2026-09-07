@@ -15,7 +15,7 @@ export type Evidence = {
 export const EVIDENCE: readonly Evidence[] = [
   {
     id: "dronenexus.tests.collected",
-    persona: ["hardware"],
+    persona: ["projects"],
     value: "3,800",
     unit: "tests collected",
     repo: "NyXkim5/DroneNexus",
@@ -26,7 +26,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "dronenexus.tests.files",
-    persona: ["hardware"],
+    persona: ["projects"],
     value: "221",
     unit: "test files",
     repo: "NyXkim5/DroneNexus",
@@ -37,7 +37,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "dronenexus.core.lines",
-    persona: ["hardware"],
+    persona: ["projects"],
     value: "77,616",
     unit: "lines in services/core",
     repo: "NyXkim5/DroneNexus",
@@ -48,7 +48,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "dronenexus.yolo.latency",
-    persona: ["hardware", "software"],
+    persona: ["projects", "work"],
     value: "57.63 → 40.65 ms",
     unit: "YOLO mean latency, M1 Max CPU, 100 runs",
     repo: "NyXkim5/DroneNexus",
@@ -59,7 +59,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "dronenexus.siting.bound",
-    persona: ["hardware"],
+    persona: ["projects"],
     value: "1 − 1/e",
     unit: "approximation guarantee, greedy siting",
     repo: "NyXkim5/DroneNexus",
@@ -70,7 +70,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "sonicfly.bearing.rmse",
-    persona: ["hardware"],
+    persona: ["projects"],
     value: "2.292 → 0.605 m",
     unit: "range RMSE after covariance fix",
     repo: "sonicfly-research",
@@ -81,7 +81,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "archvbrain.eval.verifiedQuotes",
-    persona: ["software"],
+    persona: ["projects", "work"],
     value: "13 of 18",
     unit: "quotes byte-exact in stored text",
     repo: "ArchvBrain",
@@ -92,7 +92,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "archvbrain.eval.falseAnchors",
-    persona: ["software"],
+    persona: ["projects", "work"],
     value: "0",
     unit: "false anchors across 13 offset-carrying quotes",
     repo: "ArchvBrain",
@@ -103,7 +103,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "archvbrain.eval.goldRows",
-    persona: ["software"],
+    persona: ["projects", "work"],
     value: "45",
     unit: "hand-labelled gold rows across three datasets",
     repo: "ArchvBrain",
@@ -114,7 +114,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "iris.tenant.suiteLines",
-    persona: ["software"],
+    persona: ["projects", "work"],
     value: "3,928",
     unit: "lines of adversarial tenant-isolation tests",
     repo: "Iris",
@@ -125,7 +125,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "iris.gold.fixtures",
-    persona: ["software"],
+    persona: ["projects", "work"],
     value: "22",
     unit: "gold fixtures, 12,200 lines",
     repo: "Iris",
@@ -136,7 +136,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "metis.sources.enabled",
-    persona: ["software"],
+    persona: ["projects", "work"],
     value: "130 of 135",
     unit: "curated sources enabled",
     repo: "singularity",
@@ -147,7 +147,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "bamboo.tests.files",
-    persona: ["product", "software"],
+    persona: ["projects", "design", "work"],
     value: "313",
     unit: "test files",
     repo: "NyXkim5/nutrition-app",
@@ -158,7 +158,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "bamboo.gate.passing",
-    persona: ["product"],
+    persona: ["projects", "design"],
     value: "1,979 + 697",
     unit: "vitest + jest passing at last gate",
     repo: "NyXkim5/nutrition-app",
@@ -169,7 +169,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "bamboo.asc.appId",
-    persona: ["product"],
+    persona: ["projects", "design"],
     value: "6784845593",
     unit: "App Store Connect app id",
     repo: "NyXkim5/nutrition-app",
@@ -180,7 +180,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "roleindex.rows.live",
-    persona: ["business"],
+    persona: ["work"],
     value: "533",
     unit: "curated roles, refreshed daily",
     repo: "NyXkim5/summer-2027-role-index",
@@ -191,7 +191,7 @@ export const EVIDENCE: readonly Evidence[] = [
   },
   {
     id: "optum.rfp.volume",
-    persona: ["software", "business"],
+    persona: ["work"],
     value: "Tens of thousands",
     unit: "RFPs a year through one platform",
     repo: "Optum",

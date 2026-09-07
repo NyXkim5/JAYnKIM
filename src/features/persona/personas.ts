@@ -1,4 +1,4 @@
-export type PersonaKey = "hardware" | "software" | "product" | "business";
+export type PersonaKey = "projects" | "design" | "work" | "stealth";
 export type Ground = "black" | "white";
 
 export type Persona = {
@@ -11,47 +11,48 @@ export type Persona = {
   live: boolean;
 };
 
+// Tab order is keyboard order. Jay set the four names on 2026-09-06.
 export const PERSONAS: readonly Persona[] = [
   {
-    key: "hardware",
-    label: "Hardware & Systems",
-    short: "HARDWARE",
+    key: "projects",
+    label: "Projects",
+    short: "PROJECTS",
     ground: "black",
     index: 1,
-    claim: "I write the math that decides where a sensor goes, and I say out loud when no hardware is wired in yet.",
+    claim: "Hardware and software, every project on one page, every number traced to a file.",
     live: true,
   },
   {
-    key: "software",
-    label: "Software & AI/ML",
-    short: "SOFTWARE",
-    ground: "black",
-    index: 2,
-    claim: "I measure whether my AI is lying before I let it answer.",
-    live: true,
-  },
-  {
-    key: "product",
-    label: "Product & Design",
-    short: "PRODUCT",
+    key: "design",
+    label: "Design",
+    short: "DESIGN",
     ground: "white",
-    index: 3,
+    index: 2,
     claim: "I ship to the App Store, then grade my own app a B and fix what I found.",
     live: false,
   },
   {
-    key: "business",
-    label: "Business & Strategy",
-    short: "BUSINESS",
+    key: "work",
+    label: "Work",
+    short: "WORK",
     ground: "white",
+    index: 3,
+    claim: "I measure whether my AI is lying before I let it answer.",
+    live: true,
+  },
+  {
+    key: "stealth",
+    label: "Stealth",
+    short: "STEALTH",
+    ground: "black",
     index: 4,
-    claim: "I source every market claim and write the kill gate before I start.",
+    claim: "Some of the work cannot be shown yet.",
     live: false,
   },
 ] as const;
 
 export const PERSONA_KEYS: readonly PersonaKey[] = PERSONAS.map((p) => p.key);
-export const DEFAULT_PERSONA: PersonaKey = "hardware";
+export const DEFAULT_PERSONA: PersonaKey = "projects";
 
 export function isPersonaKey(x: string): x is PersonaKey {
   return (PERSONA_KEYS as readonly string[]).includes(x);

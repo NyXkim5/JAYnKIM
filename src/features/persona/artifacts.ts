@@ -11,7 +11,7 @@ export type Artifact = {
 
 export const ARTIFACTS: readonly Artifact[] = [
   {
-    persona: "hardware",
+    persona: "projects",
     title: "Sensor siting with a stated bound",
     file: "DroneNexus/services/core/siting/greedy.py",
     what: "Maximum coverage as a monotone submodular objective. The docstring states the 1 − 1/e guarantee and why ties break to the lowest index so a plan reproduces.",
@@ -19,21 +19,21 @@ export const ARTIFACTS: readonly Artifact[] = [
     caseStudySlug: "drone-dashboard",
   },
   {
-    persona: "hardware",
+    persona: "projects",
     title: "Line of sight over layered terrain",
     file: "DroneNexus/services/core/terrain/los.py",
     what: "DDA raycasting across stacked terrain layers. It refuses to floor the step size because sub-metre building layers must not be steppable-over.",
     caseStudySlug: "drone-dashboard",
   },
   {
-    persona: "hardware",
+    persona: "projects",
     title: "A covariance bug in a published lab's filter",
     file: "sonicfly-research/BEARING_REGRESSION.md",
     what: "Duke's released Kalman filter carried an R that implied σ≈10.7° when the paper's own MAE implied σ=57.3°. The fix improved range RMSE and slightly worsened bearing MAE. Both numbers are in the write-up.",
     evidenceId: "sonicfly.bearing.rmse",
   },
   {
-    persona: "hardware",
+    persona: "projects",
     title: "Measured latency, not claimed latency",
     file: "DroneNexus/docs/perception/latency-benchmark.md",
     what: "YOLO mean latency over 100 timed runs before and after ONNX export, with the doc warning that these are host-CPU numbers, not edge numbers.",
@@ -41,7 +41,7 @@ export const ARTIFACTS: readonly Artifact[] = [
     caseStudySlug: "drone-dashboard",
   },
   {
-    persona: "software",
+    persona: "work",
     title: "Does the citation point at real text?",
     file: "ArchvBrain/eval_verified_extraction.py",
     what: "A harness that measures falseAnchorRate, the share of citations whose offsets fail to locate their quoted text. Baseline-gated. The docstring calls it the number that matters.",
@@ -49,20 +49,20 @@ export const ARTIFACTS: readonly Artifact[] = [
     caseStudySlug: "archv",
   },
   {
-    persona: "software",
+    persona: "work",
     title: "Hybrid retrieval that binds citations to offsets",
     file: "Iris/backend/app/rag/retrieval.py",
     what: "pgvector cosine plus Postgres full text fused with reciprocal rank fusion, then maximal marginal relevance. Citations bind to character spans and the answer refuses when retrieval returns nothing.",
   },
   {
-    persona: "software",
+    persona: "work",
     title: "Tenant isolation, closed three ways",
     file: "Iris/backend/migrations/versions/0019_force_row_level_security.py",
     what: "App-layer rejection, Postgres RLS with FORCE, a non-superuser role, and an adversarial suite that keeps it closed.",
     evidenceId: "iris.tenant.suiteLines",
   },
   {
-    persona: "software",
+    persona: "work",
     title: "The judge prints its cost before it runs",
     file: "singularity/services/agents/scripts/eval-briefs.ts",
     what: "Projected dollar cost against real per-token pricing, a daily spend cap that raises instead of overspending, and a judge that is advisory-only by design.",

@@ -1,16 +1,15 @@
 import type { MetadataRoute } from "next";
-import { caseStudies } from "@/data/caseStudies";
+import { caseStudies, studyHref } from "@/data/caseStudies";
 import { BASE_URL } from "@/data/config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
     "",
-    "/hardware",
-    "/software",
-    "/product",
-    "/business",
-    "/about",
     "/projects",
+    "/design",
+    "/work",
+    "/stealth",
+    "/about",
     "/lab",
     "/writing",
     "/matcha",
@@ -21,12 +20,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/writing/ml-monitoring-prod",
   ];
 
-  const caseStudyPages = caseStudies.map((s) => `/projects/${s.slug}`);
+  const caseStudyPages = caseStudies.map((s) => studyHref(s.slug));
+  const isStudy = (path: string) => path.split("/").length === 3;
 
   return [...staticPages, ...caseStudyPages].map((path) => ({
     url: `${BASE_URL}${path}`,
     lastModified: new Date(),
     changeFrequency: path === "" ? "weekly" : "monthly",
-    priority: path === "" ? 1 : path.startsWith("/projects/") ? 0.8 : 0.7,
+    priority: path === "" ? 1 : isStudy(path) ? 0.8 : 0.7,
   }));
 }

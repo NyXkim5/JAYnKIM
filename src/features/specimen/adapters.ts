@@ -8,8 +8,8 @@ const PLACEHOLDER_COLS = 24;
 const PLACEHOLDER_ROWS = 24;
 
 const SNAPSHOTS: Partial<Record<PersonaKey, SpecimenSnapshot>> = {
-  hardware: hardware as SpecimenSnapshot,
-  software: software as SpecimenSnapshot,
+  projects: hardware as SpecimenSnapshot,
+  work: software as SpecimenSnapshot,
 };
 
 export function snapshotFor(persona: PersonaKey): SpecimenSnapshot | null {
@@ -22,5 +22,5 @@ export function frameFor(persona: PersonaKey): SpecimenFrame {
     return placeholderFrame(PLACEHOLDER_COLS, PLACEHOLDER_ROWS);
   }
   const frame = snapshotToFrame(snapshot);
-  return persona === "software" ? upsample(frame, 2) : frame;
+  return persona === "work" ? upsample(frame, 2) : frame;
 }

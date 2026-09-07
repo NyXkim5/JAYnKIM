@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { caseStudies, findStudy } from "@/data/caseStudies";
 import { isPersonaKey } from "@/features/persona/personas";
-import CaseStudyContent from "@/app/projects/[slug]/CaseStudyContent";
+import CaseStudyContent from "@/features/casestudy/CaseStudyContent";
 
 export function generateStaticParams() {
   return caseStudies.flatMap((s) => s.personas.map((persona) => ({ persona, slug: s.slug })));

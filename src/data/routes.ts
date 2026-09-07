@@ -16,7 +16,7 @@ export const SITE_ROUTES: SiteRoute[] = [
   { path: "/", label: "Home", group: "primary" },
   ...personaRoutes,
   { path: "/contact", label: "Contact", group: "primary" },
-  { path: "/lab", label: "Projects", group: "secondary" },
+  { path: "/lab", label: "Lab", group: "secondary" },
   { path: "/matcha", label: "Recs", group: "secondary" },
   { path: "/music", label: "Music", group: "secondary" },
 ];

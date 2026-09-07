@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { usePageTransition } from "@/components/transitions/TransitionProvider";
+import { studyHref } from "@/data/caseStudies";
 
 interface Project {
   id: string;
@@ -194,7 +195,7 @@ export default function TimelineContent() {
                     role="button"
                     tabIndex={0}
                     aria-label={isCenter ? `View ${project.title.replace("\n", " ")} project` : `Select ${project.title.replace("\n", " ")}`}
-                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (isCenter) navigateTo(`/projects/${project.slug}`); else animateTo(index); } }}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (isCenter) navigateTo(`${studyHref(project.slug)}`); else animateTo(index); } }}
                     className="flex-shrink-0 cursor-pointer"
                     style={{ width: cardWidth, marginRight: cardGap }}
                     animate={{
@@ -203,7 +204,7 @@ export default function TimelineContent() {
                     }}
                     transition={{ type: "spring", stiffness: 100, damping: 20 }}
                     onClick={() => {
-                      if (isCenter) navigateTo(`/projects/${project.slug}`);
+                      if (isCenter) navigateTo(`${studyHref(project.slug)}`);
                       else animateTo(index);
                     }}
                   >

@@ -23,7 +23,7 @@ function throwingStorage() {
 describe("parseView", () => {
   it("accepts studio and persona keys and rejects everything else", () => {
     expect(parseView("studio")).toBe("studio");
-    expect(parseView("software")).toBe("software");
+    expect(parseView("work")).toBe("work");
     expect(parseView("war")).toBeNull();
     expect(parseView(null)).toBeNull();
     expect(parseView(undefined)).toBeNull();
@@ -32,7 +32,7 @@ describe("parseView", () => {
 
 describe("readStoredView", () => {
   it("returns the stored view when valid", () => {
-    expect(readStoredView(memoryStorage({ [STORAGE_KEY]: "product" }))).toBe("product");
+    expect(readStoredView(memoryStorage({ [STORAGE_KEY]: "design" }))).toBe("design");
     expect(readStoredView(memoryStorage({ [STORAGE_KEY]: "studio" }))).toBe("studio");
   });
 
@@ -47,11 +47,11 @@ describe("readStoredView", () => {
 describe("writeStoredView", () => {
   it("writes and survives a throwing storage", () => {
     const s = memoryStorage();
-    writeStoredView(s, "business");
-    expect(s.getItem(STORAGE_KEY)).toBe("business");
+    writeStoredView(s, "work");
+    expect(s.getItem(STORAGE_KEY)).toBe("work");
     writeStoredView(s, "studio");
     expect(s.getItem(STORAGE_KEY)).toBe("studio");
-    expect(() => writeStoredView(throwingStorage(), "business")).not.toThrow();
-    expect(() => writeStoredView(null, "business")).not.toThrow();
+    expect(() => writeStoredView(throwingStorage(), "work")).not.toThrow();
+    expect(() => writeStoredView(null, "work")).not.toThrow();
   });
 });

@@ -3,16 +3,16 @@ import { frameFor, snapshotFor } from "./adapters";
 import { PERSONA_KEYS } from "@/features/persona/personas";
 
 describe("adapters", () => {
-  it("returns a 48x48 frame with four numbered sensors for hardware", () => {
-    const f = frameFor("hardware");
+  it("returns a 48x48 frame with four numbered sensors for projects", () => {
+    const f = frameFor("projects");
     expect(f.cols).toBe(48);
     expect(f.rows).toBe(48);
     const labels = f.cells.filter((c) => c.label !== undefined).map((c) => c.label).sort();
     expect(labels).toEqual(["1", "2", "3", "4"]);
   });
 
-  it("returns a 16x14 upsampled frame for software with the three headline labels", () => {
-    const f = frameFor("software");
+  it("returns a 16x14 upsampled frame for work with the three headline labels", () => {
+    const f = frameFor("work");
     expect(f.cols).toBe(16);
     expect(f.rows).toBe(14);
     const labels = f.cells.filter((c) => c.label !== undefined).map((c) => c.label);
@@ -20,7 +20,7 @@ describe("adapters", () => {
   });
 
   it("returns a placeholder for personas that are not live", () => {
-    for (const key of ["product", "business"] as const) {
+    for (const key of ["design", "stealth"] as const) {
       const f = frameFor(key);
       expect(f.cells.every((c) => c.label === undefined)).toBe(true);
       expect(snapshotFor(key)).toBeNull();

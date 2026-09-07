@@ -42,14 +42,13 @@ const EASE = [0.76, 0, 0.24, 1] as const;
 
 // ─── Route → Effect map ─────────────────────────────────────────────
 
-const BLACK_PERSONA = /^\/(hardware|software)(\/|$)/;
-const WHITE_PERSONA = /^\/(product|business)(\/|$)/;
+const BLACK_PERSONA = /^\/(projects|stealth)(\/|$)/;
+const WHITE_PERSONA = /^\/(design|work)(\/|$)/;
 
 function getEffect(route: string): React.ComponentType<EffectProps> {
   if (route === "/") return HorizontalBlinds;
   if (BLACK_PERSONA.test(route)) return PixelGrid;
   if (WHITE_PERSONA.test(route)) return BlocksScatter;
-  if (route.startsWith("/projects")) return ColumnWipe;
   if (route === "/lab") return PixelGrid;
   if (route === "/contact") return AsciiScramble;
   if (route.startsWith("/writing")) return LineWipe;

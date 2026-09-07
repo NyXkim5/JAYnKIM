@@ -3,7 +3,7 @@ import { snapshotToFrame, upsample, placeholderFrame, type SpecimenSnapshot } fr
 
 function snap(overrides: Partial<SpecimenSnapshot> = {}): SpecimenSnapshot {
   return {
-    persona: "hardware",
+    persona: "projects",
     cols: 2,
     rows: 2,
     values: [0, 0.5, 1, 0.25],

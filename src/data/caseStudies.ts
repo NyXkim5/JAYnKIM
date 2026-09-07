@@ -60,7 +60,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "optum",
     id: "002",
-    personas: ["software"],
+    personas: ["work"],
     title: "Optum",
     subtitle: "Automating RFP Response at UnitedHealth Group",
     year: "2026",
@@ -118,7 +118,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "archv",
     id: "001",
-    personas: ["software", "product"],
+    personas: ["projects", "work", "design"],
     title: "Archv",
     subtitle: "AI-Powered Document Review for Regulated Industries",
     year: "2025",
@@ -309,7 +309,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "cactus",
     id: "004",
-    personas: ["software"],
+    personas: ["work"],
     title: "Cactus",
     subtitle: "Event Ingestion and Growth Analytics Platform",
     year: "2025",
@@ -367,7 +367,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "medvanta",
     id: "003",
-    personas: ["product", "software"],
+    personas: ["design", "work"],
     title: "MedVanta Platform",
     subtitle: "Clinical Operations & Compliance Software",
     year: "2024 – 2025",
@@ -431,7 +431,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "drone-dashboard",
     id: "006",
-    personas: ["hardware"],
+    personas: ["projects"],
     title: "OVERWATCH",
     subtitle: "Autonomous Swarm Ground Control System",
     year: "2025",
@@ -543,7 +543,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "drone-virtual-env",
     id: "007",
-    personas: ["hardware"],
+    personas: ["projects"],
     title: "DroneNexus",
     subtitle: "Ground Control Station & Virtual Environment",
     year: "2025",
@@ -598,7 +598,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "va-gov-mvp",
     id: "008",
-    personas: ["product", "business"],
+    personas: ["projects", "design", "work"],
     title: "VA.gov MVP",
     subtitle: "Conceptual Redesign for Veterans Affairs Portal",
     year: "2025",
@@ -678,4 +678,11 @@ export function findStudy(slug: string): CaseStudy | undefined {
 
 export function studiesFor(persona: PersonaKey): CaseStudy[] {
   return caseStudies.filter((s) => s.personas.includes(persona));
+}
+
+// Canonical URL for a study: under its first persona. Unknown slugs fall
+// back to the projects tab, which lists everything.
+export function studyHref(slug: string): string {
+  const persona = findStudy(slug)?.personas[0] ?? "projects";
+  return `/${persona}/${slug}`;
 }

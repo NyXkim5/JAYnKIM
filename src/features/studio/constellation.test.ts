@@ -24,8 +24,8 @@ function lcg(seed: number): () => number {
 }
 
 const marks: EvidenceMark[] = [
-  { id: "a", value: "3,800", unit: "tests", href: "/hardware#a" },
-  { id: "b", value: "0", unit: "false anchors", href: "/software#b" },
+  { id: "a", value: "3,800", unit: "tests", href: "/projects#a" },
+  { id: "b", value: "0", unit: "false anchors", href: "/work#b" },
   { id: "c", value: "533", href: "https://github.com/x/y" },
 ];
 

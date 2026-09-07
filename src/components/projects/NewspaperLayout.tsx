@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { TransitionLink } from "@/components/transitions/TransitionLink";
-import { CaseStudy, findStudy } from "@/data/caseStudies";
+import { CaseStudy, findStudy, studyHref } from "@/data/caseStudies";
 
 export function NewspaperLayout({
   study,
@@ -517,7 +517,7 @@ export function NewspaperLayout({
             Next Case Study
           </p>
           <TransitionLink
-            href={`/projects/${study.nextProject}`}
+            href={studyHref(study.nextProject)}
             className="group inline-flex items-center gap-3"
           >
             <span className="text-2xl md:text-3xl font-bold text-text-black group-hover:text-text-mid transition-colors">

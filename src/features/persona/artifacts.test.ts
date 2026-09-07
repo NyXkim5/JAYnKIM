@@ -4,16 +4,16 @@ import { findEvidence } from "@/features/evidence/registry";
 import { findStudy } from "@/data/caseStudies";
 
 describe("artifacts", () => {
-  it("gives hardware and software three to five cards each", () => {
-    expect(artifactsFor("hardware").length).toBeGreaterThanOrEqual(3);
-    expect(artifactsFor("hardware").length).toBeLessThanOrEqual(5);
-    expect(artifactsFor("software").length).toBeGreaterThanOrEqual(3);
-    expect(artifactsFor("software").length).toBeLessThanOrEqual(5);
+  it("gives projects and work three to five cards each", () => {
+    expect(artifactsFor("projects").length).toBeGreaterThanOrEqual(3);
+    expect(artifactsFor("projects").length).toBeLessThanOrEqual(5);
+    expect(artifactsFor("work").length).toBeGreaterThanOrEqual(3);
+    expect(artifactsFor("work").length).toBeLessThanOrEqual(5);
   });
 
-  it("gives product and business no cards yet", () => {
-    expect(artifactsFor("product")).toEqual([]);
-    expect(artifactsFor("business")).toEqual([]);
+  it("gives design and stealth no cards yet", () => {
+    expect(artifactsFor("design")).toEqual([]);
+    expect(artifactsFor("stealth")).toEqual([]);
   });
 
   it("resolves every evidence id and case study slug it references", () => {

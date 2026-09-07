@@ -26,9 +26,9 @@ describe("evidence registry", () => {
   });
 
   it("filters by persona", () => {
-    const hw = evidenceFor("hardware");
+    const hw = evidenceFor("projects");
     expect(hw.length).toBeGreaterThan(2);
-    for (const e of hw) expect(e.persona).toContain("hardware");
+    for (const e of hw) expect(e.persona).toContain("projects");
   });
 
   it("links public repos to GitHub and private ones to the depth page anchor", () => {

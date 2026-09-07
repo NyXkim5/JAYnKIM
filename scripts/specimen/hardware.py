@@ -84,7 +84,7 @@ def main() -> int:
     if len(labels) != SENSORS:
         raise SystemExit(f"label collision: {len(labels)} labels for {SENSORS} sensors, chosen={list(plan.chosen)}")
     snapshot = {
-        "persona": "hardware",
+        "persona": "projects",
         "cols": CELLS,
         "rows": CELLS,
         "values": values,
