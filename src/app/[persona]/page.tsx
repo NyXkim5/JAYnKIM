@@ -3,6 +3,7 @@ import { getPersona, isPersonaKey, PERSONA_KEYS } from "@/features/persona/perso
 import { PersonaDepth } from "@/features/depth/PersonaDepth";
 import { ProjectsExplorer } from "@/features/projects/ProjectsExplorer";
 import { WorkPage } from "@/features/work/WorkPage";
+import { DesignPage } from "@/features/design/DesignPage";
 
 export function generateStaticParams() {
   return PERSONA_KEYS.map((persona) => ({ persona }));
@@ -20,5 +21,6 @@ export default async function PersonaPage({ params }: { params: Promise<{ person
   if (!isPersonaKey(persona)) notFound();
   if (persona === "projects") return <ProjectsExplorer />;
   if (persona === "work") return <WorkPage />;
+  if (persona === "design") return <DesignPage />;
   return <PersonaDepth persona={persona} />;
 }

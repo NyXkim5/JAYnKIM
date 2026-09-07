@@ -19,7 +19,7 @@ describe("personas", () => {
   it("puts projects and stealth on black, design and work on white", () => {
     expect(getPersona("projects").ground).toBe("black");
     expect(getPersona("stealth").ground).toBe("black");
-    expect(getPersona("design").ground).toBe("white");
+    expect(getPersona("design").ground).toBe("black");
     expect(getPersona("work").ground).toBe("black");
   });
 

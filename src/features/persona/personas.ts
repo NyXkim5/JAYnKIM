@@ -26,7 +26,7 @@ export const PERSONAS: readonly Persona[] = [
     key: "design",
     label: "Design",
     short: "DESIGN",
-    ground: "white",
+    ground: "black",
     index: 2,
     claim: "I ship to the App Store, then grade my own app a B and fix what I found.",
     live: false,
