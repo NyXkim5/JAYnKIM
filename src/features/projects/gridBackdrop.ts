@@ -30,15 +30,27 @@ export type Pulse = {
   radius: number;
 };
 
+// Wide orbits: the patches spend their time around the edges and only sweep
+// across the middle in passing, where the centre dip keeps them quiet.
 export const PULSES: readonly Pulse[] = [
-  { cx: 0.28, cy: 0.35, driftX: 0.12, driftY: 0.08, driftMs: 41000, breathMs: 6800, phase: 0.0, radius: 0.22 },
-  { cx: 0.72, cy: 0.6, driftX: 0.1, driftY: 0.12, driftMs: 53000, breathMs: 9100, phase: 2.1, radius: 0.26 },
-  { cx: 0.5, cy: 0.85, driftX: 0.18, driftY: 0.05, driftMs: 67000, breathMs: 7700, phase: 4.2, radius: 0.2 },
+  { cx: 0.5, cy: 0.5, driftX: 0.36, driftY: 0.3, driftMs: 47000, breathMs: 6800, phase: 0.0, radius: 0.22 },
+  { cx: 0.5, cy: 0.5, driftX: 0.34, driftY: 0.34, driftMs: 61000, breathMs: 9100, phase: 2.1, radius: 0.24 },
+  { cx: 0.5, cy: 0.5, driftX: 0.38, driftY: 0.28, driftMs: 79000, breathMs: 7700, phase: 4.2, radius: 0.2 },
 ];
 
+// The tree sits in the middle of the screen; light there is held down.
+export const CENTRE_DIP = 0.72;
+export const CENTRE_RADIUS = 0.3;
+
 export function pulseCentre(p: Pulse, t: number, w: number, h: number): { x: number; y: number } {
-  const a = (t / p.driftMs) * Math.PI * 2;
-  return { x: (p.cx + p.driftX * Math.sin(a)) * w, y: (p.cy + p.driftY * Math.cos(a * 0.7)) * h };
+  const a = (t / p.driftMs) * Math.PI * 2 + p.phase;
+  return { x: (p.cx + p.driftX * Math.sin(a)) * w, y: (p.cy + p.driftY * Math.cos(a * 1.3)) * h };
+}
+
+// 1 far from the centre, 1 - CENTRE_DIP at the centre itself.
+export function centreFactor(x: number, y: number, w: number, h: number): number {
+  const d = Math.hypot(x - w / 2, y - h / 2) / (CENTRE_RADIUS * Math.min(w, h));
+  return 1 - CENTRE_DIP * Math.exp(-d * d);
 }
 
 // 0..1 swell of one pulse, offset so the three never peak together.
@@ -56,7 +68,7 @@ export function glowAt(x: number, y: number, t: number, w: number, h: number): n
     const g = Math.exp(-d * d * 1.6) * pulseBreath(p, t);
     if (g > best) best = g;
   }
-  return Math.min(1, best);
+  return Math.min(1, best) * centreFactor(x, y, w, h);
 }
 
 // Opacity envelope: rise, hold, fall. Zero outside the blip's life.

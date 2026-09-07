@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   BASE_ALPHA,
+  CENTRE_DIP,
+  centreFactor,
   FADE_IN_MS,
   FADE_OUT_MS,
   LIFE_MS,
@@ -66,18 +68,47 @@ describe("glowAt", () => {
     const centre = glowAt(c.x, c.y, t, W, H);
     const near = glowAt(c.x + 120, c.y, t, W, H);
     const far = glowAt(c.x + 400, c.y, t, W, H);
-    expect(centre).toBeCloseTo(1, 3);
+    expect(centre).toBeCloseTo(centreFactor(c.x, c.y, W, H), 3);
     expect(near).toBeLessThan(centre);
     expect(far).toBeLessThan(near);
     expect(far).toBeLessThan(0.25);
   });
 
+  it("holds the middle of the screen under a third of full light at every moment", () => {
+    for (let t = 0; t < 200000; t += 733) {
+      expect(glowAt(W / 2, H / 2, t, W, H)).toBeLessThanOrEqual(1 - CENTRE_DIP + 1e-9);
+    }
+    expect(centreFactor(W / 2, H / 2, W, H)).toBeCloseTo(1 - CENTRE_DIP, 6);
+    expect(centreFactor(0, 0, W, H)).toBeGreaterThan(0.97);
+  });
+
+  it("starts the three patches apart so they never load as one clump", () => {
+    const at0 = PULSES.map((p) => pulseCentre(p, 0, W, H));
+    for (let i = 0; i < at0.length; i++) {
+      for (let j = i + 1; j < at0.length; j++) {
+        expect(Math.hypot(at0[i].x - at0[j].x, at0[i].y - at0[j].y)).toBeGreaterThan(300);
+      }
+    }
+  });
+
+  it("lets the patches sweep across the middle rather than orbit only one side", () => {
+    for (const p of PULSES) {
+      const xs = new Set<string>();
+      for (let t = 0; t < p.driftMs * 10; t += 500) {
+        const c = pulseCentre(p, t, W, H);
+        xs.add(`${c.x < W / 2 ? "L" : "R"}${c.y < H / 2 ? "T" : "B"}`);
+      }
+      expect(xs.size).toBe(4);
+    }
+  });
+
   it("changes over time at a fixed point, so the grid visibly breathes", () => {
     const p = PULSES[0];
-    const c = pulseCentre(p, 0, W, H);
-    const bright = glowAt(c.x, c.y, ((Math.PI / 2 - p.phase) / (Math.PI * 2)) * p.breathMs, W, H);
-    const dim = glowAt(c.x, c.y, ((-Math.PI / 2 - p.phase) / (Math.PI * 2)) * p.breathMs, W, H);
-    expect(bright - dim).toBeGreaterThan(0.5);
+    const tb = ((Math.PI / 2 - p.phase) / (Math.PI * 2)) * p.breathMs + p.breathMs * 3;
+    const c = pulseCentre(p, tb, W, H);
+    const bright = glowAt(c.x, c.y, tb, W, H);
+    const dim = glowAt(c.x, c.y, tb + p.breathMs / 2, W, H);
+    expect(bright).toBeGreaterThan(dim + 0.25);
   });
 });
 
