@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Gaegu, Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Nanum_Myeongjo } from "next/font/google";
 import dynamic from "next/dynamic";
 import "./globals.css";
 import "@/components/ui/ScribbleButton.css";
@@ -20,11 +20,11 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-// Handwritten face for the Studio name only. Carries Hangul and Latin so the
-// English/Korean cycle never falls back to a different font.
-const gaegu = Gaegu({
-  variable: "--font-doodle",
-  weight: ["400", "700"],
+// Korean serif that pairs with Times New Roman for the Studio name, so the
+// Hangul form keeps the same editorial cut as the Latin one.
+const nanumMyeongjo = Nanum_Myeongjo({
+  variable: "--font-hangul-serif",
+  weight: ["400", "700", "800"],
   subsets: ["latin"],
 });
 
@@ -84,7 +84,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} ${gaegu.variable} antialiased`}>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} ${nanumMyeongjo.variable} antialiased`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[99999] focus:px-4 focus:py-2 focus:bg-accent-green focus:text-black focus:rounded focus:font-mono focus:text-sm"
