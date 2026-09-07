@@ -12,7 +12,7 @@ function useEscape(onEscape: () => void, active: boolean) {
     if (!active) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        e.stopPropagation();
+        e.stopImmediatePropagation();
         onEscape();
       }
     };
@@ -41,21 +41,20 @@ export function ProjectsExplorer() {
           <TreeItem node={tree} depth={0} openSlug={openSlug} onOpen={setOpenSlug} />
         </ul>
       </section>
+      {/* Presence needs keyed motion children directly under it, never a fragment. */}
       <AnimatePresence>
         {project && (
-          <>
-            <motion.div
-              key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={close}
-              className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
-            />
-            <ProjectWindow key={project.slug} project={project} onBack={close} />
-          </>
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={close}
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+          />
         )}
+        {project && <ProjectWindow key={project.slug} project={project} onBack={close} />}
       </AnimatePresence>
     </main>
   );

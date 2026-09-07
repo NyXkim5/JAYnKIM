@@ -83,7 +83,7 @@ export function ProjectWindow({ project, onBack }: Props) {
       className="fixed left-1/2 top-1/2 z-50 flex max-h-[86vh] w-[min(92vw,760px)] -translate-x-1/2 -translate-y-1/2 flex-col border border-white/15 bg-[#0a0a0a] text-white"
     >
       <header className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-3">
-        <button ref={backRef} type="button" onClick={onBack} className="font-mono text-[11px] uppercase tracking-[0.18em] text-white hover:text-[#ff69b4]">
+        <button ref={backRef} type="button" onClick={onBack} className="font-mono text-[11px] uppercase tracking-[0.18em] text-white outline-none hover:text-[#ff69b4] focus-visible:text-[#ff69b4]">
           <span className="text-[#ff69b4]">[</span>← back<span className="text-[#ff69b4]">]</span>
         </button>
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ff69b4]">{project.status}</span>
