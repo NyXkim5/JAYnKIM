@@ -14,16 +14,13 @@ export const SPACING = CELL;
 export const MAJOR = MAJOR_EVERY;
 export const BASE_ALPHA = 0.11;
 
-// Short lines about warfare. Jay's voice, no figures, nothing attributed.
+// Only Jay's own lines: the sentences of his Stealth statement and his
+// studio quote. Nothing here was written for him.
 export const SAYINGS: readonly string[] = [
-  "Whoever sees first decides first.",
-  "Cheap sensors, expensive decisions.",
-  "A swarm is a question. Coverage is the answer.",
-  "Terrain still votes.",
-  "Range is a budget. Spend it on surprise.",
-  "The map is the first weapon.",
-  "Every second of warning is a mile of options.",
-  "Detection without a decision is a diary.",
+  "Make every battlefield an American battlefield.",
+  "Manifest destiny did not stop at California.",
+  "It stopped where we stopped looking.",
+  "Irregular thinking leads to irregular designs.",
 ];
 
 export type Focus = { x: number; y: number; saying: string };
