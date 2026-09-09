@@ -99,11 +99,13 @@ function StudioStage({
           <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.3em] opacity-60">{QUOTE_BY}</p>
         </div>
       </div>
+      {/* Muted and ambient, so it keeps playing under reduced motion. Only the
+          scramble and the warp, which are text jumping about, are skipped. */}
       <video
         ref={videoRef}
         className="fixed right-0 top-0 h-screen w-1/2 object-cover"
         src={STUDIO_VIDEO}
-        autoPlay={!reduced}
+        autoPlay
         muted
         loop
         playsInline
@@ -117,8 +119,7 @@ function StudioStage({
 export function Landing() {
   const { navigateTo } = usePageTransition();
   const reduced = useReducedMotion() ?? false;
-  const scrambled = useScrambleText(STUDIO_CLAIM, { speed: 30, staggerPerChar: 12 });
-  const claim = reduced ? STUDIO_CLAIM : scrambled;
+  const claim = useScrambleText(STUDIO_CLAIM, { speed: 30, staggerPerChar: 12, reduced });
   const openMark = useCallback(
     (m: EvidenceMark) => {
       if (m.href.startsWith("http")) window.open(m.href, "_blank", "noopener,noreferrer");

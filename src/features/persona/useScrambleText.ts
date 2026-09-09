@@ -15,16 +15,19 @@ export function useScrambleText(
     delay?: number;       // ms before starting
     speed?: number;       // ms per scramble tick (lower = faster)
     staggerPerChar?: number; // ms stagger between chars resolving
+    reduced?: boolean;    // skip the scramble and settle on the target at once
   }
 ) {
-  const { delay = 0, speed = 40, staggerPerChar = 30 } = options || {};
+  const { delay = 0, speed = 40, staggerPerChar = 30, reduced = false } = options || {};
+  // The first render is always empty, on the server and on every client, so
+  // hydration matches. Reduced motion fills the target in right after mount.
   const [display, setDisplay] = useState("");
   const frameRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
 
   useEffect(() => {
-    if (!target) {
-      queueMicrotask(() => setDisplay(""));
+    if (!target || reduced) {
+      queueMicrotask(() => setDisplay(target));
       return;
     }
 
@@ -102,7 +105,7 @@ export function useScrambleText(
       clearTimeout(timeout);
       cancelAnimationFrame(frameRef.current);
     };
-  }, [target, delay, speed, staggerPerChar]);
+  }, [target, delay, speed, staggerPerChar, reduced]);
 
   return display;
 }

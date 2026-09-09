@@ -14,8 +14,14 @@ export function Cursor() {
   useEffect(() => {
     // Hide on touch devices
     if ("ontouchstart" in window) return;
-    // Respect reduced motion preference
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // The arrow only sits where the pointer is, so it stays under reduced
+    // motion. The trailing particles are the decorative part and go.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      showTrail.current = false;
+      trailRefs.current.forEach((el) => {
+        if (el) el.style.opacity = "0";
+      });
+    }
 
     document.documentElement.style.cursor = "none";
 
@@ -92,6 +98,7 @@ export function Cursor() {
       {Array.from({ length: TRAIL_COUNT }).map((_, i) => (
         <div
           key={`trail-${i}`}
+          data-cursor-trail
           ref={(el) => { trailRefs.current[i] = el; }}
           className="pointer-events-none fixed top-0 left-0 z-[9997] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ff69b4]/50"
           style={{
