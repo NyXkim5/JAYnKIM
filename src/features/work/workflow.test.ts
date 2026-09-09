@@ -5,9 +5,12 @@ const yml = readFileSync(new URL("../../../.github/workflows/contributions.yml",
 const py = readFileSync(new URL("../../../scripts/work/fetch_contributions.py", import.meta.url), "utf8");
 
 describe("contributions workflow", () => {
-  it("schedules both UTC hours that map to 9 am Los Angeles and allows manual runs", () => {
+  // GitHub starts scheduled runs late, often by hours, so one morning cron
+  // that refreshes whenever it lands beats two crons and a clock check that
+  // almost never passed.
+  it("schedules one morning cron and allows manual runs", () => {
     expect(yml).toContain('cron: "0 16 * * *"');
-    expect(yml).toContain('cron: "0 17 * * *"');
+    expect(yml.match(/cron:/g)).toHaveLength(1);
     expect(yml).toMatch(/^\s*workflow_dispatch:/m);
   });
 
@@ -18,10 +21,9 @@ describe("contributions workflow", () => {
     expect(yml).toMatch(/permissions:\s+contents: write/);
   });
 
-  it("gates the scheduled run on the Los Angeles hour and writes the JSON path the page reads", () => {
-    expect(py).toContain('ZoneInfo("America/Los_Angeles")');
-    expect(py).toContain(".hour == 9");
-    expect(py).toContain('"GITHUB_EVENT_NAME") == "schedule"');
+  it("refreshes on every run with no clock gate and writes the JSON path the page reads", () => {
+    expect(py).not.toContain(".hour == 9");
+    expect(py).not.toContain("GITHUB_EVENT_NAME");
     expect(py).toContain('"contributions.json"');
   });
 });

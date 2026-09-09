@@ -2,10 +2,9 @@
 """Fetch NyXkim5's GitHub contribution calendar and write it as JSON.
 
 The Work page reads src/features/work/data/contributions.json at build time.
-.github/workflows/contributions.yml runs this script at 16:00 and 17:00 UTC,
-and the hour gate below lets only the run that lands on 9 am in Los Angeles
-do any work, so the file refreshes once a day at 9 am California time across
-the DST change. Local runs and workflow_dispatch skip the gate.
+.github/workflows/contributions.yml runs this script once a day. GitHub
+starts scheduled runs late, often by hours, so the script never checks the
+clock: whenever it runs, it refreshes.
 
 Auth order: CONTRIB_TOKEN, then GH_TOKEN, then GITHUB_TOKEN. With gh on PATH
 the query goes through `gh api graphql`, otherwise through urllib.
@@ -41,10 +40,6 @@ query($login: String!) {
   }
 }
 """
-
-
-def is_nine_in_los_angeles(now: datetime) -> bool:
-    return now.astimezone(LOS_ANGELES).hour == 9
 
 
 def token_from_env() -> str | None:
@@ -108,10 +103,6 @@ def shape(payload: dict, fetched_at: datetime) -> dict:
 
 def main() -> int:
     now = datetime.now(timezone.utc)
-    scheduled = os.environ.get("GITHUB_EVENT_NAME") == "schedule"
-    if scheduled and not is_nine_in_los_angeles(now):
-        print("not 9 am in Los Angeles, nothing to do")
-        return 0
     data = shape(fetch(), now)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(data, indent=2) + "\n")
