@@ -6,7 +6,9 @@ import { SCHOOL } from "./school";
 
 export type ProjectStatus =
   | "SIMULATED"
-  | "HARDWARE"
+  | "MEASURED"
+  | "BENCHMARKED"
+  | "REAL VIDEO"
   | "REAL TRAINING"
   | "CODE"
   | "THIRD-PARTY"
@@ -38,9 +40,9 @@ export type Project = {
 
 export type TreeNode = { name: string; slug?: string; nodes?: TreeNode[] };
 
-export const FOLDERS = ["hardware", "software", "mobile", "school"] as const;
+export const FOLDERS = ["defense", "software", "mobile", "school"] as const;
 export const FOLDER_LABELS: Record<(typeof FOLDERS)[number], string> = {
-  hardware: "hardware",
+  defense: "defense",
   software: "software",
   mobile: "mobile",
   school: "school contributions",
@@ -50,7 +52,7 @@ export const PROJECTS: readonly Project[] = [
   {
     slug: "overwatch-c2",
     title: "OVERWATCH command and control",
-    folder: "hardware",
+    folder: "defense",
     status: "SIMULATED",
     claim: "A live C2 surface: map, asset inspector with attitude and MGRS, and a directive panel with launch, recover, and abort.",
     caveat: "Simulated exercise against synthetic assets. No MAVLink vehicle has been driven from this panel.",
@@ -72,7 +74,7 @@ export const PROJECTS: readonly Project[] = [
   {
     slug: "siting-optimizer",
     title: "Sensor siting optimizer",
-    folder: "hardware",
+    folder: "defense",
     status: "SIMULATED",
     claim: "Maximum coverage as a monotone submodular objective, with the 1 minus 1/e guarantee stated in the docstring.",
     caveat: "Rendered from a real run on synthetic ridge terrain, 36 candidate masts on a lattice, four chosen greedily at 900 m range. No real site survey yet.",
@@ -89,7 +91,7 @@ export const PROJECTS: readonly Project[] = [
   {
     slug: "drone-detector",
     title: "Drone detector training run",
-    folder: "hardware",
+    folder: "defense",
     status: "REAL TRAINING",
     claim: "The shipped detector, drone_seraphim_v1, and the training log that produced it.",
     caveat: "Five epochs on the project dataset. Metrics read from results.csv, not from the chart.",
@@ -110,8 +112,8 @@ export const PROJECTS: readonly Project[] = [
   {
     slug: "latency-benchmark",
     title: "Perception latency benchmark",
-    folder: "hardware",
-    status: "HARDWARE",
+    folder: "defense",
+    status: "MEASURED",
     claim: "Mean latency dropped from 57.63 ms to 40.65 ms after the ONNX export, over 100 timed runs.",
     caveat: "Measured on an M1 Max CPU, not on edge hardware. The doc says so in its first line.",
     specs: [
@@ -128,8 +130,8 @@ export const PROJECTS: readonly Project[] = [
   {
     slug: "webcam-detection",
     title: "Real camera detection demo",
-    folder: "hardware",
-    status: "HARDWARE",
+    folder: "defense",
+    status: "REAL VIDEO",
     claim: "A laptop webcam feeding YOLO and a live HUD over a WebSocket, twenty frames at about 20 fps.",
     caveat: "Host CPU. The two frames ran a recorded clip (Pexels, Joseph Redfield) through the same detector and HUD in place of the webcam on 2026-09-06, with the drone fine-tune. The full engagement path needs SITL or a vehicle and is out of scope for the demo.",
     specs: [
@@ -147,7 +149,7 @@ export const PROJECTS: readonly Project[] = [
   {
     slug: "sonicfly-regression",
     title: "Pan acoustic drone tracker",
-    folder: "hardware",
+    folder: "defense",
     status: "THIRD-PARTY",
     claim: "Duke's released Kalman filter carried a covariance that did not match its own reported error. I found it, patched it, then built Pan, a private derivative with a real-flight regression gate that showed the fancier filters lose on real data.",
     caveat: "Derived from Duke's SonicFly, credited in the repo. Synthetic tuning wins vanished on the real test set, so the recommended default is the plain honest-R fix. The bearing gain is small and holds on four of ten trajectories.",
@@ -169,7 +171,7 @@ export const PROJECTS: readonly Project[] = [
   {
     slug: "msp-encoder",
     title: "Betaflight MSP encoder",
-    folder: "hardware",
+    folder: "defense",
     status: "CODE",
     claim: "A from-scratch MultiWii Serial Protocol v1 byte encoder and decoder with XOR checksums, tested without hardware.",
     caveat: "Pure protocol code, referenced against the Betaflight spec. v1 frames only, no v2 path exists. No board attached.",
@@ -182,6 +184,45 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/msp-frame.png", alt: "Twenty-two labelled bytes of one MSP v1 arm frame from the encoder, header, size, code, eight RC channels and the XOR checksum" },
     ],
     caseStudySlug: "drone-dashboard",
+    url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
+  },
+  {
+    slug: "pantheon-adoption",
+    title: "Pantheon open-source adoption",
+    folder: "defense",
+    status: "BENCHMARKED",
+    claim: "I catalogued 133 open-source sensing repos, filtered them by license, mirrored ten, and benchmarked the best tracker among them against my own.",
+    caveat: "Three simulated targets on one seed, scored by py-motmetrics. Stone Soup is a research framework and my tracker is tuned for this scenario, so the gap is a result on this benchmark and not a general verdict. Nothing has run on hardware.",
+    specs: [
+      { label: "MOTA", evidenceId: "pantheon.fusion.mota" },
+      { label: "Per update", evidenceId: "pantheon.fusion.update_ms" },
+      { label: "Repos catalogued", evidenceId: "pantheon.discovery.repos" },
+    ],
+    images: [
+      { src: "/projects/fusion-benchmark.png", alt: "Multi-object tracking accuracy and identity F1 on the left, milliseconds per update on the right, my tracker in pink ahead of Stone Soup on both" },
+    ],
+    caseStudySlug: "pantheon",
+    url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
+  },
+  {
+    slug: "live-sensing",
+    title: "Live sensing path",
+    folder: "defense",
+    status: "SIMULATED",
+    claim: "A sensor plan, a pump that merges sensor streams and ticks the tracker, and fused tracks reaching the map and ATAK.",
+    caveat: "The first source replays a recorded acoustic tripwire, so the tracks sit at the node positions and never move. A tripwire reports that something crossed it and nothing else. No sensor hardware has run this path.",
+    specs: [
+      { label: "Tracks on the map", evidenceId: "pantheon.live.tracks" },
+      { label: "CoT agreement", evidenceId: "pantheon.cot.angelia" },
+      { label: "Last gate", evidenceId: "pantheon.gate.tests" },
+    ],
+    images: [
+      { src: "/projects/live-tracks-hud.jpg", alt: "The command and control map with two fused tracks drawn beside the friendly assets, the link banner reading connected" },
+      { src: "/projects/live-tracks-detail.jpg", alt: "The same two tracks close up, drawn as yellow unknown-air symbols labelled trk-1 and trk-2, with the green friendly drones beside them" },
+    ],
+    caseStudySlug: "pantheon",
     url: "https://github.com/NyXkim5/DroneNexus",
     privateRepo: true,
   },

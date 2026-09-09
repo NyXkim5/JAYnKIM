@@ -124,7 +124,7 @@ describe("ProjectsExplorer", () => {
   it("opens on the four folders closed, with no leaf showing until one is clicked", () => {
     render(<ProjectsExplorer />);
     const folders = screen.getAllByRole("button", { expanded: false });
-    expect(folders.map((b) => b.textContent)).toEqual(["hardware/", "software/", "mobile/", "school contributions/"]);
+    expect(folders.map((b) => b.textContent)).toEqual(["defense/", "software/", "mobile/", "school contributions/"]);
     expect(screen.queryByText("Sensor siting optimizer")).toBeNull();
     expect(screen.getByRole("button", { expanded: true }).textContent).toBe("projects/");
     fireEvent.click(folders[0]);
