@@ -19,7 +19,7 @@ export const PERSONAS: readonly Persona[] = [
     short: "PROJECTS",
     ground: "black",
     index: 1,
-    claim: "Hardware and software, every project on one page, every number traced to a file.",
+    claim: "Defense systems and software, every project on one page, every number traced to a file.",
     live: true,
   },
   {

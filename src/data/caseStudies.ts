@@ -58,6 +58,119 @@ export interface CaseStudy {
 
 export const caseStudies: CaseStudy[] = [
   {
+    slug: "pantheon",
+    id: "009",
+    personas: ["projects"],
+    title: "Pantheon",
+    subtitle: "Adopting open-source sensing, then wiring it into the live system",
+    year: "2026",
+    role: "Solo Engineer",
+    status: "In progress",
+    duration: "Sept 2026",
+    team: "Solo, with an agent team",
+    layout: "newspaper",
+    overview:
+      "Aeacus is a counter-UAS command and control platform. Its engagement model is BULWARK and its C2 surface is OVERWATCH. I ran a discovery sweep over 133 open-source drone, counter-UAS and defense-intel repositories, reading stars, last push and license straight from the GitHub API rather than from memory, then filtered them by license because the product ships to people who audit dependencies. Ten upstream repos became nine private mirrors, each named after a Greek figure, each carrying an upstream record and a proprietary adapter package. One of them, a mirror of a UK defense lab's Stone Soup tracking framework, went head to head with the tracker I had already written. Then I built the loop that had never existed: a sensor plan, a pump that merges sensor streams and ticks the tracker, and a broadcaster that puts fused tracks on the map and sends Cursor on Target to ATAK.",
+    problem:
+      "Two problems, one after the other. The first is that reimplementing sensor fusion, passive radar and RF classification from scratch is a waste when good code already exists, and most of it carries a license that a proprietary product cannot touch. Reading a LICENSE file is the cheap part. Knowing whether the code underneath is worth adopting takes a benchmark. The second problem was worse and quieter. The platform had a fusion engine, four sensor adapters and a CoT bridge, and not one of them ran in the live system. Fused tracks existed only inside the wargame. The map showed the fleet its own telemetry and nothing else. Every piece passed its tests, and the pieces were not connected to anything.",
+    approach: [
+      "Swept 133 repositories against the 98 already catalogued in July, recording stars, last push and license from the GitHub API, and sorted them by what a proprietary product can legally do with each: permissive code can be vendored, copyleft code runs only behind a process boundary, and code with no LICENSE file grants nothing",
+      "Mirrored ten upstream repos into nine private forks, keeping upstream history and the original LICENSE untouched at the root so each fork can still fast forward from upstream later",
+      "Wrote an adapter contract before any fork work started: every sensor plugs in behind one async SensorSource interface, every tracker behind one FusionBackend protocol, and no fork imports anything from the platform except the shared ontology and those two interfaces",
+      "Ran the forks as an agent team with one owner per fork, a reviewer on every handoff who re-ran each gate and probed adversarially, and a single serial integrator, because integration is the one role that cannot be parallel",
+      "Benchmarked the Stone Soup backend against my own IMM/JPDA tracker over identical detections, scored with py-motmetrics at a 25 m match radius, and published the table verbatim including the parts that flattered neither side",
+      "Built the live path in one direction: a YAML sensor plan, a SensorPump that merges every source into one queue and ticks the tracker, a broadcaster that emits track packets to the map and CoT to ATAK, and a map layer that draws MIL-STD-2525 symbols",
+      "Validated the outgoing CoT with node-CoT, an independent parser from the TAK ecosystem, rather than trusting my own formatter's tests to grade my own formatter",
+    ],
+    designDecisions: [
+      {
+        title: "Benchmark Before Adopting, and Publish the Losing Numbers",
+        description:
+          "Stone Soup is a serious tracking framework from a national defense lab, and the obvious move was to adopt it and delete my own tracker. I benchmarked instead. On three simulated targets over 216 detections my tracker scored higher on multi-object tracking accuracy and ran roughly fourteen times faster per update. The gap is bookkeeping rather than estimation: both filters converge to about 5 m, which is the measurement sigma, and Stone Soup loses ground by re-initiating a track when a noisy detection falls outside the gate. That is a result on one seed and one scenario, and the handoff says so.",
+        outcome:
+          "The framework stays as a selectable backend behind the FusionBackend protocol instead of replacing anything. Adopting it would have cost accuracy and speed, and only a benchmark could have shown that.",
+      },
+      {
+        title: "One Physics Result Reshaped the Sensor Plan",
+        description:
+          "The same benchmark run on bistatic passive radar data failed on both backends, and that was the honest answer rather than a bug. A single passive radar node with one illuminator measures range along a spheroid and a Doppler shift. It cannot localize in three dimensions, so nothing landed inside the match radius for either tracker. My tracker scored better only because it parked one track at the receiver and stopped, while Stone Soup propagated the ambiguity into eleven tracks strung along the iso-range surface.",
+        outcome:
+          "Passive radar moved from standalone tracker to cueing sensor. It now refines a track that an electro-optical or Remote ID sensor started, and a test covers exactly that path.",
+      },
+      {
+        title: "Adversarial Review Caught What Green Tests Missed",
+        description:
+          "Every fork owner handed off a suite that passed. The reviewers re-ran each gate and then went looking for what the tests did not ask. One found that a detection carrying a NaN position sailed through the new fusion backend and exported a NaN track for a whole coast window, while the tracker it was meant to be swappable with had filtered that at ingest for months. Another found that the RF classifier produced a single-channel spectrogram that no real image backbone could consume. Both were real, both were fixed, and neither showed up as a red test.",
+        outcome:
+          "Non-finite input is now rejected and logged at the backend seam with an error that names the caller and the argument, covered by tests that were mutation-checked against the old behavior.",
+      },
+      {
+        title: "Reachability Is the Integration Test, Not a Passing Suite",
+        description:
+          "The final review found that the fusion backend switch had been wired into the wargame world but was not reachable from the live path, because the alternative backend does not classify tracks the way the wargame needs. Everything about it was green. The fix was to take the switch back out of the wargame and say plainly that it is not live there yet, rather than leave a config flag that looks connected and is not.",
+        outcome:
+          "The live sensing demo documents exactly which page receives fused tracks and which one does not, and why. A flag that does nothing is worse than an absent feature.",
+      },
+    ],
+    impact: [
+      {
+        metric: "Tracking accuracy",
+        value: "0.956 vs 0.872",
+        description: "My tracker against Stone Soup over identical detections, scored by py-motmetrics",
+        evidenceId: "pantheon.fusion.mota",
+      },
+      {
+        metric: "Per update",
+        value: "0.43 vs 6.13 ms",
+        description: "Wall clock per tracker update on the same run, about fourteen times apart",
+        evidenceId: "pantheon.fusion.update_ms",
+      },
+      {
+        metric: "Repos catalogued",
+        value: "133",
+        description: "Stars, last push and license read from the GitHub API, then filtered by what a proprietary product can use",
+        evidenceId: "pantheon.discovery.repos",
+      },
+      {
+        metric: "Last gate",
+        value: "3,922 + 453",
+        description: "Python and JavaScript tests passing at the end of the wave, with ruff and mypy clean",
+        evidenceId: "pantheon.gate.tests",
+      },
+    ],
+    stack: [
+      { category: "Fusion", tools: ["Stone Soup", "IMM", "JPDA", "py-motmetrics", "NumPy"] },
+      { category: "Sensing", tools: ["Passive bistatic radar", "Acoustic tripwire", "RF classifier", "Remote ID"] },
+      { category: "Platform", tools: ["Python 3.12", "asyncio", "Pydantic v2", "FastAPI", "WebSocket"] },
+      { category: "Interop", tools: ["Cursor on Target", "node-CoT", "ATAK", "MIL-STD-2525"] },
+      { category: "Gates", tools: ["pytest", "vitest", "ruff", "mypy --strict"] },
+    ],
+    images: [
+      {
+        src: "/projects/fusion-benchmark.png",
+        caption: "Tracking accuracy and identity F1 on the left, milliseconds per update on the right. Mine in pink, Stone Soup outlined.",
+      },
+      {
+        src: "/projects/live-tracks-detail.jpg",
+        caption: "Two fused tracks from the acoustic replay, drawn as unknown-air symbols beside the friendly assets.",
+      },
+    ],
+    reflections: {
+      worked: [
+        "Benchmarking before adopting. The framework was the obvious choice on reputation and the wrong one on measurement, and only a table settled it.",
+        "One owner per fork, a reviewer on every handoff, and a single serial integrator. Owners can run in parallel because their forks never touch. Integration cannot, because everything lands in the same seam.",
+        "Publishing the results that flattered nobody. The passive radar run failed on both backends, and writing that down changed the sensor plan instead of hiding a weak sensor behind a demo.",
+        "Validating the outgoing CoT with a parser from outside my own codebase. My formatter passing my formatter's tests proves very little.",
+      ],
+      different: [
+        "I would check reachability from the running system at the start of each wave rather than at the final review. A green suite told me nothing about whether the code it covered was connected to anything.",
+        "The first benchmark runs were not reproducible because the tracker was handed sets of objects and iterated them in hash order, which differs between processes. Ordered inputs should have been the default from the first line.",
+        "The acoustic demo shows two tracks that never move, because a tripwire has no bearing. That is truthful and it is a weak demo. I would put a sensor with bearing into the live path first next time.",
+      ],
+    },
+    nextProject: "drone-dashboard",
+  },
+  {
     slug: "optum",
     id: "002",
     personas: ["work"],
