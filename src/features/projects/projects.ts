@@ -72,6 +72,23 @@ export const PROJECTS: readonly Project[] = [
     privateRepo: true,
   },
   {
+    slug: "site-flyover",
+    title: "Site flyover and verification",
+    folder: "defense",
+    status: "SIMULATED",
+    claim: "Three drones lap a real building in 3D while a measured floor plan of it hangs on the terrain, and the panel checks the site before anything else happens.",
+    caveat: "A scripted mission, not a flight. No aircraft flew and no sensor ran. Terrain and buildings come from Cesium Ion, the imagery from Esri World Imagery, and the floor plan is a Library of Congress HABS measured drawing of the Great Stone Church, which is public domain. The recording hides the map credits, so it needs an attribution line before it goes anywhere public.",
+    specs: [],
+    images: [],
+    video: {
+      src: "/projects/site-flyover-mission.mp4",
+      poster: "/projects/site-flyover-poster.jpg",
+      alt: "Scripted OVERWATCH mission over the Great Stone Church: three drones orbit the site, a historical ground floor plan is pinned to the terrain beneath them, the panel verifies the area is civilian, then a hostile drone closes and the mission ends with the site verified",
+    },
+    url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
+  },
+  {
     slug: "siting-optimizer",
     title: "Sensor siting optimizer",
     folder: "defense",
