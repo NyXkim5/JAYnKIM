@@ -55,14 +55,15 @@ body {
   }
 }
 
-/* Reduced motion support - disable animations for users who prefer it */
+/* Reduced motion: stop looping keyframe animations and smooth scrolling.
+   Transitions stay, because hover and focus feedback is how a visitor can
+   tell the page is alive, and each one is short and caused by them. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }

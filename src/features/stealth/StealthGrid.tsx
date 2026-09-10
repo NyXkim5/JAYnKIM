@@ -92,7 +92,9 @@ export function StealthGrid({ quiet = false }: { quiet?: boolean } = {}) {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Reduced motion keeps the slow breathing and drops the light-gathering
+    // sweep, the same as the quiet backdrop.
+    const calm = quiet || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let size = { w: 0, h: 0 };
     let focus: Focus | null = null;
     let lastCycle = -1;
@@ -114,7 +116,7 @@ export function StealthGrid({ quiet = false }: { quiet?: boolean } = {}) {
     // and the label follows the phase, so skipped frames cannot strand a state.
     const tick = (now: number) => {
       const elapsed = now - start;
-      if (quiet) {
+      if (calm) {
         drawGrid(ctx, size.w, size.h, null, 0, "breathe", (elapsed % DURATIONS.breathe) / DURATIONS.breathe, elapsed);
         frame = requestAnimationFrame(tick);
         return;
@@ -137,11 +139,7 @@ export function StealthGrid({ quiet = false }: { quiet?: boolean } = {}) {
 
     resize();
     window.addEventListener("resize", resize);
-    if (reduced) {
-      drawGrid(ctx, size.w, size.h, null, 0, "hold", 0, 0);
-    } else {
-      frame = requestAnimationFrame(tick);
-    }
+    frame = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);

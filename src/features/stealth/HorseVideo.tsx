@@ -10,11 +10,12 @@ export const HORSE_SOURCES = [
   // Last resort with no alpha: the horse on the page's own black.
   { src: "/stealth/horse.mp4", type: "video/mp4" },
 ] as const;
-export const HORSE_ALT = "A galloping horse and rider drawn in pink dots";
+export const HORSE_ALT = "Muybridge's galloping horse and rider drawn in pink dots";
 
-// The dotted horse under the statement: cut from the source clip, keyed to
-// transparency and recoloured pink, so only the dots sit over the grid. It
-// is muted, which is what lets it autoplay.
+// The dotted horse under the statement: Eadweard Muybridge's "Sallie Gardner
+// at a Gallop" (1878), public domain, rendered as pink dots on transparency by
+// scripts/stealth/horse.py so only the dots sit over the grid. It is muted,
+// which is what lets it autoplay.
 export function HorseVideo() {
   const ref = useRef<HTMLVideoElement>(null);
 

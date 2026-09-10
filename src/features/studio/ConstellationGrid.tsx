@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
-import { useReducedMotion } from "framer-motion";
 import type { Ground } from "@/features/persona/personas";
 import { ConstellationScene } from "./ConstellationScene";
 import { OFFSCREEN, type EvidenceMark } from "./constellation";
@@ -46,7 +45,6 @@ export function ConstellationGrid({ ground, marks, videoRef, onSelect, className
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<ConstellationScene | null>(null);
-  const reduced = useReducedMotion() ?? false;
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -57,10 +55,11 @@ export function ConstellationGrid({ ground, marks, videoRef, onSelect, className
     scene.seed(marks);
     const ro = new ResizeObserver(([entry]) => scene.resize(entry.contentRect.width, entry.contentRect.height));
     ro.observe(wrap);
-    // Reduced motion gets one still frame of the grid at rest.
-    const stop = reduced ? () => {} : scene.start();
-    const detach = reduced ? () => {} : attachPointer(scene);
-    const stopGlow = reduced ? () => {} : attachGlow(scene, videoRef?.current ?? null);
+    // The grid drifts slowly and answers the pointer, which is calm enough to
+    // keep under reduced motion. A frozen grid read as a broken page.
+    const stop = scene.start();
+    const detach = attachPointer(scene);
+    const stopGlow = attachGlow(scene, videoRef?.current ?? null);
     return () => {
       stop();
       detach();
@@ -68,7 +67,7 @@ export function ConstellationGrid({ ground, marks, videoRef, onSelect, className
       ro.disconnect();
       sceneRef.current = null;
     };
-  }, [ground, marks, reduced, videoRef]);
+  }, [ground, marks, videoRef]);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const mark = sceneRef.current?.pick(e.clientX, e.clientY);

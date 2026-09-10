@@ -23,6 +23,8 @@ import {
   SPACING,
   stageFor,
 } from "./grid";
+import { STEALTH_STATEMENT } from "./StealthPage";
+import { STUDIO_QUOTE } from "@/features/studio/quote";
 
 const banned = /\b(signed|customers?|pilots?|early users|first users|active users|paying)\b/i;
 
@@ -131,10 +133,17 @@ describe("stealth grid cycle", () => {
   });
 
   it("keeps every saying short and clear of traction language", () => {
-    expect(SAYINGS.length).toBeGreaterThanOrEqual(6);
+    expect(SAYINGS.length).toBeGreaterThanOrEqual(4);
     for (const s of SAYINGS) {
       expect(s.length).toBeLessThanOrEqual(60);
       expect(s).not.toMatch(banned);
     }
+  });
+
+  // Every saying must be a sentence Jay wrote himself: the Stealth statement
+  // or the studio quote. This is what stops agent-written lines coming back.
+  it("uses only Jay's own sentences", () => {
+    const own = [...STEALTH_STATEMENT.split(/(?<=\.)\s+/), STUDIO_QUOTE];
+    for (const s of SAYINGS) expect(own).toContain(s);
   });
 });

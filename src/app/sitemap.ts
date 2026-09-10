@@ -9,15 +9,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/design",
     "/work",
     "/stealth",
-    "/about",
-    "/lab",
-    "/writing",
-    "/matcha",
-    "/music",
-    "/contact",
-    "/writing/gpu-batching-strategies",
-    "/writing/hipaa-infra-patterns",
-    "/writing/ml-monitoring-prod",
   ];
 
   const caseStudyPages = caseStudies.map((s) => studyHref(s.slug));

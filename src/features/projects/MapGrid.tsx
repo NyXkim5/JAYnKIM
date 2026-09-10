@@ -22,8 +22,9 @@ function resolveFont(canvas: HTMLCanvasElement): string {
   return v ? `${v}, ui-monospace, monospace` : FONT;
 }
 
-// Runs the frame loop against a canvas. Reduced motion draws one still grid.
-function runMapGrid(canvas: HTMLCanvasElement, still: boolean): () => void {
+// Runs the frame loop against a canvas. The grid always breathes; reduced
+// motion only leaves out the crosshair blips that appear and vanish.
+function runMapGrid(canvas: HTMLCanvasElement, withBlips: boolean): () => void {
   const ctx = canvas.getContext("2d");
   if (!ctx) return () => undefined;
   let size = fit(canvas);
@@ -35,13 +36,12 @@ function runMapGrid(canvas: HTMLCanvasElement, still: boolean): () => void {
     ctx.setTransform(size.dpr, 0, 0, size.dpr, 0, 0);
     const cols = Math.floor(size.w / CELL);
     const rows = Math.floor(size.h / CELL);
-    if (!still) ({ blips, spawnAt } = stepBlips(blips, t, spawnAt, cols, rows, Math.random));
-    drawMapGrid(ctx, size.w, size.h, still ? 0 : t, blips, font);
-    if (!still) raf = requestAnimationFrame(frame);
+    if (withBlips) ({ blips, spawnAt } = stepBlips(blips, t, spawnAt, cols, rows, Math.random));
+    drawMapGrid(ctx, size.w, size.h, t, blips, font);
+    raf = requestAnimationFrame(frame);
   };
   const onResize = () => {
     size = fit(canvas);
-    if (still) frame(0);
   };
   window.addEventListener("resize", onResize);
   frame(performance.now());
@@ -58,7 +58,7 @@ export function MapGrid({ className = "" }: { className?: string }) {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-    return runMapGrid(canvas, reduced);
+    return runMapGrid(canvas, !reduced);
   }, [reduced]);
   return <canvas ref={ref} aria-hidden="true" className={`pointer-events-none ${className}`} />;
 }

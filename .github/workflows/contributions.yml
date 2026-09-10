@@ -1,7 +1,7 @@
-# Refreshes src/features/work/data/contributions.json once a day at 9 am
-# America/Los_Angeles. GitHub cron runs in UTC only, so both 16:00 (PDT) and
-# 17:00 (PST) are scheduled and scripts/work/fetch_contributions.py exits
-# early unless the current Los Angeles hour is 9.
+# Refreshes src/features/work/data/contributions.json once a day. The cron is
+# 16:00 UTC, which is morning in Los Angeles; GitHub often starts scheduled
+# runs hours late, so the script refreshes whenever it actually runs instead
+# of checking the clock.
 #
 # GITHUB_TOKEN can normally read a public contribution calendar. If the API
 # refuses it, or the total comes back lower than the profile shows, add a
@@ -12,7 +12,6 @@ name: contributions
 on:
   schedule:
     - cron: "0 16 * * *"
-    - cron: "0 17 * * *"
   workflow_dispatch:
 
 permissions:
