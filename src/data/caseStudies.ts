@@ -780,6 +780,224 @@ export const caseStudies: CaseStudy[] = [
     link: { url: "https://va-gov-mvp-v1.vercel.app/", label: "View Live Demo" },
     nextProject: "drone-dashboard",
   },
+  {
+    slug: "ship-stability",
+    id: "010",
+    personas: ["projects"],
+    title: "Ship Stability",
+    subtitle: "Computing whether a hull rights itself, and proving the arithmetic against theory",
+    year: "2026",
+    role: "Solo Engineer",
+    status: "Complete",
+    duration: "Sept 2026",
+    team: "Solo, with an agent team",
+    overview:
+      "A Python tool that takes a hull and a loading condition and returns the numbers a naval architect reads before a vessel sails: displacement, the centre of buoyancy, the metacentric height, and a righting arm curve. It accepts either a box barge defined by four numbers or a real hull given as a table of offsets. It applies the free surface penalty that slack tanks impose, finds the heel angle at which the first opening floods, and checks the result against the six general intact stability criteria of the IMO 2008 code. I wrote it while working through MIT OpenCourseWare 2.700 as the reference.",
+    problem:
+      "Most teaching implementations of ship stability stop at the metacentric height, because GM is a one-line formula and the righting arm curve is not. GM describes the hull at zero heel and says nothing about what happens at forty degrees, which is the part that decides whether a vessel comes back up. The usual shortcut is the wall-sided approximation, and it is exact right up to the moment the deck edge enters the water, which is the moment it stops being exact and also the moment anyone cares. The second problem is trust. A stability number that cannot be checked against something is a number someone chose.",
+    approach: [
+      "Compute the righting arm by integration rather than by formula. For each heel angle, tilt the waterplane with the hull, solve by bisection for the plane height that keeps the displaced volume equal to the upright displacement, clip every station section against that plane, and integrate the immersed area and its centroid along the length. The righting arm is the horizontal separation between that centroid and the centre of gravity.",
+      "Validate against the closed form where the closed form is exact. A box barge has analytic hydrostatics, so displacement, KB, BM, KM and GM are all known exactly, and the integrator reproduces them to floating point precision.",
+      "Validate the curve against the wall-sided formula inside the range where that formula holds, then write a control test proving the two diverge outside it. Agreement everywhere would have meant the integrator was reimplementing the approximation rather than integrating the hull.",
+      "Read the IMO thresholds out of the code text rather than a textbook summary, and cross-check them against two independent official sources before hardcoding any of them.",
+    ],
+    designDecisions: [
+      {
+        title: "Integrate the Heeled Volume, Do Not Approximate It",
+        description:
+          "The wall-sided formula gives the righting arm as a function of GM and BM, and it is genuinely exact while the hull's sides are vertical at the waterline. Past the angle where the deck edge immerses or the bilge emerges, it overpredicts, which is the wrong direction to be wrong in for a stability calculation. Integrating the real immersed shape at every angle costs more compute and removes that failure mode entirely.",
+        outcome:
+          "The curve stays correct through deck edge immersion. Inside the wall-sided range it agrees with the closed form to within a nanometre, which is what proves the integrator is right rather than merely plausible.",
+      },
+      {
+        title: "A Control Test That Must Fail",
+        description:
+          "Matching the wall-sided formula proves nothing on its own, because an implementation that simply evaluated that formula would match it perfectly. So alongside the agreement test there is a control asserting the two results diverge past the wall-sided limit, and that the closed form is the optimistic one. The pair of tests together says the integrator tracks theory where theory holds and departs from it where theory breaks.",
+        outcome:
+          "Agreement became evidence instead of a coincidence. The same idea drove the whole suite, which was mutation tested by deliberately breaking the source and confirming the tests caught it.",
+      },
+      {
+        title: "Free Surface Is Charged As A Virtual Rise Of KG",
+        description:
+          "A slack tank holds liquid with a free surface. When the hull heels, that liquid runs to the low side and cuts the righting arm. The correction does not depend on how full the tank is, which is why a tank one tenth full costs the same as one nine tenths full. Breadth enters cubed, so a centreline bulkhead cuts the penalty to a quarter. The tool reports the solid metacentric height, every tank's contribution, and the corrected value, because a stability booklet that quoted only the corrected number would hide where the loss came from.",
+        outcome:
+          "The correction enters the curve at every angle, not only at zero heel, and the criteria are checked against the corrected value.",
+      },
+      {
+        title: "Downflooding Governs More Often Than Vanishing Stability",
+        description:
+          "The angle of vanishing stability is where the righting arm finally runs out. It is rarely the angle that matters. A vent that cannot be closed weathertight lets water in long before that, and once water is inside the hull none of this arithmetic describes the vessel any more. The tool takes a list of openings, finds the heel at which each immerses, names the one that floods first, and caps the criteria that the IMO code says to cap there.",
+        outcome:
+          "A barge with a vent one metre above the waterline floods at fourteen degrees and fails four of six criteria, which is the honest answer and not the one a GM figure alone would have given.",
+      },
+      {
+        title: "Cite The Paragraph Next To The Constant",
+        description:
+          "Every stability threshold in the checker carries its IMO code paragraph number in a comment beside it. Two places where implementations commonly differ are handled literally and documented: the code caps the second and third area criteria at the downflooding angle but not the first, and it sets no upper angle on the maximum righting arm search. Following the text exactly, and saying so, matters more than matching whatever another tool happens to do.",
+        outcome:
+          "Every one of the six thresholds traces to the code text, cross-checked against two official sources that agree. None is left unverified.",
+      },
+    ],
+    impact: [
+      {
+        metric: "Test suite",
+        value: "112",
+        description: "tests, covering geometry, hydrostatics, the righting arm curve, tanks, openings and criteria",
+        evidenceId: "shipstability.tests.passing",
+      },
+      {
+        metric: "Agreement with theory",
+        value: "1e-9 m",
+        description: "maximum deviation from the wall-sided closed form at every degree inside its valid range",
+        evidenceId: "shipstability.wallsided.agreement",
+      },
+      {
+        metric: "Stability criteria",
+        value: "6",
+        description: "IMO 2008 code general intact criteria checked, every threshold traced to the code text",
+        evidenceId: "shipstability.imo.criteria",
+      },
+    ],
+    stack: [
+      { category: "Language", tools: ["Python 3.12", "Type hints throughout"] },
+      { category: "Numerical", tools: ["Sutherland-Hodgman polygon clipping", "Simpson and trapezoid integration", "Bisection solver"] },
+      { category: "Output", tools: ["Matplotlib", "CSV offsets reader", "argparse CLI"] },
+      { category: "Testing", tools: ["pytest", "Closed-form validation", "Mutation testing"] },
+    ],
+    images: [
+      {
+        src: "/projects/ship-stability-gz-box.png",
+        caption:
+          "Righting arm curve for a box barge. The dashed line is the initial slope, which equals the metacentric height at one radian. The curve rises above it because the wall-sided term grows with the square of the heel angle.",
+      },
+      {
+        src: "/projects/ship-stability-gz-trawler.png",
+        caption:
+          "The same computation driven from a table of offsets rather than four numbers. The hull is a round bilge form, so the sections are polygons read from the table and clipped against the heeled waterplane.",
+      },
+    ],
+    reflections: {
+      worked: [
+        "Validating against a shape with a known answer first. The box barge is not interesting, which is exactly why it is the right thing to test against.",
+        "Writing the control test that had to fail. It turned an agreement into evidence.",
+        "Mutation testing the suite. Halving the free surface correction, flipping a sign in the area formula and moving each IMO threshold were all caught.",
+      ],
+      different: [
+        "The hull is free to sink and rise as it heels but not free to trim. A real vessel trims as it heels and that moves the righting arm. Adding free trim would mean solving two equations per angle instead of one.",
+        "The reported angle of maximum righting arm is quantised to the angle step, and one IMO criterion reads that angle directly. A vessel peaking near the twenty five degree threshold can flip verdict on step size alone.",
+        "I documented a branch that stops the curve when the hull would submerge. It cannot actually fire for either supported hull type, so that line of the README was aspirational rather than true.",
+      ],
+    },
+  },
+  {
+    slug: "ehs-incident-log",
+    id: "011",
+    personas: ["projects"],
+    title: "OSHA Recordkeeping",
+    subtitle: "Encoding the injury recording rules, with an audit trail that detects tampering",
+    year: "2026",
+    role: "Solo Engineer",
+    status: "Complete",
+    duration: "Sept 2026",
+    team: "Solo, with an agent team",
+    overview:
+      "A Python tool that records workplace injuries and illnesses in the format of the three OSHA forms: the 300 log, the 300A annual summary, and the 301 incident report. Column headings come from the official form package. It decides whether a case is recordable by walking the regulation, works out whether an establishment has to submit electronically, writes the federal upload files, and runs the certification and posting workflow. Every change lands in an append-only, hash-chained audit trail. All sample data is synthetic.",
+    problem:
+      "Injury recordkeeping looks like a data entry problem and is actually a rules problem. Whether a case goes on the log at all turns on a chain of tests in 29 CFR 1904, and the one that decides most cases is a list of fourteen treatments that count as first aid. Get that list wrong and an employer either over-records, which inflates its published injury rate, or under-records, which is a citation. The second problem is that this is a legal record. A log that can be quietly edited after an inspection is announced is worth nothing, and most spreadsheet implementations can be.",
+    approach: [
+      "Transcribe the forms from the official PDF rather than from memory. Eighteen columns on the 300, the exact field numbering on the 301, and the establishment and totals blocks on the 300A.",
+      "Encode the recordability chain in the order the regulation states it: work related, then a new case, then a general criterion, then the specific cases. Every rule carries its CFR citation in the code beside it.",
+      "Make the audit trail append-only and hash-chained, so that editing a line, deleting one, reordering them, or appending a forged entry all break the chain and are reported with the entry number that failed.",
+      "Return a third answer. Where the regulation hands the call to a person, the engine returns a needs-judgment result carrying the question to ask, rather than guessing and presenting the guess as a decision.",
+    ],
+    designDecisions: [
+      {
+        title: "Three Answers, Not Two",
+        description:
+          "A recordability engine that returns only yes or no has to invent an answer whenever a fact is unknown or the regulation calls for judgment. Whether an injury is a significant aggravation of a preexisting condition is a judgment a physician makes, not a function. So every input is a tri-state and an unknown stops the walk and returns the question instead of a verdict. A tool that quietly guesses on the judgment calls is worse than no tool, because it produces a record nobody can defend.",
+        outcome:
+          "The engine either names the rule that decided the case or names the question a person still has to answer. It never fills the gap itself.",
+      },
+      {
+        title: "The First Aid List Is The Product",
+        description:
+          "Fourteen treatments are first aid by definition, and the regulation says the list is complete and that the professional status of whoever administered the treatment makes no difference. A physician applying a butterfly bandage is still first aid. The traps live inside the parentheses: sutures are medical treatment while butterfly closures are first aid, an over the counter drug is first aid at nonprescription strength and medical treatment at prescription strength, a tetanus shot is first aid and a hepatitis B shot is not. The engine prints those distinctions in the question it asks.",
+        outcome:
+          "All fourteen items encoded with per-item citations, and the rule that a treatment on the list stays first aid whoever gives it.",
+      },
+      {
+        title: "Append-Only And Hash-Chained",
+        description:
+          "The audit file is opened in append mode and nothing in the code rewrites it. Each entry stores the hash of the entry before it, so the file is a chain rather than a list. Verification walks it and reports the first entry whose sequence, previous hash or own hash does not reconcile. Changing two fields on a case writes two entries, each with its own before and after value. Setting a field to the value it already holds writes nothing.",
+        outcome:
+          "Editing, deleting, reordering and hand-forging an entry are each detected and each has a test. A case recorded in error is voided, not deleted, which is what the form instructions call for.",
+      },
+      {
+        title: "Privacy Cases Keep The Name Off The Log",
+        description:
+          "Six categories of case, including mental illness and a sharps injury contaminated with blood, must appear on the log without the employee's name. The tool writes the required label in the name column and holds the real name only in the separate confidential list the instructions require, which is never written into the exported log. A test asserts the name is absent from the export, and a control test asserts an ordinary name is present, so the first assertion means something.",
+        outcome:
+          "The confidential list is reachable by its own command and is excluded from every export path.",
+      },
+      {
+        title: "Citing A Rule Means Meeting All Of It",
+        description:
+          "The annual summary export cited the paragraph that permits an equivalent form in any file format. Reading that paragraph properly showed it also requires the summary to carry the employee access statement and the employer penalty statement, and the export carried neither. It was failing the exact equivalence test it was invoking as its authority. Both statements are now transcribed from the form package and written into the file.",
+        outcome:
+          "A citation in a comment is a claim about the code. This one was checked and found wrong, which is the argument for citing the paragraph rather than the section.",
+      },
+    ],
+    impact: [
+      {
+        metric: "Test suite",
+        value: "249",
+        description: "tests, covering the recording rules, the audit chain, the exports and the certification workflow",
+        evidenceId: "ehslog.tests.passing",
+      },
+      {
+        metric: "Regulation encoded",
+        value: "17",
+        description: "distinct sections of 29 CFR 1904 cited in the code beside the rule each one governs",
+        evidenceId: "ehslog.cfr.sections",
+      },
+      {
+        metric: "First aid list",
+        value: "14",
+        description: "treatments encoded from the regulation, each carrying its own citation",
+        evidenceId: "ehslog.firstaid.items",
+      },
+    ],
+    stack: [
+      { category: "Language", tools: ["Python 3.12", "Standard library only at runtime"] },
+      { category: "Integrity", tools: ["SHA-256 hash chain", "Append-only JSON Lines", "Atomic record writes"] },
+      { category: "Compliance", tools: ["29 CFR 1904", "OSHA forms 300, 300A and 301", "Federal upload format"] },
+      { category: "Testing", tools: ["pytest", "Mutation testing", "Tamper-detection tests"] },
+    ],
+    images: [
+      {
+        src: "/projects/ehs-osha-300-log.png",
+        caption:
+          "The Form 300 log as the tool prints it. Case 2026-007 is a privacy concern case, so the required label stands where the name would be. The name exists in the record and reaches only the separate confidential list, never an export.",
+      },
+      {
+        src: "/projects/ehs-audit-chain.png",
+        caption:
+          "Two audit entries for one case, each carrying the field, the value before and the value after. Verification walks the hash chain and reports the first entry that fails to reconcile. All data is synthetic.",
+      },
+    ],
+    reflections: {
+      worked: [
+        "Reading the regulation from the federal source rather than a summary. The summaries disagree with each other and several are years out of date.",
+        "Making unknown a first class answer. It removed every place the engine would otherwise have had to invent a fact.",
+        "Mutation testing the rules. Dropping one item from the first aid list, inverting the treatment test and disabling tamper detection were each caught.",
+      ],
+      different: [
+        "The regulation cites a section range that includes a section which no longer exists. The musculoskeletal disorder rule was rescinded before it took effect and the cross reference was never cleaned up, so a careful reading of the citation leads to a section that is not there.",
+        "The federal upload specification does not state that its columns must appear in the printed order. The tool writes them that way as the safe reading and says so, rather than presenting a guess as the spec.",
+        "It is a single establishment and a single year, held in files with no concurrent writer. Two processes writing at once would race.",
+      ],
+    },
+  },
 ];
 
 export function findStudy(slug: string): CaseStudy | undefined {

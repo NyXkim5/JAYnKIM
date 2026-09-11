@@ -52,7 +52,7 @@ describe("caseStudies content rules", () => {
   });
 
   it("filters by persona", () => {
-    expect(studiesFor("projects").map((s) => s.slug)).toEqual(["pantheon", "archv", "drone-dashboard", "drone-virtual-env", "va-gov-mvp"]);
+    expect(studiesFor("projects").map((s) => s.slug)).toEqual(["pantheon", "archv", "drone-dashboard", "drone-virtual-env", "va-gov-mvp", "ship-stability", "ehs-incident-log"]);
   });
 
   it("never claims traction in body prose", () => {
