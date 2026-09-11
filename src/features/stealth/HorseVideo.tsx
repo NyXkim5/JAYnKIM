@@ -5,9 +5,15 @@ import { useEffect, useRef } from "react";
 export const HORSE_SOURCES = [
   // Safari plays HEVC with alpha and refuses the WebM, Chrome and Firefox do
   // the reverse, so both carry real transparency over the grid.
+  //
+  // Both of these must be encoded from the RGBA frames directly. The HEVC was
+  // once composited onto black by the same filter as the mp4 fallback, which
+  // gave Safari, and therefore iPhones, an opaque rectangle while desktop
+  // Chrome looked correct. See scripts/stealth/horse.py.
   { src: "/stealth/horse-hevc.mov", type: 'video/quicktime; codecs="hvc1"' },
   { src: "/stealth/horse.webm", type: 'video/webm; codecs="vp9"' },
-  // Last resort with no alpha: the horse on the page's own black.
+  // Last resort with no alpha, composited onto the page ground so its
+  // rectangle stays invisible.
   { src: "/stealth/horse.mp4", type: "video/mp4" },
 ] as const;
 export const HORSE_ALT = "Muybridge's galloping horse and rider drawn in pink dots";

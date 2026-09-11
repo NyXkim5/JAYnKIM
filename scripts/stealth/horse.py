@@ -68,14 +68,49 @@ def draw_dots(grid: np.ndarray) -> Image.Image:
     return im
 
 
+# The ground the page paints behind the horse. The no-alpha fallback is
+# composited onto this exact colour, not onto pure black, so the video's own
+# rectangle cannot show as a darker box against the page.
+GROUND = "#0a0a0a"
+
+
 def encode(frames_dir: Path, out: Path) -> None:
+    """Write the three sources the player offers, in order of preference.
+
+    Two of them must carry real transparency. The earlier version composited
+    the HEVC onto black with the same filter as the mp4 fallback, so Safari,
+    which picks the HEVC first, got an opaque rectangle. The frames are RGBA,
+    so alpha only survives if the encoder is handed them directly.
+    """
     pattern = str(frames_dir / "%03d.png")
     base = ["ffmpeg", "-v", "error", "-y", "-framerate", str(FPS), "-i", pattern]
-    subprocess.run(base + ["-c:v", "libvpx-vp9", "-pix_fmt", "yuva420p", "-b:v", "0", "-crf", "30", str(out / "horse.webm")], check=True)
-    black = "color=black:s=%dx%d" % (WIDTH, HEIGHT)
-    on_black = ["-f", "lavfi", "-i", black, "-filter_complex", "[1:v][0:v]overlay=shortest=1,format=yuv420p"]
-    subprocess.run(base + on_black + ["-c:v", "libx264", "-crf", "20", "-movflags", "+faststart", str(out / "horse.mp4")], check=True)
-    subprocess.run(base + on_black + ["-c:v", "hevc_videotoolbox", "-q:v", "60", "-tag:v", "hvc1", "-movflags", "+faststart", str(out / "horse-hevc.mov")], check=True)
+
+    # WebM with alpha for Chrome and Firefox. yuva420p keeps the alpha plane.
+    subprocess.run(
+        base + ["-c:v", "libvpx-vp9", "-pix_fmt", "yuva420p", "-b:v", "0", "-crf", "30",
+                str(out / "horse.webm")],
+        check=True,
+    )
+
+    # HEVC with alpha for Safari. VideoToolbox carries alpha when it is given a
+    # bgra source and an explicit alpha quality. It must NOT be composited.
+    subprocess.run(
+        base + ["-c:v", "hevc_videotoolbox", "-pix_fmt", "bgra", "-alpha_quality", "0.9",
+                "-q:v", "60", "-tag:v", "hvc1", "-movflags", "+faststart",
+                str(out / "horse-hevc.mov")],
+        check=True,
+    )
+
+    # Last resort, no alpha. Composite onto the page ground so the rectangle is
+    # invisible even here.
+    ground = "color=%s:s=%dx%d" % (GROUND, WIDTH, HEIGHT)
+    on_ground = ["-f", "lavfi", "-i", ground,
+                 "-filter_complex", "[1:v][0:v]overlay=shortest=1,format=yuv420p"]
+    subprocess.run(
+        base + on_ground + ["-c:v", "libx264", "-crf", "20", "-movflags", "+faststart",
+                            str(out / "horse.mp4")],
+        check=True,
+    )
 
 
 def main() -> int:
