@@ -396,6 +396,58 @@ export const PROJECTS: readonly Project[] = [
     url: "https://github.com/NyXkim5/summer-2027-role-index",
   },
   ...SCHOOL,
+  {
+    slug: "ship-stability",
+    title: "Ship hydrostatics and intact stability",
+    folder: "software",
+    status: "CODE",
+    claim:
+      "Hydrostatics and a righting arm curve integrated from the real heeled hull, checked against the IMO intact stability criteria and validated against closed-form naval architecture.",
+    caveat:
+      "The hull sinks and rises as it heels but is not free to trim, and there is no damage stability. Validated against a box barge, where the answers are known exactly, and against the wall-sided formula inside the range where that formula holds. Nothing here has been checked by a classification society.",
+    specs: [
+      { label: "Tests", evidenceId: "shipstability.tests.passing" },
+      { label: "Agreement", evidenceId: "shipstability.wallsided.agreement" },
+      { label: "IMO criteria", evidenceId: "shipstability.imo.criteria" },
+    ],
+    images: [
+      {
+        src: "/projects/ship-stability-gz-box.png",
+        alt: "Righting arm curve for a box barge with the initial slope drawn as the metacentric height",
+      },
+      {
+        src: "/projects/ship-stability-gz-trawler.png",
+        alt: "Righting arm curve computed from a table of offsets with the IMO criteria verdicts listed",
+      },
+    ],
+    caseStudySlug: "ship-stability",
+  },
+  {
+    slug: "osha-recordkeeping",
+    title: "OSHA injury and illness recordkeeping",
+    folder: "software",
+    status: "CODE",
+    claim:
+      "The OSHA 300, 300A and 301 forms with the recording rules encoded from the regulation, behind an append-only audit trail that detects tampering.",
+    caveat:
+      "All data is synthetic and the names are phonetic placeholders. It decides recordability by walking the rule and returns a needs-judgment answer where the regulation hands the call to a person. It does not submit to the federal tracking application, and the column order of that upload format could not be confirmed as mandatory.",
+    specs: [
+      { label: "Tests", evidenceId: "ehslog.tests.passing" },
+      { label: "CFR sections", evidenceId: "ehslog.cfr.sections" },
+      { label: "First aid list", evidenceId: "ehslog.firstaid.items" },
+    ],
+    images: [
+      {
+        src: "/projects/ehs-osha-300-log.png",
+        alt: "The Form 300 log printed by the tool, with a privacy concern case showing the required label in place of the name",
+      },
+      {
+        src: "/projects/ehs-audit-chain.png",
+        alt: "Two audit entries for one case with values before and after, then the hash chain verifying intact",
+      },
+    ],
+    caseStudySlug: "ehs-incident-log",
+  },
 ];
 
 // The project whose window carries a given case study, if one does.

@@ -1,6 +1,7 @@
 import { PersonaBar } from "@/features/persona/PersonaBar";
 import { getPersona } from "@/features/persona/personas";
 import { ContributionGraph } from "./ContributionGraph";
+import { Credentials } from "./Credentials";
 import { currentMonth, type Contributions } from "./contributions";
 import contributions from "./data/contributions.json";
 import { EDUCATION, ROLES } from "./roles";
@@ -30,6 +31,7 @@ export function WorkPage() {
       <section className="px-5 md:px-8">
         <Timeline roles={ROLES} education={EDUCATION} now={currentMonth(data.fetchedAt)} />
       </section>
+      <Credentials />
       <ContributionGraph data={data} />
     </main>
   );
