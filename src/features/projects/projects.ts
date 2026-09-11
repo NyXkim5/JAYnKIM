@@ -402,13 +402,13 @@ export const PROJECTS: readonly Project[] = [
     folder: "software",
     status: "CODE",
     claim:
-      "Hydrostatics and a righting arm curve integrated from the real heeled hull, checked against the IMO intact stability criteria and validated against closed-form naval architecture.",
+      "Hydrostatics, a righting arm curve integrated from the real heeled hull with the vessel free to trim, cross curves of stability, and the IMO intact stability criteria including severe wind and rolling.",
     caveat:
-      "The hull sinks and rises as it heels but is not free to trim, and there is no damage stability. Validated against a box barge, where the answers are known exactly, and against the wall-sided formula inside the range where that formula holds. Nothing here has been checked by a classification society.",
+      "No damage stability, so this describes a sound hull only. Validated against a box barge, where the answers are known exactly, and against the wall-sided formula inside the range where that formula holds. The roll period reads waterline length off the stations that touch the water, which makes the weather criterion conservative on a fine ended hull. Nothing here has been checked by a classification society.",
     specs: [
       { label: "Tests", evidenceId: "shipstability.tests.passing" },
       { label: "Agreement", evidenceId: "shipstability.wallsided.agreement" },
-      { label: "IMO criteria", evidenceId: "shipstability.imo.criteria" },
+      { label: "KN identity", evidenceId: "shipstability.kn.identity" },
     ],
     images: [
       {
@@ -428,13 +428,13 @@ export const PROJECTS: readonly Project[] = [
     folder: "software",
     status: "CODE",
     claim:
-      "The OSHA 300, 300A and 301 forms with the recording rules encoded from the regulation, behind an append-only audit trail that detects tampering.",
+      "The OSHA 300, 300A and 301 forms across several sites and years, with the recording rules encoded from the regulation, rates read against published industry figures, and an append-only audit trail that detects tampering.",
     caveat:
-      "All data is synthetic and the names are phonetic placeholders. It decides recordability by walking the rule and returns a needs-judgment answer where the regulation hands the call to a person. It does not submit to the federal tracking application, and the column order of that upload format could not be confirmed as mandatory.",
+      "All data is synthetic and the names are phonetic placeholders. It decides recordability by walking the rule and returns a needs-judgment answer where the regulation hands the call to a person. It does not submit to the federal tracking application, and the column order of that upload format could not be confirmed as mandatory. The audit trail is a hash chain, not a Merkle log, so it proves self-consistency rather than being independently verifiable.",
     specs: [
       { label: "Tests", evidenceId: "ehslog.tests.passing" },
       { label: "CFR sections", evidenceId: "ehslog.cfr.sections" },
-      { label: "First aid list", evidenceId: "ehslog.firstaid.items" },
+      { label: "Concurrent writers", evidenceId: "ehslog.concurrency.workers" },
     ],
     images: [
       {
@@ -444,6 +444,10 @@ export const PROJECTS: readonly Project[] = [
       {
         src: "/projects/ehs-audit-chain.png",
         alt: "Two audit entries for one case with values before and after, then the hash chain verifying intact",
+      },
+      {
+        src: "/projects/ehs-300a-benchmark.png",
+        alt: "The Form 300A annual summary with the incidence rates read against published BLS figures for the same industry code",
       },
     ],
     caseStudySlug: "ehs-incident-log",

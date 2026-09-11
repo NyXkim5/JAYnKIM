@@ -796,6 +796,7 @@ export const caseStudies: CaseStudy[] = [
     problem:
       "Most teaching implementations of ship stability stop at the metacentric height, because GM is a one-line formula and the righting arm curve is not. GM describes the hull at zero heel and says nothing about what happens at forty degrees, which is the part that decides whether a vessel comes back up. The usual shortcut is the wall-sided approximation, and it is exact right up to the moment the deck edge enters the water, which is the moment it stops being exact and also the moment anyone cares. The second problem is trust. A stability number that cannot be checked against something is a number someone chose.",
     approach: [
+      "Solve the floating attitude rather than assume it. Displacement and longitudinal moment are solved together, so the hull is free to trim as it heels instead of being pinned level. On a fore and aft symmetric hull that changes nothing, which is the control that proves the solver is not inventing motion.",
       "Compute the righting arm by integration rather than by formula. For each heel angle, tilt the waterplane with the hull, solve by bisection for the plane height that keeps the displaced volume equal to the upright displacement, clip every station section against that plane, and integrate the immersed area and its centroid along the length. The righting arm is the horizontal separation between that centroid and the centre of gravity.",
       "Validate against the closed form where the closed form is exact. A box barge has analytic hydrostatics, so displacement, KB, BM, KM and GM are all known exactly, and the integrator reproduces them to floating point precision.",
       "Validate the curve against the wall-sided formula inside the range where that formula holds, then write a control test proving the two diverge outside it. Agreement everywhere would have meant the integrator was reimplementing the approximation rather than integrating the hull.",
@@ -841,8 +842,8 @@ export const caseStudies: CaseStudy[] = [
     impact: [
       {
         metric: "Test suite",
-        value: "112",
-        description: "tests, covering geometry, hydrostatics, the righting arm curve, tanks, openings and criteria",
+        value: "201",
+        description: "tests, covering geometry, hydrostatics, the righting arm curve, free trim, cross curves, tanks, openings and criteria",
         evidenceId: "shipstability.tests.passing",
       },
       {
@@ -854,8 +855,14 @@ export const caseStudies: CaseStudy[] = [
       {
         metric: "Stability criteria",
         value: "6",
-        description: "IMO 2008 code general intact criteria checked, every threshold traced to the code text",
+        description: "IMO 2008 code general intact criteria checked, plus the severe wind and rolling criterion, every threshold traced to the code text",
         evidenceId: "shipstability.imo.criteria",
+      },
+      {
+        metric: "Cross curve identity",
+        value: "3.3e-16 m",
+        description: "worst error reproducing three separately integrated GZ curves from one KN table",
+        evidenceId: "shipstability.kn.identity",
       },
     ],
     stack: [
@@ -883,9 +890,10 @@ export const caseStudies: CaseStudy[] = [
         "Mutation testing the suite. Halving the free surface correction, flipping a sign in the area formula and moving each IMO threshold were all caught.",
       ],
       different: [
-        "The hull is free to sink and rise as it heels but not free to trim. A real vessel trims as it heels and that moves the righting arm. Adding free trim would mean solving two equations per angle instead of one.",
-        "The reported angle of maximum righting arm is quantised to the angle step, and one IMO criterion reads that angle directly. A vessel peaking near the twenty five degree threshold can flip verdict on step size alone.",
-        "I documented a branch that stops the curve when the hull would submerge. It cannot actually fire for either supported hull type, so that line of the README was aspirational rather than true.",
+        "I shipped a README claiming the curve stops when the hull would submerge. That branch could not fire for either supported hull type, so the claim was aspirational rather than true. It is now wired to the condition it describes.",
+        "The angle of maximum righting arm was quantised to the angle step, and one criterion reads that angle directly, so step size was deciding pass or fail on a hull peaking near the threshold. Refining the peak was a correctness fix, not a polish item.",
+        "There is still no damage stability. Intact stability says what happens to a sound hull, and the harder question is what happens after the hull is opened to the sea.",
+        "The roll period used by the weather criterion reads waterline length from the stations that touch the water, so on a fine ended hull it is short by up to half a station spacing. That makes the result conservative rather than wrong, but it is an approximation sitting inside a criterion that looks exact.",
       ],
     },
   },
@@ -950,8 +958,8 @@ export const caseStudies: CaseStudy[] = [
     impact: [
       {
         metric: "Test suite",
-        value: "249",
-        description: "tests, covering the recording rules, the audit chain, the exports and the certification workflow",
+        value: "400",
+        description: "tests, covering the recording rules, the audit chain, real concurrent writers, the exports and the certification workflow",
         evidenceId: "ehslog.tests.passing",
       },
       {
@@ -965,6 +973,12 @@ export const caseStudies: CaseStudy[] = [
         value: "14",
         description: "treatments encoded from the regulation, each carrying its own citation",
         evidenceId: "ehslog.firstaid.items",
+      },
+      {
+        metric: "Industry benchmark",
+        value: "975",
+        description: "BLS incidence rate rows for reference year 2024, so a rate reads against its own industry",
+        evidenceId: "ehslog.bls.rows",
       },
     ],
     stack: [
@@ -984,6 +998,11 @@ export const caseStudies: CaseStudy[] = [
         caption:
           "Two audit entries for one case, each carrying the field, the value before and the value after. Verification walks the hash chain and reports the first entry that fails to reconcile. All data is synthetic.",
       },
+      {
+        src: "/projects/ehs-300a-benchmark.png",
+        caption:
+          "The annual summary, with both rates read against the published figures for the same industry code. A rate on its own says nothing. Against its own industry it says whether the site is above or below the line.",
+      },
     ],
     reflections: {
       worked: [
@@ -992,6 +1011,9 @@ export const caseStudies: CaseStudy[] = [
         "Mutation testing the rules. Dropping one item from the first aid list, inverting the treatment test and disabling tamper detection were each caught.",
       ],
       different: [
+        "The audit trail is a hash chain, which proves the record is consistent with itself. The bar set by verifiable logs is a Merkle tree with inclusion and consistency proofs, which a third party can check without trusting whoever holds the record. That distinction matters exactly in an inspection, which is the case the tool exists for.",
+        "File locking is advisory, so a process that ignores the lock can still corrupt the record. It is also POSIX only, because it uses fcntl.",
+        "The benchmark is a comparison, not a verdict. BLS publishes standard errors in a table the tool does not read, so it cannot say whether a small gap sits inside sampling error, and it prints that caveat on every run.",
         "The regulation cites a section range that includes a section which no longer exists. The musculoskeletal disorder rule was rescinded before it took effect and the cross reference was never cleaned up, so a careful reading of the citation leads to a section that is not there.",
         "The federal upload specification does not state that its columns must appear in the printed order. The tool writes them that way as the safe reading and says so, rather than presenting a guess as the spec.",
         "It is a single establishment and a single year, held in files with no concurrent writer. Two processes writing at once would race.",
