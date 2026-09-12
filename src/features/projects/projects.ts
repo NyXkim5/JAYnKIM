@@ -528,6 +528,7 @@ export const PROJECTS: readonly Project[] = [
       { label: "Tracking", evidenceId: "artemis.tracking.tests" },
     ],
     images: [
+      { src: "/projects/artemis-link-protocol.png", alt: "Both frames byte by byte with every field named and typed, the flags byte, and the two chains side by side: software ends at four axes, the enable path runs through hardware contacts in series and no wire joins them", w: 1800, h: 1567 },
       { src: "/projects/artemis-mutation-survivors.png", alt: "A green thirty seven test suite left twenty five of a hundred and eight mutants alive, twelve of them real gaps, and twelve added tests killed every one a test could reach", w: 1800, h: 1000 },
       { src: "/projects/artemis-latency-stages.png", alt: "The camera read owns the loop at 3.2 ms of a 4.4 ms tick, the other five stages together stay under a tenth of a millisecond, on a log scale", w: 1800, h: 1080 },
     ],
