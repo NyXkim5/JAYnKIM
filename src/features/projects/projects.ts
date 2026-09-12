@@ -421,6 +421,8 @@ export const PROJECTS: readonly Project[] = [
       },
     ],
     caseStudySlug: "ship-stability",
+    url: "https://github.com/NyXkim5/ship-stability",
+    privateRepo: true,
   },
   {
     slug: "osha-recordkeeping",
@@ -451,6 +453,8 @@ export const PROJECTS: readonly Project[] = [
       },
     ],
     caseStudySlug: "ehs-incident-log",
+    url: "https://github.com/NyXkim5/ehs-incident-log",
+    privateRepo: true,
   },
   {
     slug: "ontology-seed",
@@ -467,6 +471,8 @@ export const PROJECTS: readonly Project[] = [
       { label: "Dataset", evidenceId: "ontologyseed.dataset.detections" },
     ],
     images: [],
+    url: "https://github.com/NyXkim5/palantir-ontology-seed",
+    privateRepo: true,
   },
   {
     slug: "maritime-swarm",
