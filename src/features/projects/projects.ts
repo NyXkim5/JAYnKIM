@@ -522,13 +522,14 @@ export const PROJECTS: readonly Project[] = [
     claim:
       "Lost control software rebuilt as two halves, an Arduino firmware side and a Raspberry Pi tracking side, against a written link protocol that carries no fire command and no arm command.",
     caveat:
-      "The hardware and the mechanical design are wildcard's work. This rebuilds the control software for RCWS v5 after the original was lost, with permission, and the repository records that upstream position. Nothing here has touched a real Arduino or a real mount, every test runs against a simulator. The protocol carries no fire command and no arm command by design. The enable path is hardware, in series, and software can read the interlock bit but can never close it. The test counts are the weakest number on this page. The mutation score is the honest one.",
+      "Nothing here has touched a real Arduino or a real mount, every test runs against a simulator. The protocol carries no fire command and no arm command by design. The enable path is hardware, in series, and software can read the interlock bit but can never close it. The test counts are the weakest number on this page. The mutation score is the honest one.",
     specs: [
       { label: "Mutation", evidenceId: "artemis.mutation.gaps" },
       { label: "Firmware", evidenceId: "artemis.firmware.tests" },
       { label: "Tracking", evidenceId: "artemis.tracking.tests" },
     ],
     images: [
+      { src: "/projects/artemis-cad-subsystems.png", alt: "The four subsystems: electronic control, drive system, launcher, and the EOTS head. The launcher is its own box, which is the separation the link protocol keeps in software", w: 1800, h: 819 },
       { src: "/projects/artemis-link-protocol.png", alt: "Both frames byte by byte with every field named and typed, the flags byte, and the two chains side by side: software ends at four axes, the enable path runs through hardware contacts in series and no wire joins them", w: 1800, h: 1567 },
       { src: "/projects/artemis-mutation-survivors.png", alt: "A green thirty seven test suite left twenty five of a hundred and eight mutants alive, twelve of them real gaps, and twelve added tests killed every one a test could reach", w: 1800, h: 1000 },
       { src: "/projects/artemis-latency-stages.png", alt: "The camera read owns the loop at 3.2 ms of a 4.4 ms tick, the other five stages together stay under a tenth of a millisecond, on a log scale", w: 1800, h: 1080 },
