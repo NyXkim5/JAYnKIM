@@ -13,7 +13,7 @@ export const SCHOOL: readonly Project[] = [
     claim: "Logistics for UCI's collegiate hackathon organisation, and a hand on the Hack at UCI website.",
     caveat: "Student and alumni organisation at UC Irvine that runs the campus hackathons. Description from its GitHub profile and event site.",
     specs: [],
-    images: [{ src: "/projects/school/hack-at-uci.jpg", alt: "Hack at UCI website" }],
+    images: [{ src: "/projects/school/hack-at-uci.jpg", alt: "Hack at UCI website", w: 1456, h: 839 }],
     url: "https://hack.ics.uci.edu",
   },
   {
@@ -24,7 +24,7 @@ export const SCHOOL: readonly Project[] = [
     claim: "Graphics for UCI's student cybersecurity club, the visuals that go out with its events and channels.",
     caveat: "Student club at UC Irvine that fields cybersecurity competition teams and hosts workshops. Description from its site.",
     specs: [],
-    images: [{ src: "/projects/school/cyber-at-uci.jpg", alt: "Cyber @ UCI website" }],
+    images: [{ src: "/projects/school/cyber-at-uci.jpg", alt: "Cyber @ UCI website", w: 1456, h: 839 }],
     url: "https://cyberuci.com",
   },
   {
@@ -35,7 +35,7 @@ export const SCHOOL: readonly Project[] = [
     claim: "Served as president of UCI's student club for designing, building, and flying model aircraft and drones.",
     caveat: "Student club at UC Irvine, formerly UAVs at UCI. Description from its ZotSpot page.",
     specs: [],
-    images: [{ src: "/projects/school/uav-at-uci.jpg", alt: "Unmanned Aerial Vehicles at UCI club logo, from its ZotSpot page" }],
+    images: [{ src: "/projects/school/uav-at-uci.jpg", alt: "Unmanned Aerial Vehicles at UCI club logo, from its ZotSpot page", w: 1600, h: 900 }],
     url: "https://zotspot.uci.edu/uavs/home",
   },
   {
@@ -46,7 +46,7 @@ export const SCHOOL: readonly Project[] = [
     claim: "Graphics for UCI's student chapter of the Vertical Flight Society, the visuals for its talks, tours, and workshops.",
     caveat: "Student chapter of the Vertical Flight Society at UC Irvine. Description from its ZotSpot page.",
     specs: [],
-    images: [{ src: "/projects/school/vfs-at-uci.jpg", alt: "Vertical Flight Society at UCI website" }],
+    images: [{ src: "/projects/school/vfs-at-uci.jpg", alt: "Vertical Flight Society at UCI website", w: 1456, h: 839 }],
     url: "https://zotspot.uci.edu/VFS/",
   },
   {
@@ -57,7 +57,7 @@ export const SCHOOL: readonly Project[] = [
     claim: "Graphics for UCI's student-run AI organisation, the visuals for its workshops and posts.",
     caveat: "Student-run organisation at UC Irvine for all things AI. Description from its GitHub profile.",
     specs: [],
-    images: [{ src: "/projects/school/ai-at-uci.jpg", alt: "AI at UCI website" }],
+    images: [{ src: "/projects/school/ai-at-uci.jpg", alt: "AI at UCI website", w: 1456, h: 839 }],
     url: "https://aiclub.ics.uci.edu",
   },
 ];

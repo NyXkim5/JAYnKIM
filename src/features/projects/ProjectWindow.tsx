@@ -23,9 +23,12 @@ function Corners() {
 }
 
 function Figure({ img }: { img: ProjectImage }) {
+  // The frame takes its shape from the file itself. A fixed 16:9 box used to
+  // letterbox a wide terminal capture into a third of its own height, which
+  // read as a blank black panel.
   return (
     <figure>
-      <div className="relative aspect-video w-full bg-black">
+      <div className="relative w-full bg-black" style={{ aspectRatio: `${img.w} / ${img.h}` }}>
         <div className="absolute inset-0 overflow-hidden">
           <Image src={img.src} alt={img.alt} fill sizes="(max-width: 768px) 100vw, 1100px" loading="eager" className="object-contain" />
         </div>

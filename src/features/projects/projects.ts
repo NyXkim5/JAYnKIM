@@ -16,7 +16,10 @@ export type ProjectStatus =
   | "LIVE DATA"
   | "COMMUNITY";
 
-export type ProjectImage = { src: string; alt: string };
+// w and h are the file's real pixel dimensions. The figure frame takes its
+// shape from them, so an image never sits letterboxed inside a box that is
+// the wrong shape for it. Required, so a new image cannot omit them.
+export type ProjectImage = { src: string; alt: string; w: number; h: number };
 // A demo clip served from public/, shown above the figures with a poster frame.
 export type ProjectVideo = { src: string; poster: string; alt: string };
 export type ProjectSpec = { label: string; evidenceId: string };
@@ -62,10 +65,10 @@ export const PROJECTS: readonly Project[] = [
       { label: "HUD tests", evidenceId: "overwatch.tests.passed" },
     ],
     images: [
-      { src: "/projects/overwatch-hud.jpg", alt: "OVERWATCH HUD with map, inspector, and primary flight display" },
-      { src: "/projects/overwatch-inspector.jpg", alt: "Asset inspector with attitude horizon, MGRS grid, and power state" },
-      { src: "/projects/overwatch-directive.png", alt: "Directive panel with launch, recover, return to base, and abort" },
-      { src: "/projects/overwatch-map.jpg", alt: "Full map view with coverage percentage and areas of interest" },
+      { src: "/projects/overwatch-hud.jpg", alt: "OVERWATCH HUD with map, inspector, and primary flight display", w: 1459, h: 812 },
+      { src: "/projects/overwatch-inspector.jpg", alt: "Asset inspector with attitude horizon, MGRS grid, and power state", w: 1600, h: 900 },
+      { src: "/projects/overwatch-directive.png", alt: "Directive panel with launch, recover, return to base, and abort", w: 1920, h: 1080 },
+      { src: "/projects/overwatch-map.jpg", alt: "Full map view with coverage percentage and areas of interest", w: 1600, h: 900 },
     ],
     caseStudySlug: "drone-dashboard",
     url: "https://github.com/NyXkim5/DroneNexus",
@@ -100,7 +103,7 @@ export const PROJECTS: readonly Project[] = [
       { label: "Bound", evidenceId: "dronenexus.siting.bound" },
       { label: "Tests collected", evidenceId: "dronenexus.tests.collected" },
     ],
-    images: [{ src: "/projects/siting-plan.png", alt: "Left, the ridge terrain with every candidate mast, the four chosen sites and their range rings. Right, expected coverage per demand cell in pink, with the sites overlaid" }],
+    images: [{ src: "/projects/siting-plan.png", alt: "Left, the ridge terrain with every candidate mast, the four chosen sites and their range rings. Right, expected coverage per demand cell in pink, with the sites overlaid", w: 1600, h: 800 }],
     caseStudySlug: "drone-dashboard",
     url: "https://github.com/NyXkim5/DroneNexus",
     privateRepo: true,
@@ -118,10 +121,10 @@ export const PROJECTS: readonly Project[] = [
       { label: "Latency", evidenceId: "dronenexus.yolo.latency" },
     ],
     images: [
-      { src: "/projects/detector-training-curves.png", alt: "Loss, precision, recall, and mAP curves over five epochs" },
-      { src: "/projects/detector-predictions.jpg", alt: "Validation frames with predicted bounding boxes" },
-      { src: "/projects/detector-pr-curve.png", alt: "Precision recall curve" },
-      { src: "/projects/detector-confusion.png", alt: "Normalized confusion matrix" },
+      { src: "/projects/detector-training-curves.png", alt: "Loss, precision, recall, and mAP curves over five epochs", w: 2400, h: 1200 },
+      { src: "/projects/detector-predictions.jpg", alt: "Validation frames with predicted bounding boxes", w: 1600, h: 1600 },
+      { src: "/projects/detector-pr-curve.png", alt: "Precision recall curve", w: 2250, h: 1500 },
+      { src: "/projects/detector-confusion.png", alt: "Normalized confusion matrix", w: 3000, h: 2250 },
     ],
     url: "https://github.com/NyXkim5/DroneNexus",
     privateRepo: true,
@@ -139,7 +142,7 @@ export const PROJECTS: readonly Project[] = [
       { label: "mAP50", evidenceId: "dronenexus.yolo.map50" },
     ],
     images: [
-      { src: "/projects/latency-benchmark.png", alt: "Mean, p50 and p95 latency for the baseline, fine-tuned and ONNX detectors, ONNX lowest in every group" },
+      { src: "/projects/latency-benchmark.png", alt: "Mean, p50 and p95 latency for the baseline, fine-tuned and ONNX detectors, ONNX lowest in every group", w: 1600, h: 800 },
     ],
     url: "https://github.com/NyXkim5/DroneNexus",
     privateRepo: true,
@@ -157,8 +160,8 @@ export const PROJECTS: readonly Project[] = [
       { label: "HUD tests", evidenceId: "overwatch.tests.passed" },
     ],
     images: [
-      { src: "/projects/webcam-drone-detect-1.jpg", alt: "OVERWATCH live detection HUD, LIVE, a quadcopter boxed as drone with its confidence, inference time and source resolution in the performance panel" },
-      { src: "/projects/webcam-drone-detect-2.jpg", alt: "A later frame of the same clip, the box tracking the drone as it banks past the palm trees" },
+      { src: "/projects/webcam-drone-detect-1.jpg", alt: "OVERWATCH live detection HUD, LIVE, a quadcopter boxed as drone with its confidence, inference time and source resolution in the performance panel", w: 1485, h: 812 },
+      { src: "/projects/webcam-drone-detect-2.jpg", alt: "A later frame of the same clip, the box tracking the drone as it banks past the palm trees", w: 1485, h: 812 },
     ],
     url: "https://github.com/NyXkim5/DroneNexus",
     privateRepo: true,
@@ -176,11 +179,11 @@ export const PROJECTS: readonly Project[] = [
       { label: "Range RMSE, synthetic", evidenceId: "sonicfly.bearing.rmse" },
     ],
     images: [
-      { src: "/projects/pan-range.png", alt: "Range error for five filter chains on two synthetic sets and real flight, every derivative beats the shipped chain on range" },
-      { src: "/projects/pan-bearing.png", alt: "Bearing error for the same chains, the recommended chain is worst on static synthetic and best on real flight" },
-      { src: "/projects/pan-timeseries.png", alt: "Real flight trajectory nine, raw network bearing, RTK truth, shipped and recommended chains over 29 seconds" },
-      { src: "/projects/pan-nees.png", alt: "Normalised estimation error squared on the synthetic sets with the consistency line at four" },
-      { src: "/projects/sonicfly-eval.png", alt: "Acoustic bearing and range evaluation plots from the upstream SonicFly repository" },
+      { src: "/projects/pan-range.png", alt: "Range error for five filter chains on two synthetic sets and real flight, every derivative beats the shipped chain on range", w: 1500, h: 459 },
+      { src: "/projects/pan-bearing.png", alt: "Bearing error for the same chains, the recommended chain is worst on static synthetic and best on real flight", w: 1500, h: 459 },
+      { src: "/projects/pan-timeseries.png", alt: "Real flight trajectory nine, raw network bearing, RTK truth, shipped and recommended chains over 29 seconds", w: 1500, h: 459 },
+      { src: "/projects/pan-nees.png", alt: "Normalised estimation error squared on the synthetic sets with the consistency line at four", w: 1300, h: 420 },
+      { src: "/projects/sonicfly-eval.png", alt: "Acoustic bearing and range evaluation plots from the upstream SonicFly repository", w: 1600, h: 708 },
     ],
     url: "https://github.com/NyXkim5/pan",
     privateRepo: true,
@@ -198,7 +201,7 @@ export const PROJECTS: readonly Project[] = [
       { label: "Arm frame", evidenceId: "dronenexus.msp.arm_frame.bytes" },
     ],
     images: [
-      { src: "/projects/msp-frame.png", alt: "Twenty-two labelled bytes of one MSP v1 arm frame from the encoder, header, size, code, eight RC channels and the XOR checksum" },
+      { src: "/projects/msp-frame.png", alt: "Twenty-two labelled bytes of one MSP v1 arm frame from the encoder, header, size, code, eight RC channels and the XOR checksum", w: 1600, h: 640 },
     ],
     caseStudySlug: "drone-dashboard",
     url: "https://github.com/NyXkim5/DroneNexus",
@@ -217,7 +220,7 @@ export const PROJECTS: readonly Project[] = [
       { label: "Repos catalogued", evidenceId: "pantheon.discovery.repos" },
     ],
     images: [
-      { src: "/projects/fusion-benchmark.png", alt: "Multi-object tracking accuracy and identity F1 on the left, milliseconds per update on the right, my tracker in pink ahead of Stone Soup on both" },
+      { src: "/projects/fusion-benchmark.png", alt: "Multi-object tracking accuracy and identity F1 on the left, milliseconds per update on the right, my tracker in pink ahead of Stone Soup on both", w: 1600, h: 800 },
     ],
     caseStudySlug: "pantheon",
     url: "https://github.com/NyXkim5/DroneNexus",
@@ -236,8 +239,8 @@ export const PROJECTS: readonly Project[] = [
       { label: "Last gate", evidenceId: "pantheon.gate.tests" },
     ],
     images: [
-      { src: "/projects/live-tracks-hud.jpg", alt: "The command and control map with two fused tracks drawn beside the friendly assets, the link banner reading connected" },
-      { src: "/projects/live-tracks-detail.jpg", alt: "The same two tracks close up, drawn as yellow unknown-air symbols labelled trk-1 and trk-2, with the green friendly drones beside them" },
+      { src: "/projects/live-tracks-hud.jpg", alt: "The command and control map with two fused tracks drawn beside the friendly assets, the link banner reading connected", w: 1493, h: 812 },
+      { src: "/projects/live-tracks-detail.jpg", alt: "The same two tracks close up, drawn as yellow unknown-air symbols labelled trk-1 and trk-2, with the green friendly drones beside them", w: 1110, h: 626 },
     ],
     caseStudySlug: "pantheon",
     url: "https://github.com/NyXkim5/DroneNexus",
@@ -256,7 +259,7 @@ export const PROJECTS: readonly Project[] = [
       { label: "Gold rows", evidenceId: "archvbrain.eval.goldRows" },
     ],
     images: [
-      { src: "/projects/archv-eval.png", alt: "Nineteen eval cases against four verification flags, every false anchor cell empty, and the totals block beside it" },
+      { src: "/projects/archv-eval.png", alt: "Nineteen eval cases against four verification flags, every false anchor cell empty, and the totals block beside it", w: 1600, h: 900 },
     ],
     video: {
       src: "/projects/archv-demo.mp4",
@@ -280,7 +283,7 @@ export const PROJECTS: readonly Project[] = [
       { label: "Route cases", evidenceId: "iris.isolation.route_cases" },
     ],
     images: [
-      { src: "/projects/iris-isolation.png", alt: "Seventy-seven tenant isolation route cases grouped by URL surface, and test functions per proof layer" },
+      { src: "/projects/iris-isolation.png", alt: "Seventy-seven tenant isolation route cases grouped by URL surface, and test functions per proof layer", w: 1600, h: 850 },
     ],
     url: "https://github.com/NyXkim5/IrisEvaluationMVP",
     privateRepo: true,
@@ -297,7 +300,7 @@ export const PROJECTS: readonly Project[] = [
       { label: "State-controlled", evidenceId: "metis.sources.state_controlled" },
     ],
     images: [
-      { src: "/projects/metis-sources.png", alt: "Curated source registry entries per tier, enabled filled and disabled hollow, the seven state-controlled entries in pink" },
+      { src: "/projects/metis-sources.png", alt: "Curated source registry entries per tier, enabled filled and disabled hollow, the seven state-controlled entries in pink", w: 1600, h: 800 },
     ],
     url: "https://github.com/NyXkim5/singularity",
     privateRepo: true,
@@ -327,12 +330,12 @@ export const PROJECTS: readonly Project[] = [
       { label: "Dart tests", evidenceId: "hermes.tests" },
     ],
     images: [
-      { src: "/projects/hermes-streaming.png", alt: "macOS Flutter test app mid-generation, spinner live and the first partial sentence streaming in" },
-      { src: "/projects/hermes-done.png", alt: "The same app after completion with the engine's own throughput chips and the first token on screen time" },
-      { src: "/projects/hermes-liveness.png", alt: "Calling isolate timer ticks during generation and time to first visible token, before and after Generation 3" },
-      { src: "/projects/hermes-throughput.png", alt: "Prefill and decode tokens per second for two models at two prompt sizes, mean and standard deviation" },
-      { src: "/projects/hermes-overhead.png", alt: "Engine time against Dart binding overhead per call, log scale" },
-      { src: "/projects/cactus-site.jpg", alt: "cactuscompute.com landing page, on-device AI with cloud fallback" },
+      { src: "/projects/hermes-streaming.png", alt: "macOS Flutter test app mid-generation, spinner live and the first partial sentence streaming in", w: 1600, h: 1264 },
+      { src: "/projects/hermes-done.png", alt: "The same app after completion with the engine's own throughput chips and the first token on screen time", w: 1600, h: 1264 },
+      { src: "/projects/hermes-liveness.png", alt: "Calling isolate timer ticks during generation and time to first visible token, before and after Generation 3", w: 1600, h: 608 },
+      { src: "/projects/hermes-throughput.png", alt: "Prefill and decode tokens per second for two models at two prompt sizes, mean and standard deviation", w: 1600, h: 611 },
+      { src: "/projects/hermes-overhead.png", alt: "Engine time against Dart binding overhead per call, log scale", w: 1440, h: 648 },
+      { src: "/projects/cactus-site.jpg", alt: "cactuscompute.com landing page, on-device AI with cloud fallback", w: 1456, h: 839 },
     ],
     caseStudySlug: "cactus",
     url: "https://github.com/NyXkim5/hermes",
@@ -358,9 +361,9 @@ export const PROJECTS: readonly Project[] = [
     caveat: "Employer work at MedVanta, no public code. The screens are from the shipped product.",
     specs: [],
     images: [
-      { src: "/medvanta-hero.png", alt: "VantaStat, quick access to orthopaedic specialists for pain and injury" },
-      { src: "/medvanta-intake.webp", alt: "The three-step intake: describe the injury, upload photos, connect" },
-      { src: "/medvanta-app.webp", alt: "The patient-facing app and the practice dashboard side by side" },
+      { src: "/medvanta-hero.png", alt: "VantaStat, quick access to orthopaedic specialists for pain and injury", w: 1284, h: 620 },
+      { src: "/medvanta-intake.webp", alt: "The three-step intake: describe the injury, upload photos, connect", w: 548, h: 1190 },
+      { src: "/medvanta-app.webp", alt: "The patient-facing app and the practice dashboard side by side", w: 554, h: 1200 },
     ],
     caseStudySlug: "medvanta",
   },
@@ -377,8 +380,8 @@ export const PROJECTS: readonly Project[] = [
       { label: "Last gate", evidenceId: "bamboo.gate.passing" },
     ],
     images: [
-      { src: "/projects/bamboo-site.jpg", alt: "bamboonutrition.app landing page with the phone mockup and calorie ring" },
-      { src: "/projects/bamboo-site-2.jpg", alt: "Three things your current app cannot do, from the Bamboo site" },
+      { src: "/projects/bamboo-site.jpg", alt: "bamboonutrition.app landing page with the phone mockup and calorie ring", w: 1456, h: 839 },
+      { src: "/projects/bamboo-site-2.jpg", alt: "Three things your current app cannot do, from the Bamboo site", w: 1456, h: 839 },
     ],
     url: "https://bamboonutrition.app/",
   },
@@ -391,7 +394,7 @@ export const PROJECTS: readonly Project[] = [
     caveat: "Public repository. The README still says 372; the live count is in stats.json.",
     specs: [{ label: "Live rows", evidenceId: "roleindex.rows.live" }],
     images: [
-      { src: "/projects/role-index-repo.jpg", alt: "README of the Summer 2027 role index repository on GitHub" },
+      { src: "/projects/role-index-repo.jpg", alt: "README of the Summer 2027 role index repository on GitHub", w: 1456, h: 839 },
     ],
     url: "https://github.com/NyXkim5/summer-2027-role-index",
   },
@@ -414,10 +417,14 @@ export const PROJECTS: readonly Project[] = [
       {
         src: "/projects/ship-stability-gz-box.png",
         alt: "Righting arm curve for a box barge with the initial slope drawn as the metacentric height",
+        w: 1350,
+        h: 825,
       },
       {
         src: "/projects/ship-stability-gz-trawler.png",
         alt: "Righting arm curve computed from a table of offsets with the IMO criteria verdicts listed",
+        w: 1350,
+        h: 825,
       },
     ],
     caseStudySlug: "ship-stability",
@@ -442,14 +449,20 @@ export const PROJECTS: readonly Project[] = [
       {
         src: "/projects/ehs-osha-300-log.png",
         alt: "The Form 300 log printed by the tool, with a privacy concern case showing the required label in place of the name",
+        w: 2210,
+        h: 485,
       },
       {
         src: "/projects/ehs-audit-chain.png",
         alt: "Two audit entries for one case with values before and after, then the hash chain verifying intact",
+        w: 2210,
+        h: 418,
       },
       {
         src: "/projects/ehs-300a-benchmark.png",
         alt: "The Form 300A annual summary with the incidence rates read against published BLS figures for the same industry code",
+        w: 2210,
+        h: 1183,
       },
     ],
     caseStudySlug: "ehs-incident-log",
@@ -470,7 +483,14 @@ export const PROJECTS: readonly Project[] = [
       { label: "Tests", evidenceId: "ontologyseed.tests.passing" },
       { label: "Dataset", evidenceId: "ontologyseed.dataset.detections" },
     ],
-    images: [],
+    images: [
+      {
+        src: "/projects/ontology-graph.png",
+        alt: "The eight object types and the seven links between them, each link labelled with its cardinality, with the four types implementing the Locatable interface marked",
+        w: 2000,
+        h: 1120,
+      },
+    ],
     url: "https://github.com/NyXkim5/palantir-ontology-seed",
     privateRepo: true,
   },
@@ -487,8 +507,31 @@ export const PROJECTS: readonly Project[] = [
       { label: "Scenarios", evidenceId: "maritime.scenarios.named" },
       { label: "Tests", evidenceId: "maritime.tests.passing" },
     ],
-    images: [],
+    images: [
+      { src: "/projects/maritime-sea-state.png", alt: "Clutter contacts climb the same way in every scenario, while detection on the target fans out by altitude, the eight metre swarm ending at half the hits of the sixty metre one", w: 1839, h: 1470 },
+    ],
     url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
+  },
+  {
+    slug: "artemis-rcws",
+    title: "Artemis remote weapon station control",
+    folder: "defense",
+    status: "CODE",
+    claim:
+      "Lost control software rebuilt as two halves, an Arduino firmware side and a Raspberry Pi tracking side, against a written link protocol that carries no fire command and no arm command.",
+    caveat:
+      "The hardware and the mechanical design are wildcard's work. This rebuilds the control software for RCWS v5 after the original was lost, with permission, and the repository records that upstream position. Nothing here has touched a real Arduino or a real mount, every test runs against a simulator. The protocol carries no fire command and no arm command by design. The enable path is hardware, in series, and software can read the interlock bit but can never close it. The test counts are the weakest number on this page. The mutation score is the honest one.",
+    specs: [
+      { label: "Mutation", evidenceId: "artemis.mutation.gaps" },
+      { label: "Firmware", evidenceId: "artemis.firmware.tests" },
+      { label: "Tracking", evidenceId: "artemis.tracking.tests" },
+    ],
+    images: [
+      { src: "/projects/artemis-mutation-survivors.png", alt: "A green thirty seven test suite left twenty five of a hundred and eight mutants alive, twelve of them real gaps, and twelve added tests killed every one a test could reach", w: 1800, h: 1000 },
+      { src: "/projects/artemis-latency-stages.png", alt: "The camera read owns the loop at 3.2 ms of a 4.4 ms tick, the other five stages together stay under a tenth of a millisecond, on a log scale", w: 1800, h: 1080 },
+    ],
+    url: "https://github.com/NyXkim5/artemis",
     privateRepo: true,
   },
 ];
