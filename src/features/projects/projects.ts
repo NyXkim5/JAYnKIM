@@ -452,6 +452,39 @@ export const PROJECTS: readonly Project[] = [
     ],
     caseStudySlug: "ehs-incident-log",
   },
+  {
+    slug: "ontology-seed",
+    title: "Palantir Ontology seed",
+    folder: "software",
+    status: "CODE",
+    claim:
+      "An airspace awareness Ontology written down as data, its five Functions implemented in strict TypeScript, and a synthetic dataset built from a sensor physics model to populate it.",
+    caveat:
+      "Nothing here has ever run against Foundry. The definition is not an import format and no Palantir tool reads it, so it is a specification a person transcribes by hand. The Functions are reference implementations with no Palantir SDK import, and there is no Workshop application, no pipeline and no AIP Logic, because all three need a live enrollment. Every row of data is synthetic, the sensor parameters are textbook values that describe no real equipment, and the site names are invented. Every type and cardinality decision is documented but unproven against a real Ontology Manager.",
+    specs: [
+      { label: "Ontology", evidenceId: "ontologyseed.ontology.objects" },
+      { label: "Tests", evidenceId: "ontologyseed.tests.passing" },
+      { label: "Dataset", evidenceId: "ontologyseed.dataset.detections" },
+    ],
+    images: [],
+  },
+  {
+    slug: "maritime-swarm",
+    title: "Maritime swarm scenarios",
+    folder: "defense",
+    status: "SIMULATED",
+    claim:
+      "A drone swarm closing on a ship under way, replayed through the existing sensor adapters, with a sea state model that both raises the radar false alarm rate and costs detection against a target down in the clutter.",
+    caveat:
+      "Simulated throughout. No vessel sailed, no sensor ran, and nothing was tested on a real combat system. The sea clutter constants are engineering approximations chosen so the ordering and the shape come out right, not a validated clutter model, and a real programme would replace them with measured parameters for the band and grazing angle. Everything sits in the ship-relative frame, so the sensors report closing velocity rather than motion over the ground. The work lives on a branch and is not merged.",
+    specs: [
+      { label: "Scenarios", evidenceId: "maritime.scenarios.named" },
+      { label: "Tests", evidenceId: "maritime.tests.passing" },
+    ],
+    images: [],
+    url: "https://github.com/NyXkim5/DroneNexus",
+    privateRepo: true,
+  },
 ];
 
 // The project whose window carries a given case study, if one does.
