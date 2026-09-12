@@ -67,7 +67,7 @@ export const CREDENTIALS: readonly Credential[] = [
     status: "planned",
     rationale: "The Ontology model underneath the platform, which is what the work is actually about.",
     remaining:
-      "Needs a free AIP Developer Tier enrollment, then the Speedrun course, then the quiz. Prepare properly, a failed attempt triggers a cool off period.",
+      "The Ontology half is already built offline in palantir-ontology-seed, so the reading is done and the gap is the platform itself. Sign up for the free AIP Developer Tier, run the Speedrun course inside it, then take the quiz. Prepare for one attempt. The quiz page says retakes are unlimited and the FAQ says a failed quiz triggers a cool off period.",
   },
 ];
 
