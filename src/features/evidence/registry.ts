@@ -695,6 +695,17 @@ export const EVIDENCE: readonly Evidence[] = [
     observedAt: "2026-09-11",
     public: false,
   },
+  {
+    id: "maritime.reposuite.passing",
+    persona: ["projects"],
+    value: "4,156",
+    unit: "tests passing across the whole repository",
+    repo: "NyXkim5/DroneNexus",
+    path: "packages/shared/python/aeacus/verticals.py",
+    how: "python3 -m pytest -q from the repo root on branch maritime-scenario, 4156 passed and 4 skipped in 581s, real exit code 0 read from $?. Before the one line fix the same command gave 1 failed and 4155 passed, the failure being test_every_top_level_module_is_owned_or_allowlisted",
+    observedAt: "2026-09-12",
+    public: false,
+  },
 ];
 
 export function findEvidence(id: string): Evidence | undefined {

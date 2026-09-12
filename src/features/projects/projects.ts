@@ -502,10 +502,11 @@ export const PROJECTS: readonly Project[] = [
     claim:
       "A drone swarm closing on a ship under way, replayed through the existing sensor adapters, with a sea state model that both raises the radar false alarm rate and costs detection against a target down in the clutter.",
     caveat:
-      "Simulated throughout. No vessel sailed, no sensor ran, and nothing was tested on a real combat system. The sea clutter constants are engineering approximations chosen so the ordering and the shape come out right, not a validated clutter model, and a real programme would replace them with measured parameters for the band and grazing angle. Everything sits in the ship-relative frame, so the sensors report closing velocity rather than motion over the ground. The work lives on a branch and is not merged. The six scenario test files pass on their own. The repository-wide suite does not, because its import boundary check has not been told the new package exists.",
+      "Simulated throughout. No vessel sailed, no sensor ran, and nothing was tested on a real combat system. The sea clutter constants are engineering approximations chosen so the ordering and the shape come out right, not a validated clutter model, and a real programme would replace them with measured parameters for the band and grazing angle. Everything sits in the ship-relative frame, so the sensors report closing velocity rather than motion over the ground. The work lives on a branch and is not merged. Classifying the new package as counter-uas made the repository-wide import boundary check pass again, and that ownership permanently forbids the package from importing the airframe or hive verticals.",
     specs: [
       { label: "Scenarios", evidenceId: "maritime.scenarios.named" },
       { label: "Tests", evidenceId: "maritime.tests.passing" },
+      { label: "Repo suite", evidenceId: "maritime.reposuite.passing" },
     ],
     images: [
       { src: "/projects/maritime-sea-state.png", alt: "Clutter contacts climb the same way in every scenario, while detection on the target fans out by altitude, the eight metre swarm ending at half the hits of the sixty metre one", w: 1839, h: 1470 },
