@@ -355,7 +355,7 @@ export const PROJECTS: readonly Project[] = [
   {
     slug: "medvanta",
     title: "MedVanta clinical operations",
-    folder: "software",
+    folder: "mobile",
     status: "SHIPPED",
     claim: "Patient intake in three steps, routed to the right orthopaedic specialist, on a HIPAA-compliant backend with encryption at rest and immutable audit logs.",
     caveat: "Employer work at MedVanta, no public code. The screens are from the shipped product.",
