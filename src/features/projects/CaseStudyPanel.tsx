@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import type { CaseStudy } from "@/data/caseStudies";
 import { findEvidence, sourceHref } from "@/features/evidence/registry";
+import { ModelViewer } from "./ModelViewer";
 
 type Decision = CaseStudy["designDecisions"][number];
 type Impact = CaseStudy["impact"][number];
@@ -299,6 +300,9 @@ function ExternalLink({ link }: { link: NonNullable<CaseStudy["link"]> }) {
 // Sections that exist in the study, in dossier order. The index is assigned after filtering so numbering never skips.
 function buildSections(study: CaseStudy): { label: string; node: ReactNode }[] {
   const all: ({ label: string; node: ReactNode } | null)[] = [
+    // The model leads. It is the one thing on this page worth seeing before
+    // any prose, and burying it under the approach meant scrolling to find it.
+    study.model ? { label: "model", node: <ModelViewer model={study.model} /> } : null,
     { label: "approach", node: <Approach items={study.approach} /> },
     study.designDecisions.length > 0 ? { label: "design decisions", node: <Decisions items={study.designDecisions} /> } : null,
     study.brandPhilosophy ? { label: "design language", node: <DesignLanguage brand={study.brandPhilosophy} /> } : null,

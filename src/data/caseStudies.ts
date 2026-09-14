@@ -28,6 +28,7 @@ export interface CaseStudy {
   stack: { category: string; tools: string[] }[];
   images: { src: string; caption: string }[];
   video?: { src: string; caption: string };
+  model?: { src: string; caption: string };
   versionImages?: {
     v1: { src: string; caption: string };
     v2: { src: string; caption: string };
@@ -1017,6 +1018,102 @@ export const caseStudies: CaseStudy[] = [
         "The regulation cites a section range that includes a section which no longer exists. The musculoskeletal disorder rule was rescinded before it took effect and the cross reference was never cleaned up, so a careful reading of the citation leads to a section that is not there.",
         "The federal upload specification does not state that its columns must appear in the printed order. The tool writes them that way as the safe reading and says so, rather than presenting a guess as the spec.",
         "It is a single establishment and a single year, held in files with no concurrent writer. Two processes writing at once would race.",
+      ],
+    },
+  },
+  {
+    slug: "artemis",
+    id: "008",
+    personas: ["projects"],
+    title: "Artemis",
+    subtitle: "Control Firmware and Tracking for an Open Weapon Station",
+    year: "2026",
+    role: "Firmware and Control",
+    status: "Bench only",
+    duration: "Sep 2026",
+    team: "Solo, on open hardware by WILDCARD",
+    overview:
+      "WILDCARD published a 3D printed remote controlled weapon station as a mechanical handbook: four axes, worm gear actuators, an electro optical sight, every part printable on an Ender 3 V2. The electronics documentation for it is lost. The handbook says only that an Arduino drove the steppers and read PWM from the receiver, and that a Pi 4 did the image processing. This is the control stack rebuilt against that gap, from a written wire protocol upward. The mechanical design is theirs. The firmware, the tracking loop and the protocol are mine.",
+    problem:
+      "Rebuilding a control system from lost documentation means every assumption is unverified, on hardware that may not behave the way the handbook describes. Writing firmware straight onto a board would make each of those assumptions invisible until something moved. The mount also has no absolute encoders described anywhere, so any position control would be a fiction dressed as a command.",
+    approach: [
+      "Wrote the Pi to Arduino wire contract first, as a document, before either side existed. Both halves implement that and nothing else, so either can be tested or replaced alone",
+      "Made the link line oriented ASCII with an NMEA style XOR checksum, so a person holding a serial monitor can read it. At 115200 baud a frame is about 70 bytes, so 50 Hz costs roughly a third of the line",
+      "Commanded rates rather than positions, because the mount has no absolute encoders and position control would have been a lie",
+      "Split the firmware so all behaviour lives in plain C++17 that includes no Arduino header, allocates nothing and never reads a clock. Time arrives as a now_ms argument, which is what lets the watchdog be tested in microseconds instead of by sleeping",
+      "Kept the Arduino layer to pins only: serial bytes, interrupt captured pulse widths, switches, step and direction lines. It makes no decisions",
+      "Ran mutation testing over the firmware suite, rebuilding each mutant in a clean copy and comparing object hashes to prove the mutation reached the binary",
+    ],
+    designDecisions: [
+      {
+        title: "No fire path and no arm path, at the protocol level",
+        description:
+          "Version 1 of the link carries no fire command and no arming command, and the tracking package contains neither. The enable path on this mount is hardware in series. INTERLOCK exists only as a status bit that gets displayed.",
+        outcome:
+          "A tracking bug produces a mount pointing in the wrong direction and nothing else. The failure mode is bounded by the wire format rather than by correct code.",
+      },
+      {
+        title: "Behaviour separated from pins so it could be tested at all",
+        description:
+          "Frame parsing, checksum, mode transitions, the link watchdog, rate clamping, limit switches and the RC failsafe are all host compilable C++17 with no hardware dependency.",
+        outcome:
+          "49 host tests covering 359 assertions run in a terminal with no board attached, including the 250 ms watchdog which would otherwise need a real wait.",
+      },
+      {
+        title: "Mutation testing caught tests that passed for the wrong reason",
+        description:
+          "An earlier claim of thirty two mutations all caught turned out to be false. The harness had rebuilt within the same second, so make kept the stale object file and 28 of 32 mutants never entered the binary. The rerun built every mutant in a copy with no build directory and compared object hashes against the baseline.",
+        outcome:
+          "108 real mutants. The suite as written killed 83 and missed 25. The largest miss was a whole class of test that never exercised the shipped defaults as values, so max_rate_mdps could be changed and nothing failed.",
+      },
+    ],
+    impact: [
+      {
+        metric: "firmware suite",
+        value: "49",
+        description: "Host tests, no board required",
+        evidenceId: "artemis.firmware.tests",
+      },
+      {
+        metric: "tracking suite",
+        value: "266",
+        description: "Python tests against a simulated mount",
+        evidenceId: "artemis.tracking.tests",
+      },
+      {
+        metric: "mutation survivors",
+        value: "25",
+        description: "Mutants the original suite failed to kill, before twelve tests closed the gaps",
+        evidenceId: "artemis.mutation.gaps",
+      },
+      {
+        metric: "loop tick",
+        value: "4.42",
+        description: "Median tracking tick against a 20 ms budget at 50 Hz",
+        evidenceId: "artemis.loop.tick",
+      },
+    ],
+    stack: [
+      { category: "Firmware", tools: ["C++17", "Arduino", "Make"] },
+      { category: "Tracking", tools: ["Python", "Raspberry Pi", "pytest"] },
+      { category: "Verification", tools: ["Host test harness", "Mutation testing", "UBSan and ASan"] },
+      { category: "Mechanical", tools: ["STEP AP214", "Ender 3 V2"] },
+    ],
+    images: [],
+    model: {
+      src: "/models/artemis-rcws-v5.glb",
+      caption: "RCWS v5 mechanical assembly by WILDCARD, drag to orbit",
+    },
+    reflections: {
+      worked: [
+        "Writing the protocol as a document before either side existed. It made the Pi and the Arduino independently testable and it is the reason the firmware has no hardware dependency.",
+        "Treating time as an argument rather than a call. The watchdog test runs in microseconds because now_ms is passed in.",
+        "Rebuilding each mutant in a clean copy. The first mutation run was wrong in a way that looked like success, and only the object hash comparison exposed it.",
+      ],
+      different: [
+        "None of this has run on a board. There is no Arduino and no camera on the machine it was written on, so every timing assumption, the interrupt capture and the step rate at speed are all unproven against hardware.",
+        "The twelve surviving mutants are argued as equivalent in a notes file. That argument is mine and has not been reviewed by anyone else.",
+        "The mechanical design, the STEP file and the handbook are WILDCARD's work and carry no licence. This sits on top of their hardware and does not replace it.",
       ],
     },
   },
