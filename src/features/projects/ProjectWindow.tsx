@@ -5,6 +5,7 @@ import Image from "next/image";
 import { findStudy } from "@/data/caseStudies";
 import { findEvidence, sourceHref } from "@/features/evidence/registry";
 import { CaseStudyPanel } from "./CaseStudyPanel";
+import { ModelViewer } from "./ModelViewer";
 import type { Project, ProjectImage, ProjectSpec, ProjectVideo } from "./projects";
 import { WindowChrome, type WindowTab } from "./WindowChrome";
 
@@ -87,7 +88,9 @@ function Links({ project }: { project: Project }) {
   );
 }
 
-// The overview tab: status, title, claim, figures, spec rows, caveat, links.
+// The overview tab: status, title, claim, the model, figures, spec rows,
+// caveat, links. The model leads because it is the thing worth seeing first,
+// and the window opens on this tab.
 function Overview({ project }: { project: Project }) {
   return (
     <div className="space-y-6">
@@ -98,6 +101,7 @@ function Overview({ project }: { project: Project }) {
         </h2>
       </div>
       <p className="max-w-xl text-[15px] leading-relaxed" style={TIMES}>{project.claim}</p>
+      {project.model && <ModelViewer model={project.model} />}
       {project.video && <Video video={project.video} />}
       {project.images.map((img) => <Figure key={img.src} img={img} />)}
       {project.specs.length > 0 && <div>{project.specs.map((s) => <SpecRow key={s.evidenceId} spec={s} />)}</div>}

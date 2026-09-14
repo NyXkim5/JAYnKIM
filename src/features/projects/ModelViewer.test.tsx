@@ -1,10 +1,18 @@
 // @vitest-environment jsdom
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { caseStudies, findStudy } from "@/data/caseStudies";
 import { ModelViewer } from "./ModelViewer";
+import { CaseStudyPanel } from "./CaseStudyPanel";
+import { ProjectWindow } from "./ProjectWindow";
+import { findProject } from "./projects";
+
+vi.mock("next/image", () => ({
+  // eslint-disable-next-line @next/next/no-img-element
+  default: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} />,
+}));
 
 afterEach(cleanup);
 
@@ -43,6 +51,26 @@ describe("ModelViewer", () => {
     for (const f of ["draco_decoder.js", "draco_decoder.wasm", "draco_wasm_wrapper.js"]) {
       expect(existsSync(join(process.cwd(), "public", "draco", f)), f).toBe(true);
     }
+  });
+
+  it("puts the model first in the case study, ahead of the approach", () => {
+    const s = findStudy("artemis");
+    if (!s) throw new Error("artemis study missing");
+    render(<CaseStudyPanel study={s} />);
+    const labels = [...document.querySelectorAll("section[aria-label]")].map((n) => n.getAttribute("aria-label"));
+    expect(labels[0]).toBe("model");
+    expect(labels.indexOf("model")).toBeLessThan(labels.indexOf("approach"));
+  });
+
+  it("leads the project overview with the model, above the figures", () => {
+    const p = findProject("artemis-rcws");
+    if (!p?.model) throw new Error("artemis-rcws has no model");
+    expect(p.model.src).toBe("/models/artemis-rcws-v5.glb");
+    render(<ProjectWindow project={p} onBack={() => {}} />);
+    // The overview is the tab the window opens on, so this is the first view.
+    const caption = screen.getByText(p.model.caption);
+    const firstFigure = document.querySelector("figure");
+    expect(firstFigure?.contains(caption)).toBe(true);
   });
 
   it("gives the artemis study a model whose caption credits the upstream author", () => {

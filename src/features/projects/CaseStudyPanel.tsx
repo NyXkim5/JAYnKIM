@@ -300,6 +300,9 @@ function ExternalLink({ link }: { link: NonNullable<CaseStudy["link"]> }) {
 // Sections that exist in the study, in dossier order. The index is assigned after filtering so numbering never skips.
 function buildSections(study: CaseStudy): { label: string; node: ReactNode }[] {
   const all: ({ label: string; node: ReactNode } | null)[] = [
+    // The model leads. It is the one thing on this page worth seeing before
+    // any prose, and burying it under the approach meant scrolling to find it.
+    study.model ? { label: "model", node: <ModelViewer model={study.model} /> } : null,
     { label: "approach", node: <Approach items={study.approach} /> },
     study.designDecisions.length > 0 ? { label: "design decisions", node: <Decisions items={study.designDecisions} /> } : null,
     study.brandPhilosophy ? { label: "design language", node: <DesignLanguage brand={study.brandPhilosophy} /> } : null,
@@ -308,7 +311,6 @@ function buildSections(study: CaseStudy): { label: string; node: ReactNode }[] {
     study.images.length > 0 ? { label: "figures", node: <div className="space-y-6">{study.images.map((img) => <FigureBox key={img.src} img={img} />)}</div> } : null,
     study.versionImages ? { label: "versions", node: <VersionsBlock v={study.versionImages} /> } : null,
     study.video ? { label: "clip", node: <ClipBox clip={study.video} /> } : null,
-    study.model ? { label: "model", node: <ModelViewer model={study.model} /> } : null,
     study.stack.length > 0 ? { label: "stack", node: <Stack groups={study.stack} /> } : null,
     study.reflections ? { label: "reflections", node: <ReflectionsBlock r={study.reflections} /> } : null,
   ];

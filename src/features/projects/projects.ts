@@ -22,6 +22,8 @@ export type ProjectStatus =
 export type ProjectImage = { src: string; alt: string; w: number; h: number };
 // A demo clip served from public/, shown above the figures with a poster frame.
 export type ProjectVideo = { src: string; poster: string; alt: string };
+// An interactive model shown above the figures, in the same slot as a clip.
+export type ProjectModel = { src: string; caption: string };
 export type ProjectSpec = { label: string; evidenceId: string };
 
 export type Project = {
@@ -34,6 +36,7 @@ export type Project = {
   specs: ProjectSpec[];
   images: ProjectImage[];
   video?: ProjectVideo;
+  model?: ProjectModel;
   caseStudySlug?: string;
   // A real address the window's URL bar can show: a live site or the repo.
   url?: string;
@@ -534,6 +537,10 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/artemis-mutation-survivors.png", alt: "A green thirty seven test suite left twenty five of a hundred and eight mutants alive, twelve of them real gaps, and twelve added tests killed every one a test could reach", w: 1800, h: 1000 },
       { src: "/projects/artemis-latency-stages.png", alt: "The camera read owns the loop at 3.2 ms of a 4.4 ms tick, the other five stages together stay under a tenth of a millisecond, on a log scale", w: 1800, h: 1080 },
     ],
+    model: {
+      src: "/models/artemis-rcws-v5.glb",
+      caption: "RCWS v5 mechanical assembly by WILDCARD, drag to orbit",
+    },
     caseStudySlug: "artemis",
     url: "https://github.com/NyXkim5/artemis",
     privateRepo: true,
