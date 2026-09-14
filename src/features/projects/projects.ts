@@ -534,6 +534,7 @@ export const PROJECTS: readonly Project[] = [
       { src: "/projects/artemis-mutation-survivors.png", alt: "A green thirty seven test suite left twenty five of a hundred and eight mutants alive, twelve of them real gaps, and twelve added tests killed every one a test could reach", w: 1800, h: 1000 },
       { src: "/projects/artemis-latency-stages.png", alt: "The camera read owns the loop at 3.2 ms of a 4.4 ms tick, the other five stages together stay under a tenth of a millisecond, on a log scale", w: 1800, h: 1080 },
     ],
+    caseStudySlug: "artemis",
     url: "https://github.com/NyXkim5/artemis",
     privateRepo: true,
   },

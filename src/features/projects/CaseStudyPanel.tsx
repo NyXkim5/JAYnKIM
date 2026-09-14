@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import type { CaseStudy } from "@/data/caseStudies";
 import { findEvidence, sourceHref } from "@/features/evidence/registry";
+import { ModelViewer } from "./ModelViewer";
 
 type Decision = CaseStudy["designDecisions"][number];
 type Impact = CaseStudy["impact"][number];
@@ -307,6 +308,7 @@ function buildSections(study: CaseStudy): { label: string; node: ReactNode }[] {
     study.images.length > 0 ? { label: "figures", node: <div className="space-y-6">{study.images.map((img) => <FigureBox key={img.src} img={img} />)}</div> } : null,
     study.versionImages ? { label: "versions", node: <VersionsBlock v={study.versionImages} /> } : null,
     study.video ? { label: "clip", node: <ClipBox clip={study.video} /> } : null,
+    study.model ? { label: "model", node: <ModelViewer model={study.model} /> } : null,
     study.stack.length > 0 ? { label: "stack", node: <Stack groups={study.stack} /> } : null,
     study.reflections ? { label: "reflections", node: <ReflectionsBlock r={study.reflections} /> } : null,
   ];
